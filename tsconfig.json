@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es2020",
+    "module": "commonjs",
+    "lib": ["es2020", "esnext.asynciterable"],
+    "outDir": "build",
+    "declaration": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    "useUnknownInCatchVariables": false,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": ["./scripts", "./test", "./typechain", "./src/**/*.ts"],
+  "files": ["./hardhat.config.ts"]
+}

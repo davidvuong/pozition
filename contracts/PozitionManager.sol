@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /// Project Imports ///
 
-import "./FuturesNFTPositionFactory.sol";
-import "./FuturesNFTPosition.sol";
+import "./PozitionFactory.sol";
+import "./Pozition.sol";
 import "./interfaces/IFuturesMarket.sol";
 import "./interfaces/IAddressResolver.sol";
 
@@ -21,7 +21,7 @@ import "./interfaces/IAddressResolver.sol";
  *
  * TODO: Should we make this contract upgradeable?
  */
-contract FuturesPositionsManager is ReentrancyGuard {
+contract PozitionManager is ReentrancyGuard {
     /// Storage Variables ///
 
     /**
@@ -37,7 +37,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
     /**
     * @dev Factory to mint 1/1 NFTs to represent an open position on Synthetix Futures.
     */
-    FuturesNFTPositionFactory private positionFactory;
+    PozitionFactory private positionFactory;
 
     /**
     * @dev A hardcoded map of supported markets.
@@ -64,7 +64,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
         uint margin,
         uint size,
         IFuturesMarket market,
-        FuturesNFTPosition position
+        Pozition position
     );
 
     /**
@@ -73,7 +73,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
     event PositionClose(
         address trader,
         IFuturesMarket market,
-        FuturesNFTPosition position
+        Pozition position
     );
 
     /// State Variables ///
@@ -82,7 +82,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
 
     /// Constructor ///
 
-    constructor (IAddressResolver _addressResolver, FuturesNFTPositionFactory _positionFactory) {
+    constructor (IAddressResolver _addressResolver, PozitionFactory _positionFactory) {
         addressResolver = _addressResolver;
         positionFactory = _positionFactory;
 
@@ -150,7 +150,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
         uint _size,
         bytes32 _market,
         string memory _fullTokenURI
-    ) public returns (FuturesNFTPosition position) {
+    ) public returns (Pozition position) {
         // Is this necessary? Should be double up on `require` or can I rely on `withdraw`?
         require(_margin > 0, "Margin must be non-zero.");
         require(depositsByWalletAddress[msg.sender] >= _margin, "Not enough margin.");
@@ -158,7 +158,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
         IFuturesMarket market = supportedMarkets[_market];
         require(address(market) != address(0), "Market not supported.");
 
-        position = FuturesNFTPosition(positionFactory.clone(msg.sender, market, _size, _margin, _fullTokenURI));
+        position = Pozition(positionFactory.clone(msg.sender, market, _size, _margin, _fullTokenURI));
 
         withdraw(_margin, address(position));
 
@@ -174,7 +174,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
     * TODO: Liquidated positions with remaining margin should ideally be deposited back into the manager
     * to be withdrawn or used in another position in the future but that is not currently implemented.
     */
-    function closePosition(FuturesNFTPosition _position) external {
+    function closePosition(Pozition _position) external {
         _position.closeAndBurn();
         emit PositionClose(msg.sender, _position.market(), _position);
     }
@@ -187,7 +187,7 @@ contract FuturesPositionsManager is ReentrancyGuard {
         uint _size,
         bytes32 _market,
         string memory _fullTokenURI
-    ) external returns (FuturesNFTPosition position) {
+    ) external returns (Pozition position) {
         // TODO: This can probably be a lot more efficient. Depositing then immediately withdrawing.
         deposit(_margin);
         position = openPosition(_margin, _size, _market, _fullTokenURI);

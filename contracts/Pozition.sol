@@ -19,7 +19,7 @@ import "./interfaces/IFuturesMarket.sol";
  * move positions between wallets without closing, possibly incurring a loss, withdrawing margin, and
  * re-creating a new position.
  */
-contract FuturesNFTPosition is Initializable, ERC721, Ownable {
+contract Pozition is Initializable, ERC721, Ownable {
     /// State Variables ///
 
     /**

@@ -3,11 +3,11 @@ pragma solidity ^0.8.0;
 
 /// 3rd Party Libraries ///
 
-import '@openzeppelin/contracts/proxy/Clones.sol';
+import "@openzeppelin/contracts/proxy/Clones.sol";
 
 /// Local Imports ///
 
-import './FuturesNFTPosition.sol';
+import "./Pozition.sol";
 
 /**
  * @dev Allows the creation of a more 1/1 FuturePosition NFTs to be transferred to `msg.sender`.
@@ -17,7 +17,7 @@ import './FuturesNFTPosition.sol';
  *
  * _See https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/proxy/Clones.sol_
  */
-contract FuturesNFTPositionFactory {
+contract PozitionFactory {
     using Clones for address;
 
     /// State Variables ///
@@ -30,7 +30,7 @@ contract FuturesNFTPositionFactory {
     /**
      * @dev An array of all mintedPosition addresses.
      */
-    mapping(address => FuturesNFTPosition[]) public allMintedPositions;
+    mapping(address => Pozition[]) public allMintedPositions;
 
     /// Events ///
 
@@ -43,7 +43,7 @@ contract FuturesNFTPositionFactory {
         IFuturesMarket market,
         uint256 margin,
         uint256 size,
-        FuturesNFTPosition position
+        Pozition position
     );
 
     /**
@@ -79,8 +79,8 @@ contract FuturesNFTPositionFactory {
         uint256 _margin,
         uint256 _size,
         string memory _fullTokenURI
-    ) public returns (FuturesNFTPosition position) {
-        position = FuturesNFTPosition(implementation.clone());
+    ) public returns (Pozition position) {
+        position = Pozition(implementation.clone());
         position.initialize(
             _market,
             address(this),

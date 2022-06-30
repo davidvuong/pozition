@@ -1,3 +1,4 @@
+import './env';
 import { ethers } from 'hardhat';
 
 const main = async () => {

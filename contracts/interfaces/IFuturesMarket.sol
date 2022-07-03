@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 interface IFuturesMarket {
-    function transferMargin(int marginDelta) external;
+    function transferMargin(int256 marginDelta) external;
 
     function closePosition() external;
 
-    function modifyPosition(int sizeDelta) external;
+    function modifyPosition(int256 sizeDelta) external;
 }

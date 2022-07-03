@@ -37,7 +37,6 @@ contract PozitionFactory {
     /**
      * @dev Emitted when the NFT is 'cloned', effectively minted with the necessary attributes.
      */
-
     event Clone(
         address owner,
         IFuturesMarket market,
@@ -81,13 +80,7 @@ contract PozitionFactory {
         string memory _fullTokenURI
     ) public returns (Pozition position) {
         position = Pozition(implementation.clone());
-        position.initialize(
-            _market,
-            address(this),
-            _margin,
-            _size,
-            _fullTokenURI
-        );
+        position.initialize(_market, address(this), _margin, _size, _fullTokenURI);
 
         allMintedPositions[_trader].push(position);
 

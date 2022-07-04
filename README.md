@@ -2,7 +2,7 @@
 
 **Welcome to Pozition (Position but with a 'z')!**
 
-The idea and project was developed during [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd). The original code can be found [here](https://github.com/fritzschoff/notSynthetix). This project is an extension of the idea with the intent to build a production-ready dApp. Currently WIP.
+The idea and project was developed during [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd). The original code can be found [here](https://github.com/fritzschoff/notSynthetix). This project is an extension of the idea with the intent to build a production-ready dApp. **Currently WORK IN PROGRESS (WIP).**
 
 Pozition aims to provide a mechanism to allow future positions on Synthetix to be transferrable. As of current, positions are tracked and managed directly by Synthetix. If you wanted to move a position from one wallet to another, you first have to close the position, withdraw your margin, and transfer sUSD to another wallet. This is quite tedious and may incur tax obligations/losses.
 

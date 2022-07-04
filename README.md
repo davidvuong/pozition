@@ -4,7 +4,7 @@
 
 The idea and project was developed during [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd). The original code can be found [here](https://github.com/fritzschoff/notSynthetix). This project is an extension of the idea with the intent to build a production-ready dApp. Currently WIP.
 
-Pozition aims to provide a mechanism to allow future positions on Synthetix to be transferrable. As of current, positions are tracked and managed directly by Synthetix. If you wanted to move a position from one wallet to another, you first have to close the position, withdraw your margin, and transfer sUSD to another wallet. This is quite tedious.
+Pozition aims to provide a mechanism to allow future positions on Synthetix to be transferrable. As of current, positions are tracked and managed directly by Synthetix. If you wanted to move a position from one wallet to another, you first have to close the position, withdraw your margin, and transfer sUSD to another wallet. This is quite tedious and may incur tax obligations/losses.
 
 Using `pozition`, a 1/1 NFT is minted on every position, effectively giving the user a receipt to represent their position for each market they're participating in. This allows users to move positions freely without the hassle of closing a position and moving margin.
 
@@ -33,10 +33,6 @@ npx hardhat run --network localhost scripts/deploy.ts
 npx hardhat run --network optimism-kovan scripts/deploy.ts
 ```
 
-## Architecture
-
-TODO...
-
 ## Faucets
 
 Head over to [Paradigm](https://faucet.paradigm.xyz/) to drip ETH and DAI to your wallet. Head over to [Synthetix>Loans](https://staking.synthetix.io/) to borrow sUSD against your ETH. Now you have sUSD to experiment with.
@@ -56,7 +52,7 @@ const Contract = await Factory.attach('0x...');
 const tx = await Contract.depositsUSD(1, { gasLimit: 5_000_0000 });
 ```
 
-# Etherscan Verification
+## Etherscan Verification
 
 To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
 
@@ -73,6 +69,26 @@ npx hardhat verify --network optimism-kovan DEPLOYED_CONTRACT_ADDRESS <construct
 ```
 
 _This project uses Optimism so API keys must be created in https://optimistic.etherscan.io/_
+
+## Architecture
+
+Below is a high level overview of Pozition:
+
+![Architecture Overview](assets/diagrams/architecture_overview.jpg)
+
+The primary deviation is the user interaction with Synthetix futures markets. Rather than directly invoking methods like `modifyPosition`, giving position ownerships to the user `msg.sender`, Pozition mints and manages interactions via NFTs.
+
+An example workflow may look like:
+
+1. User calls `deposit` on `Manager` to deposit `sUSD` as margin to open a position
+1. User calls `openPosition` on `Manager`, specifying the market and size of their position
+1. Manager invokes the `ERC721` factory to clone an existing implementation, immediately withdrawing the specified `sUSD` margin to the newly minted NFT
+1. The NFT henceforth interacts with Synthetix futures, operating as a user normally would, had they traded on platforms such as Kwenta
+1. After a position is created, ownership will associated to the NFT. The NFT is transferred to the user
+
+_Assuming post `deposit`, all of this happens in a single transaction._
+
+Pozition also provides helper methods to perform a deposit and trade in the same operation. Note that the inverse occurs when a position is closed and `sUSD` is deposited back to the `Manager` for withdrawl.
 
 ---
 

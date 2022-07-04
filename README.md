@@ -72,9 +72,9 @@ _This project uses Optimism so API keys must be created in https://optimistic.et
 
 ## Architecture
 
-Below is a high level overview of Pozition:
+Below is a high level overview of Pozition v1:
 
-![Architecture Overview](assets/diagrams/architecture_overview.jpg)
+![Architecture Overview](assets/diagrams/architecture_overview_v1.jpg)
 
 The primary deviation is the user interaction with Synthetix futures markets. Rather than directly invoking methods like `modifyPosition`, giving position ownerships to the user `msg.sender`, Pozition mints and manages interactions via NFTs.
 
@@ -89,6 +89,14 @@ An example workflow may look like:
 _Assuming post `deposit`, all of this happens in a single transaction._
 
 Pozition also provides helper methods to perform a deposit and trade in the same operation. Note that the inverse occurs when a position is closed and `sUSD` is deposited back to the `Manager` for withdrawl.
+
+You may notice that this also includes a RESTful API to communicate with IPFS, invoked by the same user calling the Manager. The original project provided rich visual representation of future positions. SVG permutations (long/short, size, market) were generated off-chain and used as templates to generate new NFTs, feeding data about the position about to be opened.
+
+Pozition v2 is much simpler:
+
+![Architecture Overview](assets/diagrams/architecture_overview_v2.jpg)
+
+Steps are largely the same. However, `Manager` and `Factory` has been merged and the need for a HTTP RESTful API and IPFS is no longer necessary.
 
 ---
 
@@ -121,6 +129,6 @@ npx solhint 'contracts/**/*.sol'
 npx solhint 'contracts/**/*.sol' --fix
 ```
 
-# Performance optimizations
+# Performance Optimizations
 
 For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).

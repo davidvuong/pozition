@@ -5,10 +5,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/proxy/Clones.sol";
 
 /// Project Imports ///
 
-import "./PozitionFactory.sol";
 import "./Pozition.sol";
 import "./interfaces/IFuturesMarket.sol";
 import "./interfaces/IAddressResolver.sol";
@@ -19,9 +19,16 @@ import "./interfaces/IAddressResolver.sol";
  * sUSD tokens can be minted by staking SNX or obtained by collateralising ETH to borrow sUSD. NOTE sUSD
  * as of writing this is the only margin token allowed by Synthetix.
  *
- * TODO: Should we make this contract upgradeable?
+ * It also facilitates the creation of 1/1 FuturePosition NFTs to be transferred to `msg.sender`.
+ *
+ * Keep in mind this factory follows a minimal proxy contract pattern where newly 'cloned' NFTs
+ * simply point to a common implementation contract.
+ *
+ * _See https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/proxy/Clones.sol_
  */
 contract PozitionManager is ReentrancyGuard {
+    using Clones for address;
+
     /// Storage Variables ///
 
     /**
@@ -29,22 +36,51 @@ contract PozitionManager is ReentrancyGuard {
      */
     IAddressResolver private addressResolver;
 
+    mapping(address => uint256) public depositsByWalletAddress;
+
     /**
      * @dev Margin token used for Synthetix Future positions. At the moment only sUSD is allowed.
      */
     IERC20 private marginToken;
 
     /**
-     * @dev Factory to mint 1/1 NFTs to represent an open position on Synthetix Futures.
-     */
-    PozitionFactory private positionFactory;
-
-    /**
      * @dev A hardcoded map of supported markets.
      */
     mapping(bytes32 => IFuturesMarket) private supportedMarkets;
 
+    /**
+     * @dev The smart contract address where all FutureNFTPositions will point to.
+     */
+    address public implementation;
+
+    /**
+     * @dev An array of all mintedPosition addresses.
+     */
+    mapping(address => Pozition[]) public allMintedPositions;
+
     /// Events ///
+
+    /**
+     * @dev Emitted when the NFT is 'cloned', effectively minted with the necessary attributes.
+     */
+    event Clone(
+        address owner,
+        IFuturesMarket market,
+        uint256 margin,
+        uint256 size,
+        Pozition position
+    );
+
+    /**
+     * @dev Emitted when the implementation is updated by the owner.
+     *
+     * NOTE: Probably not needed right now but keeping this here.
+     */
+    event ImplementationChange(
+        address oldImplementation,
+        address newImplementation,
+        address updater
+    );
 
     /**
      * @dev Emitted with `amount` sUSD tokens are withdrawn from the margin vault by the `withdrawer`.
@@ -72,15 +108,11 @@ contract PozitionManager is ReentrancyGuard {
      */
     event PositionClose(address trader, IFuturesMarket market, Pozition position);
 
-    /// State Variables ///
-
-    mapping(address => uint256) public depositsByWalletAddress;
-
     /// Constructor ///
 
-    constructor(IAddressResolver _addressResolver, PozitionFactory _positionFactory) {
+    constructor(IAddressResolver _addressResolver, address _implementation) {
         addressResolver = _addressResolver;
-        positionFactory = _positionFactory;
+        implementation = _implementation;
 
         address sUSD = addressResolver.getAddress("ProxyERC20sUSD");
         require(sUSD != address(0), "ProxyERC20sUSD not found.");
@@ -100,6 +132,29 @@ contract PozitionManager is ReentrancyGuard {
     }
 
     /// Mutative Functions ///
+
+    /**
+     * @dev Creates an exact copy of the `implementation` contract, following the minimal proxy pattern.
+     *
+     * IMPORTANT: `initialize` is not called here. It's expected the calling function will call `initialize` within
+     * the same transaction as `clone`.
+     *
+     * TODO: How do I ensure that no one other than the manager can call this?
+     */
+    function clone(
+        address _trader,
+        IFuturesMarket _market,
+        uint256 _margin,
+        uint256 _size,
+        string memory _fullTokenURI
+    ) internal returns (Pozition position) {
+        position = Pozition(implementation.clone());
+        position.initialize(_market, address(this), _margin, _size, _fullTokenURI);
+
+        allMintedPositions[_trader].push(position);
+
+        emit Clone(_trader, _market, _margin, _size, position);
+    }
 
     /**
      * @dev Deposit sUSD into the manager to be used as margin when opening positions.
@@ -160,9 +215,7 @@ contract PozitionManager is ReentrancyGuard {
         IFuturesMarket market = supportedMarkets[_market];
         require(address(market) != address(0), "Market not supported.");
 
-        position = Pozition(
-            positionFactory.clone(msg.sender, market, _size, _margin, _fullTokenURI)
-        );
+        position = Pozition(clone(msg.sender, market, _size, _margin, _fullTokenURI));
 
         withdraw(_margin, address(position));
 

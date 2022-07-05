@@ -36,17 +36,15 @@ contract PozitionManager is ReentrancyGuard {
      */
     IAddressResolver private addressResolver;
 
+    /**
+     * @dev Track sUSD deposited by address.
+     */
     mapping(address => uint256) public depositsByWalletAddress;
 
     /**
      * @dev Margin token used for Synthetix Future positions. At the moment only sUSD is allowed.
      */
     IERC20 private marginToken;
-
-    /**
-     * @dev A hardcoded map of supported markets.
-     */
-    mapping(bytes32 => IFuturesMarket) private supportedMarkets;
 
     /**
      * @dev The smart contract address where all FutureNFTPositions will point to.
@@ -117,18 +115,6 @@ contract PozitionManager is ReentrancyGuard {
         address sUSD = addressResolver.getAddress("ProxyERC20sUSD");
         require(sUSD != address(0), "ProxyERC20sUSD not found.");
         marginToken = IERC20(sUSD);
-
-        bytes32[3] memory markets;
-        markets[0] = "FuturesMarketBTC";
-        markets[1] = "FuturesMarketETH";
-        markets[2] = "FuturesMarketLINK";
-
-        for (uint256 i; i < markets.length; i++) {
-            bytes32 name = markets[i];
-            address market = addressResolver.getAddress(name);
-            supportedMarkets[name] = IFuturesMarket(market);
-            require(market != address(0), "Market not found.");
-        }
     }
 
     /// Mutative Functions ///
@@ -212,7 +198,7 @@ contract PozitionManager is ReentrancyGuard {
         require(_margin > 0, "Margin must be non-zero.");
         require(depositsByWalletAddress[msg.sender] >= _margin, "Not enough margin.");
 
-        IFuturesMarket market = supportedMarkets[_market];
+        IFuturesMarket market = IFuturesMarket(addressResolver.getAddress(_market));
         require(address(market) != address(0), "Market not supported.");
 
         position = Pozition(clone(msg.sender, market, _size, _margin, _fullTokenURI));

@@ -83,12 +83,12 @@ contract PozitionManager is ReentrancyGuard {
     /**
      * @dev Emitted with `amount` sUSD tokens are withdrawn from the margin vault by the `withdrawer`.
      */
-    event Withdraw(address withdrawer, address receiver, uint256 amount);
+    event WithdrawMargin(address withdrawer, address receiver, uint256 amount);
 
     /**
      * @dev Emitted with `amount` when `depositer` deposits sUSD.
      */
-    event Deposit(address depositer, uint256 amount);
+    event DepositMargin(address depositer, uint256 amount);
 
     /**
      * @dev Emitted when a position is successfully opened.
@@ -156,7 +156,7 @@ contract PozitionManager is ReentrancyGuard {
         bool isSuccess = marginToken.transferFrom(msg.sender, address(this), _amount);
         require(isSuccess, "Deposit failed. Bad transfer.");
 
-        emit Deposit(msg.sender, _amount);
+        emit DepositMargin(msg.sender, _amount);
     }
 
     /**
@@ -166,6 +166,7 @@ contract PozitionManager is ReentrancyGuard {
     function withdraw(uint256 _amount, address _receiver) public nonReentrant {
         require(_amount > 0, "Withdraw amount is too small.");
         require(_receiver != address(0), "Receiver cannot be NULL.");
+        require(depositsByWalletAddress[msg.sender] > 0, "No margin to withdraw.");
         require(
             depositsByWalletAddress[msg.sender] >= _amount,
             "Withdrawing more than available."
@@ -175,7 +176,7 @@ contract PozitionManager is ReentrancyGuard {
         bool isSuccess = marginToken.transfer(_receiver, _amount);
         require(isSuccess, "Withdraw failed, bad transfer.");
 
-        emit Withdraw(msg.sender, _receiver, _amount);
+        emit WithdrawMargin(msg.sender, _receiver, _amount);
     }
 
     /**

@@ -4,6 +4,7 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
+    "test:coverage": "npx hardhat coverage",
     "deploy": "npx hardhat run --network optimism-kovan scripts/deploy.ts"
   },
   "devDependencies": {

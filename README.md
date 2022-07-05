@@ -2,7 +2,7 @@
 
 **Welcome to Pozition (Position but with a 'z')!**
 
-The idea and project was developed during [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd). The original code can be found [here](https://github.com/fritzschoff/notSynthetix). This project is an extension of the idea with the intent to build a production-ready dApp. **Currently WORK IN PROGRESS (WIP).**
+The idea and project was developed during [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd). The original code can be found [here](https://github.com/fritzschoff/notSynthetix). This project is an extension of the idea with the intent to build a production-ready dApp. **THIS IS CURRENTLY WORK IN PROGRESS (WIP).**
 
 Pozition aims to provide a mechanism to allow future positions on Synthetix to be transferrable. As of current, positions are tracked and managed directly by Synthetix. If you wanted to move a position from one wallet to another, you first have to close the position, withdraw your margin, and transfer sUSD to another wallet. This is quite tedious and may incur tax obligations/losses.
 
@@ -33,11 +33,16 @@ npx hardhat run --network localhost scripts/deploy.ts
 npx hardhat run --network optimism-kovan scripts/deploy.ts
 ```
 
-## Faucets
+## Testing
 
-Head over to [Paradigm](https://faucet.paradigm.xyz/) to drip ETH and DAI to your wallet. Head over to [Synthetix>Loans](https://staking.synthetix.io/) to borrow sUSD against your ETH. Now you have sUSD to experiment with.
+This project follows the prescribed assertion and testrunner, `chai` and `mocha` respectively. To execute tests:
 
-## Interaction
+```bash
+npm run test
+npm run test:coverage
+```
+
+## Manual Interaction
 
 ```bash
 # Drops you into a node repl with `ethers` available
@@ -51,6 +56,8 @@ const Factory = await ethers.getContractFactory('FuturesPositionsManager');
 const Contract = await Factory.attach('0x...');
 const tx = await Contract.depositsUSD(1, { gasLimit: 5_000_0000 });
 ```
+
+Before you can do that, head over to [Paradigm](https://faucet.paradigm.xyz/) to drip ETH and DAI to your wallet. After, navigate to [Synthetix>Loans](https://staking.synthetix.io/) to borrow sUSD against your ETH. Now you have sUSD to experiment with.
 
 ## Etherscan Verification
 

@@ -14,6 +14,3 @@ export const genNumberBetween = (min: number, max: number): ethers.BigNumber =>
 export const genMarginAmount = (min = 100, max = 1000): ethers.BigNumber => genNumberBetween(min, max);
 
 export const genMarket = (): string => sample(SUPPORTED_MARKETS)!;
-
-export const genSizeByMarginAndPrice = (margin: ethers.BigNumber, price: ethers.BigNumber): number =>
-  fromBNToNumber(price) / fromBNToNumber(margin);

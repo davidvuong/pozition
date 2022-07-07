@@ -8,8 +8,10 @@ export const SUPPORTED_MARKETS = [
   'FuturesMarketUNI',
 ];
 
+export const SUSD_TOTAL_SUPPLY = 1_000_000;
+
 export const deployAllContracts = async () => {
-  const sUSDTotalSupply = ethers.BigNumber.from(1_000_000);
+  const sUSDTotalSupply = ethers.utils.parseEther(`${SUSD_TOTAL_SUPPLY}`);
 
   const SUSDToken = await ethers.getContractFactory('ERC20Mock');
   const sUSDToken = await SUSDToken.deploy(sUSDTotalSupply);
@@ -33,6 +35,7 @@ export const deployAllContracts = async () => {
   const pozitionManager = await PozitionManager.deploy(addressResolver.address, pozition.address);
   await pozitionManager.deployed();
 
+  // Provision and register mock futures markets.
   const markets: Record<string, string> = {};
   for (const market of SUPPORTED_MARKETS) {
     const FuturesMarket = await ethers.getContractFactory('FuturesMarketMock');

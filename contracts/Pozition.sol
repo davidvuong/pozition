@@ -49,7 +49,7 @@ contract Pozition is Initializable, ERC721, Ownable {
     /**
      * @dev Returns the total number of tokens in existence.
      */
-    function totalSupply() public view returns (uint256) {
+    function totalSupply() public pure returns (uint256) {
         return 1;
     }
 

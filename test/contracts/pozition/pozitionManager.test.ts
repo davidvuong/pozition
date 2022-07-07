@@ -46,7 +46,7 @@ describe('PozitionManager', () => {
     });
 
     it('should error when user does not have enough margin tokens', async () => {
-      const marginAmount = sUSDTotalSupply.add(10_000); // 10k more than available.
+      const marginAmount = sUSDTotalSupply.add(ethers.utils.parseEther('10000')); // 10k more than available.
       const approveTx = await sUSDToken.approve(pozitionManager.address, marginAmount);
       await approveTx.wait();
 
@@ -87,13 +87,13 @@ describe('PozitionManager', () => {
       const [owner] = await ethers.getSigners();
 
       const marginAmount = genMarginAmount();
-      const withdrawAmount = marginAmount.div(3);
+      const withdrawAmount = marginAmount.div(2);
 
       await approveAndDeposit(marginAmount);
       (await pozitionManager.withdraw(withdrawAmount, owner.address)).wait();
 
       const remainingAmount = await pozitionManager.depositsByWalletAddress(owner.address);
-      expect(remainingAmount.eq(withdrawAmount.sub(withdrawAmount)));
+      expect(remainingAmount.eq(marginAmount.sub(withdrawAmount)));
     });
 
     it('should error when withdrawing margin when none available', async () => {
@@ -118,55 +118,50 @@ describe('PozitionManager', () => {
   });
 
   describe('when opening a position', () => {
-    // BigNumber giving zero values when it should give a fraction... Commenting out for now.
+    it('should successfully mint a Pozition NFT', async () => {
+      const [owner] = await ethers.getSigners();
 
-    // it.only('should successfully mint a Pozition NFT', async () => {
-    //   const [owner] = await ethers.getSigners();
-
-    //   const assetPrice = genNumberBetween(500, 1000);
-    //   const marginAmount = genMarginAmount();
-    //   const positionSize = assetPrice.div(marginAmount);
-    //   const market = ethers.utils.formatBytes32String(genMarket());
-
-    //   await approveAndDeposit(marginAmount);
-
-    //   console.log(assetPrice);
-    //   console.log(marginAmount);
-    //   console.log(positionSize);
-
-    //   const openPositionTx = await pozitionManager.openPosition(marginAmount, positionSize, market);
-    //   await openPositionTx.wait();
-
-    //   expect(await pozitionManager.mintedPositionsOf(owner.address)).to.have.lengthOf(1);
-    // });
-
-    // it('should successfully mint a Pozition NFT without using all margin', async () => {
-    //   const [owner] = await ethers.getSigners();
-
-    //   const assetPrice = genNumberBetween(500, 1000);
-    //   const marginAmount = genMarginAmount();
-    //   const partialMarginAmount = marginAmount.div(2);
-    //   const positionSize = assetPrice.div(partialMarginAmount);
-    //   const market = ethers.utils.formatBytes32String(genMarket());
-
-    //   await approveAndDeposit(marginAmount);
-
-    //   const openPositionTx = await pozitionManager.openPosition(partialMarginAmount, positionSize, market);
-    //   await openPositionTx.wait();
-
-    //   expect(await pozitionManager.mintedPositionsOf(owner.address)).to.have.lengthOf(1);
-
-    //   const depositedAmount = await pozitionManager.depositsByWalletAddress(owner.address);
-    //   expect(depositedAmount.eq(marginAmount.sub(partialMarginAmount)));
-    // });
-
-    it('should error when the margin amount is less than the amount deposited', async () => {
       const assetPrice = genNumberBetween(500, 1000);
       const marginAmount = genMarginAmount();
       const positionSize = assetPrice.div(marginAmount);
       const market = ethers.utils.formatBytes32String(genMarket());
 
       await approveAndDeposit(marginAmount);
+
+      const openPositionTx = await pozitionManager.openPosition(marginAmount, positionSize, market);
+      await openPositionTx.wait();
+
+      expect(await pozitionManager.mintedPositionsOf(owner.address)).to.have.lengthOf(1);
+    });
+
+    it('should successfully mint a Pozition NFT without using all margin', async () => {
+      const [owner] = await ethers.getSigners();
+
+      const assetPrice = genNumberBetween(500, 1000);
+      const marginAmount = genMarginAmount();
+      const partialMarginAmount = marginAmount.div(2);
+      const positionSize = assetPrice.div(partialMarginAmount);
+      const market = ethers.utils.formatBytes32String(genMarket());
+
+      await approveAndDeposit(marginAmount);
+
+      const openPositionTx = await pozitionManager.openPosition(partialMarginAmount, positionSize, market);
+      await openPositionTx.wait();
+
+      expect(await pozitionManager.mintedPositionsOf(owner.address)).to.have.lengthOf(1);
+
+      const depositedAmount = await pozitionManager.depositsByWalletAddress(owner.address);
+      expect(depositedAmount.eq(marginAmount.sub(partialMarginAmount)));
+    });
+
+    it('should error when the margin amount is less than the amount deposited', async () => {
+      const assetPrice = genNumberBetween(500, 1000);
+      const depositAmount = genMarginAmount();
+      const marginAmount = depositAmount.add(ethers.utils.parseEther('100'));
+      const positionSize = assetPrice.div(marginAmount);
+      const market = ethers.utils.formatBytes32String(genMarket());
+
+      await approveAndDeposit(depositAmount);
 
       await expect(pozitionManager.openPosition(marginAmount, positionSize, market)).to.be.reverted;
     });

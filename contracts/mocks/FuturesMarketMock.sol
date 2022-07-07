@@ -54,7 +54,8 @@ contract FuturesMarketMock is IFuturesMarket {
             position.size += sizeDelta;
         } else {
             positions[msg.sender] = Position({ isOpen: true, size: sizeDelta });
+            position = positions[msg.sender];
         }
-        require(position.size < 0, "Error: Negative size");
+        require(position.size > 0, "Error: Negative size");
     }
 }

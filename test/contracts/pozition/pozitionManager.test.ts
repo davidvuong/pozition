@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { BigNumber, BigNumberish } from 'ethers';
 import { ethers } from 'hardhat';
 import { AddressResolverMock, ERC20Mock, Pozition, PozitionManager } from '../../../typechain';
-import { genMarginAmount, genMarket, genNumberBetween } from '../../gen';
+import { genMarginAmount, genMarket, genNumberBetween, genSizeByMarginAndPrice } from '../../gen';
 import { deployAllContracts } from '../../utils';
 
 describe('PozitionManager', () => {
@@ -123,7 +123,7 @@ describe('PozitionManager', () => {
 
       const assetPrice = genNumberBetween(500, 1000);
       const marginAmount = genMarginAmount();
-      const positionSize = assetPrice.div(marginAmount);
+      const positionSize = genSizeByMarginAndPrice(marginAmount, assetPrice);
       const market = ethers.utils.formatBytes32String(genMarket());
 
       await approveAndDeposit(marginAmount);
@@ -169,7 +169,7 @@ describe('PozitionManager', () => {
     it('should error when the margin amount is zero', async () => {
       const assetPrice = genNumberBetween(500, 1000);
       const marginAmount = genMarginAmount();
-      const positionSize = assetPrice.div(marginAmount);
+      const positionSize = genSizeByMarginAndPrice(marginAmount, assetPrice);
       const markets = ethers.utils.formatBytes32String(genMarket());
 
       await approveAndDeposit(marginAmount);
@@ -180,7 +180,7 @@ describe('PozitionManager', () => {
     it('should error when the margin amount is negative', async () => {
       const assetPrice = genNumberBetween(500, 1000);
       const marginAmount = genMarginAmount();
-      const positionSize = assetPrice.div(marginAmount);
+      const positionSize = genSizeByMarginAndPrice(marginAmount, assetPrice);
       const market = genMarket();
       const marketsBytes32 = ethers.utils.formatBytes32String(market);
 
@@ -214,7 +214,7 @@ describe('PozitionManager', () => {
     it('should error when the specified market is not available', async () => {
       const assetPrice = genNumberBetween(500, 1000);
       const marginAmount = genMarginAmount();
-      const positionSize = assetPrice.div(marginAmount);
+      const positionSize = genSizeByMarginAndPrice(marginAmount, assetPrice);
       const markets = ethers.utils.formatBytes32String('INVALID_MARKET_SPECIFIED');
 
       await approveAndDeposit(marginAmount);

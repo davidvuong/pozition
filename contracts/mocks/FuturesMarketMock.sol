@@ -36,7 +36,7 @@ contract FuturesMarketMock is IFuturesMarket {
             margin = Margin({ amount: marginDelta, isAvailable: true });
             margins[msg.sender] = margin;
         }
-        require(margin.amount < 0, "Error: Negative margin amount");
+        require(margin.amount > 0, "Error: Negative margin amount");
     }
 
     function closePosition() external override allowRevertable {
@@ -52,9 +52,9 @@ contract FuturesMarketMock is IFuturesMarket {
         Position memory position = positions[msg.sender];
         if (position.isOpen) {
             position.size += sizeDelta;
-            require(position.size < 0, "Error: Negative size");
         } else {
             positions[msg.sender] = Position({ isOpen: true, size: sizeDelta });
         }
+        require(position.size < 0, "Error: Negative size");
     }
 }

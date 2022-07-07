@@ -54,7 +54,7 @@ contract PozitionManager is ReentrancyGuard {
     /**
      * @dev An array of all mintedPosition addresses.
      */
-    mapping(address => Pozition[]) public allMintedPositions;
+    mapping(address => Pozition[]) private allMintedPositions;
 
     /// Events ///
 
@@ -131,11 +131,10 @@ contract PozitionManager is ReentrancyGuard {
         address _trader,
         IFuturesMarket _market,
         uint256 _margin,
-        uint256 _size,
-        string memory _fullTokenURI
+        uint256 _size
     ) internal returns (Pozition position) {
         position = Pozition(implementation.clone());
-        position.initialize(_market, address(this), _margin, _size, _fullTokenURI);
+        position.initialize(_market, address(this), _margin, _size);
 
         allMintedPositions[_trader].push(position);
 
@@ -192,17 +191,17 @@ contract PozitionManager is ReentrancyGuard {
     function openPosition(
         uint256 _margin,
         uint256 _size,
-        bytes32 _market,
-        string memory _fullTokenURI
+        bytes32 _market
     ) public returns (Pozition position) {
         // Is this necessary? Should be double up on `require` or can I rely on `withdraw`?
         require(_margin > 0, "Margin must be non-zero.");
         require(depositsByWalletAddress[msg.sender] >= _margin, "Not enough margin.");
+        require(_size > 0, "Size must be non-zero.");
 
         IFuturesMarket market = IFuturesMarket(addressResolver.getAddress(_market));
         require(address(market) != address(0), "Market not supported.");
 
-        position = Pozition(clone(msg.sender, market, _size, _margin, _fullTokenURI));
+        position = Pozition(clone(msg.sender, market, _size, _margin));
 
         withdraw(_margin, address(position));
 
@@ -229,11 +228,16 @@ contract PozitionManager is ReentrancyGuard {
     function depositMarginAndOpenPosition(
         uint256 _margin,
         uint256 _size,
-        bytes32 _market,
-        string memory _fullTokenURI
+        bytes32 _market
     ) external returns (Pozition position) {
-        // TODO: This can probably be a lot more efficient. Depositing then immediately withdrawing.
         deposit(_margin);
-        position = openPosition(_margin, _size, _market, _fullTokenURI);
+        position = openPosition(_margin, _size, _market);
+    }
+
+    /**
+     * @dev Returns all previously minted NFT positions.
+     */
+    function mintedPositionsOf(address trader) public view returns (Pozition[] memory) {
+        return allMintedPositions[trader];
     }
 }

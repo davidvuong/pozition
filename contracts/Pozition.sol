@@ -37,11 +37,6 @@ contract Pozition is Initializable, ERC721, Ownable {
      */
     uint256 public size;
 
-    /**
-     * @dev Whether this position is open or closed.
-     */
-    bool public isPositionOpen;
-
     /// Constructor ///
 
     constructor() ERC721("Future Pozitions", "FPZ") {}
@@ -51,6 +46,16 @@ contract Pozition is Initializable, ERC721, Ownable {
      */
     function totalSupply() public pure returns (uint256) {
         return 1;
+    }
+
+    /// View Functions ///
+
+    /**
+     * @dev Returns true if the position is still open and hence closeable. False otherwise.
+     */
+    function isOpen() public view returns (bool) {
+        (uint64 id, , , , ) = market.positions(address(this));
+        return id != 0;
     }
 
     /// Mutative Functions ///
@@ -82,15 +87,11 @@ contract Pozition is Initializable, ERC721, Ownable {
         ///
         /// This is also true for `depositMargin`.
         market.modifyPosition(int256(size));
-        isPositionOpen = true;
-
         _mint(_trader, 1);
     }
 
     function closeAndBurn() public {
         market.closePosition();
-        isPositionOpen = false;
-
         _burn(1);
     }
 

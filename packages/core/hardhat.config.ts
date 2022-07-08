@@ -1,17 +1,17 @@
-import dotenv from "dotenv";
-import { HardhatUserConfig, task } from "hardhat/config";
-import "@nomiclabs/hardhat-etherscan";
-import "@nomiclabs/hardhat-waffle";
-import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
+import dotenv from 'dotenv';
+import { HardhatUserConfig, task } from 'hardhat/config';
+import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-waffle';
+import '@typechain/hardhat';
+import 'hardhat-gas-reporter';
+import 'solidity-coverage';
 
 dotenv.config();
 
 // Sample `hardhat` task, similar to Gulp/Grunt.
 //
 // @see https://hardhat.org/guides/create-task.html
-task("accounts", "Prints the list of accounts", async (_, hre) => {
+task('accounts', 'Prints the list of accounts', async (_, hre) => {
   const accounts = await hre.ethers.getSigners();
   accounts.forEach((acc) => {
     console.log(acc.address);
@@ -20,17 +20,16 @@ task("accounts", "Prints the list of accounts", async (_, hre) => {
 
 // @see: https://hardhat.org/config/ to learn more.
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: '0.8.4',
   networks: {
-    "optimism-kovan": {
+    'optimism-kovan': {
       url: process.env.OPTIMISM_KOVAN_URL!,
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
+    currency: 'USD',
   },
   etherscan: {
     apiKey: {

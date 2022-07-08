@@ -1,6 +1,6 @@
 import './env';
 import { BigNumber, ethers, providers } from 'ethers';
-import type { FuturesMarginVault as FuturesMarginVaultType } from '../typechain/FuturesMarginVault';
+import type { FuturesMarginVault as FuturesMarginVaultType } from '../../../typechain/FuturesMarginVault';
 import { PozitionManager } from './contracts/PozitionManager';
 import { sUSDToken } from './contracts/sUSDToken';
 import { OPTIMISM_NETWORKS } from './networks';

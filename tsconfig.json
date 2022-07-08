@@ -24,6 +24,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["./scripts", "./test", "./typechain", "./src/**/*.ts"],
-  "files": ["./hardhat.config.ts"]
+  "include": ["packages/**/*.ts"],
+  "files": ["packages/core/hardhat.config.ts"]
 }

@@ -5,7 +5,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// Local Imports ///
 
@@ -19,7 +18,7 @@ import "./interfaces/IFuturesMarket.sol";
  * move positions between wallets without closing, possibly incurring a loss, withdrawing margin, and
  * re-creating a new position.
  */
-contract Pozition is Initializable, ERC721, Ownable {
+contract Pozition is Initializable, ERC721 {
     /// State Variables ///
 
     /**
@@ -39,7 +38,7 @@ contract Pozition is Initializable, ERC721, Ownable {
 
     /// Constructor ///
 
-    constructor() ERC721("Future Pozitions", "FPZ") {}
+    constructor() ERC721("Pozition", "POZ") {}
 
     /**
      * @dev Returns the total number of tokens in existence.
@@ -54,8 +53,8 @@ contract Pozition is Initializable, ERC721, Ownable {
      * @dev Returns true if the position is still open and hence closeable. False otherwise.
      */
     function isOpen() public view returns (bool) {
-        (uint64 id, , , , ) = market.positions(address(this));
-        return id != 0;
+        (, , , , int128 _size) = market.positions(address(this));
+        return _size != 0;
     }
 
     /// Mutative Functions ///
@@ -68,17 +67,12 @@ contract Pozition is Initializable, ERC721, Ownable {
      */
     function initialize(
         IFuturesMarket _market,
-        address _manager,
         uint256 _margin,
         uint256 _size
     ) public initializer {
         market = _market;
         margin = _margin;
         size = _size;
-
-        // TODO: Add onlyOwner and transfer to Manager such that interactions must goes through the manager.
-        // FuturesPositionsManager is the only SC to interact with FuturesNFTPosition after creation.
-        // transferOwnership(_manager);
     }
 
     function openAndTransfer(address _trader) public {

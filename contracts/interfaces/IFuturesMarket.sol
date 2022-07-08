@@ -18,4 +18,6 @@ interface IFuturesMarket {
     function closePosition() external;
 
     function modifyPosition(int sizeDelta) external;
+
+    function withdrawAllMargin() external;
 }

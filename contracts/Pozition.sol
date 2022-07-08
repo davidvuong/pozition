@@ -92,6 +92,10 @@ contract Pozition is Initializable, ERC721, Ownable {
 
     function closeAndBurn() public {
         market.closePosition();
+        market.withdrawAllMargin();
+
+        // TODO: Send this margin back to the Manager, ensuring this is owned by the user, not the NFT.
+
         _burn(1);
     }
 

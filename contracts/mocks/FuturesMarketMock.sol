@@ -48,6 +48,14 @@ contract FuturesMarketMock is IFuturesMarket {
         require(margin.amount > 0, "Error: Negative margin amount");
     }
 
+    function withdrawAllMargin() external override {
+        Margin memory margin = margins[msg.sender];
+        delete margin.amount;
+        delete margin.isAvailable;
+
+        margins[msg.sender] = margin;
+    }
+
     function closePosition() external override allowRevertable {
         Position memory position = positions[msg.sender];
 

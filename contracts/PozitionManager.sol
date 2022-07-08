@@ -218,6 +218,8 @@ contract PozitionManager is ReentrancyGuard {
      * to be withdrawn or used in another position in the future but that is not currently implemented.
      */
     function closePosition(Pozition _position) external {
+        require(_position.isOpen(), "Position is not open.");
+
         _position.closeAndBurn();
         emit PositionClose(msg.sender, _position.market(), _position);
     }

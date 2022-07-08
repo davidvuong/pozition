@@ -9,20 +9,14 @@ import { useConnectWallet } from './context/useConnectWalletContext';
 import Pozition from './components/Pozition';
 import Gallery from './components/Gallery';
 
-function App() {
+export const App = () => {
   const { connector, chainId } = useConnectWallet();
 
   return (
     <>
       <div className="app">
         <header className="header">
-          <svg
-            width="193"
-            height="32"
-            viewBox="0 0 193 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="193" height="32" viewBox="0 0 193 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M0 31.4921H1.02638V21.5365H16.08C18.9881 21.5365 21.4514 19.6741 21.4514 16.9651V15.4074C21.4514 10.9376 21.383 7.78836 12.2824 7.78836H0V31.4921Z"
               fill="#D7D7D7"
@@ -66,9 +60,7 @@ function App() {
           <Link to="/gallery">Gallery</Link>
           {connector && (
             <div className="networkDisplay">
-              {(chainId === 10 || chainId === 69) && (
-                <img src="/op.png" width={16} height={16} alt="optimism" />
-              )}
+              {(chainId === 10 || chainId === 69) && <img src="/op.png" width={16} height={16} alt="optimism" />}
               {chainId === 10
                 ? 'Optimism'
                 : chainId === 69
@@ -83,17 +75,9 @@ function App() {
         <main className="mainContent">
           <Routes>
             <Route path="/" key="landing-page" element={<LandingPage />} />
-            <Route
-              path="/create"
-              key="landing-page"
-              element={<CreatePosition />}
-            />
+            <Route path="/create" key="landing-page" element={<CreatePosition />} />
             <Route path="/gallery" key="gallery-page" element={<Gallery />} />
-            <Route
-              path="/profile"
-              key="profile-page"
-              element={<ProfilePage />}
-            />
+            <Route path="/profile" key="profile-page" element={<ProfilePage />} />
             <Route path="/pozition/:id" element={<Pozition />} />
           </Routes>
         </main>
@@ -101,6 +85,4 @@ function App() {
       </div>
     </>
   );
-}
-
-export default App;
+};

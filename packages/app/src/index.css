@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   background-color: #1e1e1e;
   margin: 0;
@@ -7,8 +11,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 a {
@@ -39,8 +42,7 @@ button {
   font-family: 'Misto';
   font-style: normal;
   font-display: swap;
-  src: local('Misto'), url('./fonts/Misto.woff2') format('woff2'),
-    url('./fonts/Misto.woff') format('woff');
+  src: local('Misto'), url('./fonts/Misto.woff2') format('woff2'), url('./fonts/Misto.woff') format('woff');
 }
 
 :root {

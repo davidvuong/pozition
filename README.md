@@ -28,6 +28,13 @@ yarn workspace @pozition/core compile
 ```
 
 ```bash
+# Start the React app and integrate with a pre-existing SC on testnet.
+yarn workspace @pozition/app start
+```
+
+Further work...
+
+```bash
 # Start a local node
 yarn hardhat node
 ```

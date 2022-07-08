@@ -1,0 +1,34 @@
+.connectButtonWrapper {
+  border: 2px solid var(--secondary);
+  padding: 8px;
+  width: fit-content;
+  border-radius: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.connectButtonWrapper:hover {
+  transform: scale(1.1);
+  transition: all 300ms ease-in-out;
+}
+
+.connectWallet {
+  outline: 0;
+  border: 0px;
+  border-radius: 48px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.buttonText {
+  color: white;
+  font-size: 0.8rem;
+}
+
+.connectLink {
+  color: var(--primary);
+  border-radius: 48px;
+  border: 2px solid var(--secondary);
+  padding: 4px 8px;
+}

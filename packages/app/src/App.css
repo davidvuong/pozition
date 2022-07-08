@@ -1,0 +1,33 @@
+.app {
+  text-align: center;
+  color: white;
+}
+
+.mainContent {
+  min-height: 98vh;
+  background-color: #1e1e1e;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: #1e1e1e;
+}
+
+.header h1 {
+  font-family: 'Misto';
+}
+
+.networkDisplay {
+  border: 2px solid var(--secondary);
+  border-radius: 48px;
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.networkDisplay img {
+  margin-right: 8px;
+}

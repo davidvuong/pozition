@@ -2,50 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #1e1e1e;
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-a {
-  text-decoration: none;
-  color: white;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: white;
-  margin: 0;
-}
-
-iframe {
-  pointer-events: none;
-}
-
-button {
-  cursor: pointer;
-  outline: 0;
-}
-
 @font-face {
   font-family: 'Misto';
   font-style: normal;
   font-display: swap;
   src: local('Misto'), url('./fonts/Misto.woff2') format('woff2'), url('./fonts/Misto.woff') format('woff');
-}
-
-:root {
-  --primary: #f2f2f2;
-  --secondary: #aeaeae;
 }

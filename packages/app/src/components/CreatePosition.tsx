@@ -2,9 +2,9 @@ import { useForm } from 'react-hook-form';
 import { markets } from '../constants/markets';
 import './CreatePosition.css';
 import { useEffect, useState } from 'react';
-import BackButton from './BackButton';
 import useNewPosition from '../hooks/useNewPosition';
 import { useConnectWallet } from '../context/useConnectWalletContext';
+import { Link } from 'react-router-dom';
 
 export default function CreatePosition() {
   const [prices, setPrices] = useState<null | {
@@ -16,9 +16,7 @@ export default function CreatePosition() {
   const { connector } = useConnectWallet();
   const { calcDelta, approve, hasAllowance } = useNewPosition();
   const [allowance, setAllowance] = useState(false);
-  const [typeOfPosition, setTypeOfPosition] = useState<'long' | 'short'>(
-    'long'
-  );
+  const [typeOfPosition, setTypeOfPosition] = useState<'long' | 'short'>('long');
   const [leverage, setLeverage] = useState<1 | 2 | 5 | 10>(1);
   const onSubmit = (data: any) => {
     calcDelta({ ...data, leverage, side: typeOfPosition, ...prices });
@@ -26,15 +24,9 @@ export default function CreatePosition() {
 
   useEffect(() => {
     const init = async () => {
-      const respEthereum = await fetch(
-        'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
-      );
-      const respBitcoin = await fetch(
-        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'
-      );
-      const respLink = await fetch(
-        'https://api.coingecko.com/api/v3/simple/price?ids=chainlink&vs_currencies=usd'
-      );
+      const respEthereum = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+      const respBitcoin = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+      const respLink = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=chainlink&vs_currencies=usd');
       const { bitcoin } = await respBitcoin.json();
       const { ethereum } = await respEthereum.json();
       const { chainlink } = await respLink.json();
@@ -60,7 +52,7 @@ export default function CreatePosition() {
   return (
     <>
       <div className="createPositionHeadline">
-        <BackButton />
+        <Link to="/">Back</Link>
         <h1>Create new Pozition</h1>
       </div>
       <div className="priceWrapper">
@@ -83,16 +75,10 @@ export default function CreatePosition() {
         <span>sUSD</span>
         <input placeholder="$ Enter Amount" {...register('amount')} />
         <div className="buttonContainer">
-          <button
-            className="longButton"
-            onClick={() => setTypeOfPosition('long')}
-          >
+          <button className="longButton" onClick={() => setTypeOfPosition('long')}>
             {typeOfPosition === 'long' ? 'Long - Active' : 'Long'}
           </button>
-          <button
-            className="shortButton"
-            onClick={() => setTypeOfPosition('short')}
-          >
+          <button className="shortButton" onClick={() => setTypeOfPosition('short')}>
             {typeOfPosition === 'short' ? 'Short - Active' : 'Short'}
           </button>
         </div>

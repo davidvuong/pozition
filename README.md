@@ -30,6 +30,9 @@ yarn workspace @pozition/core compile
 ```bash
 # Start the React app and integrate with a pre-existing SC on testnet.
 yarn workspace @pozition/app start
+
+# If you need to open up a new tab or one isn't created for you.
+open localhost:3000
 ```
 
 Further work...
@@ -40,9 +43,8 @@ yarn hardhat node
 ```
 
 ```bash
-# Deploy SCs on your localhost (make sure local node is available)
-npx hardhat run --network localhost scripts/deploy.ts
-npx hardhat run --network optimism-kovan scripts/deploy.ts
+yarn workspace @pozition/core deploy:kovan
+yarn workspace @pozition/core deploy:mainnet
 ```
 
 ## Testing

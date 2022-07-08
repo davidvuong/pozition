@@ -18,13 +18,18 @@ git clone git@github.com:davidvuong/pozition.git
 ```
 
 ```bash
-# Compile the project for deployment
-npx hardhat compile
+# Install all dependencies
+yarn
+```
+
+```bash
+# Compile the SC package for development (typechain etc.)
+yarn workspace @pozition/core compile
 ```
 
 ```bash
 # Start a local node
-npx hardhat node
+yarn hardhat node
 ```
 
 ```bash
@@ -38,8 +43,8 @@ npx hardhat run --network optimism-kovan scripts/deploy.ts
 This project follows the prescribed assertion and testrunner, `chai` and `mocha` respectively. To execute tests:
 
 ```bash
-npm run test
-npm run test:coverage
+yarn workspace @pozition/core test
+yarn workspace @pozition/core test:coverage
 ```
 
 ## Manual Interaction
@@ -123,17 +128,8 @@ npx hardhat compile
 npx hardhat clean
 npx hardhat test
 npx hardhat node
-npx hardhat help
 REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.ts
 TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-npx eslint '**/*.{js,ts}'
-npx eslint '**/*.{js,ts}' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
 ```
 
 # Performance Optimizations

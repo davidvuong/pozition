@@ -8,7 +8,7 @@
     "outDir": "build",
     "declaration": true,
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "strictNullChecks": true,
     "noImplicitThis": true,
@@ -24,6 +24,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["packages/**/*.ts"],
-  "files": ["packages/core/hardhat.config.ts"]
+  "include": ["packages/**/*.ts", "packages/core/hardhat.config.js", "!packages/core/hardhat.config.ts"],
+  "files": ["packages/core/hardhat.config.js"]
 }

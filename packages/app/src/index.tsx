@@ -1,18 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import { App } from './App';
-import { BrowserRouter } from 'react-router-dom';
-import { ConnectWalletProvider } from './context/useConnectWalletContext';
-import { ContractProvider } from './context/useContract';
+import React from "react";
+import ReactDOM from "react-dom";
+import { App } from "./App";
+import { BrowserRouter } from "react-router-dom";
+
+import "./index.css";
 
 ReactDOM.render(
   <BrowserRouter>
-    <ConnectWalletProvider>
-      <ContractProvider>
-        <App />
-      </ContractProvider>
-    </ConnectWalletProvider>
+    <App />
   </BrowserRouter>,
-  document.getElementById('root')
+  document.getElementById("root")
 );

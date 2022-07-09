@@ -1,8 +1,0 @@
-type PositionOpened @entity {
-  id: ID!
-  position: Bytes!
-  size: BigInt!
-  margin: BigInt!
-  trader: Bytes! # address
-  market: Bytes! # address
-}

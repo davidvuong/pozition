@@ -1,23 +1,18 @@
-import { Route, Routes } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
-import ProfilePage from './components/Profile';
-import CreatePosition from './components/CreatePosition';
-import { Footer } from './components/Footer';
-import Pozition from './components/Pozition';
-import Gallery from './components/Gallery';
-import { Header } from './components/Header';
+import { Route, Routes } from "react-router-dom";
+import { Footer } from "./components/Footer";
+import { Header } from "./components/Header";
 
 export const App = () => {
   return (
-    <div>
+    <div className="bg-red-100">
       <Header />
       <main>
         <Routes>
-          <Route path="/" key="landing-page" element={<LandingPage />} />
-          <Route path="/create" key="landing-page" element={<CreatePosition />} />
-          <Route path="/gallery" key="gallery-page" element={<Gallery />} />
-          <Route path="/profile" key="profile-page" element={<ProfilePage />} />
-          <Route path="/pozition/:id" element={<Pozition />} />
+          <Route path="/" element={<div />} />
+          {/* <Route path="/create" element={<CreatePosition />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/pozition/:id" element={<Pozition />} /> */}
         </Routes>
       </main>
       <Footer />

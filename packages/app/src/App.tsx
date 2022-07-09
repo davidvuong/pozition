@@ -2,6 +2,8 @@ import { Route, Routes } from "react-router-dom";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 
+import "./App.css";
+
 export const App = () => {
   return (
     <div className="bg-red-100">

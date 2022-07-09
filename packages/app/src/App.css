@@ -1,0 +1,7 @@
+@font-face {
+  font-family: "Misto";
+  font-style: normal;
+  font-display: swap;
+  src: local("Misto"), url("./fonts/Misto.woff2") format("woff2"),
+    url("./fonts/Misto.woff") format("woff");
+}

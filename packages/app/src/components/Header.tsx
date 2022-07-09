@@ -1,15 +1,19 @@
 import { Link } from "react-router-dom";
-import { Logo } from "./images/Logo";
+import styled from "styled-components";
+
+const HeaderLink = styled(Link).attrs({
+  className: `
+    text-stone-50
+    p-2
+  `,
+})``;
 
 export const Header = () => {
   return (
     <header>
-      <div className="bg-black">
-        <Link to="/">
-          <Logo className="p-4" />
-        </Link>
-        <Link to="/create">New Pozition</Link>
-        <Link to="/gallery">Gallery</Link>
+      <div className="h-14 bg-gradient-to-r from-gray-900 to-gray-700">
+        <HeaderLink to="/new">Pozition</HeaderLink>
+        <HeaderLink to="/marketplace">Marketplace</HeaderLink>
       </div>
     </header>
   );

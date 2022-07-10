@@ -18,7 +18,7 @@ git clone git@github.com:davidvuong/pozition.git
 ```
 
 ```bash
-# Install all dependencies
+# Install all dependencies (note we are using yarn v2).
 yarn
 ```
 
@@ -66,9 +66,9 @@ npx hardhat run --network optimism-kovan scripts/deploy.ts
 ```
 
 ```ts
-const Factory = await ethers.getContractFactory('FuturesPositionsManager');
-const Contract = await Factory.attach('0x...');
-const tx = await Contract.depositsUSD(1, { gasLimit: 5_000_0000 });
+const Factory = await ethers.getContractFactory("PozitionManager");
+const Contract = await Factory.attach("0x...");
+const tx = await Contract.deposit(1, { gasLimit: 5_000_0000 });
 ```
 
 Before you can do that, head over to [Paradigm](https://faucet.paradigm.xyz/) to drip ETH and DAI to your wallet. After, navigate to [Synthetix>Loans](https://staking.synthetix.io/) to borrow sUSD against your ETH. Now you have sUSD to experiment with.

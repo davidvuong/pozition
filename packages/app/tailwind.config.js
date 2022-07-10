@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        misto: ["Misto"],
+      },
       animation: {
         marquee: "marquee 25s linear infinite",
       },

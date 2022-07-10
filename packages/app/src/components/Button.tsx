@@ -18,7 +18,8 @@ export const PrimaryButton = styled.button.attrs({
     to-zinc-400
 
     hover:from-zinc-400
-    hover:to-zinc-100
+    hover:to-zinc-700
+    hover:text-zinc-50
 
     focus:outline-none
     focus:ring-zinc-500

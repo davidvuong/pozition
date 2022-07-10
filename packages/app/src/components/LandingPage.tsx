@@ -1,19 +1,20 @@
 import styled from "styled-components";
-import { times, sample } from "lodash";
+import { times } from "lodash";
 import HeroLandscape from "../images/hero-landscape.png";
 import { PrimaryButton } from "./Button";
 import { ArrowRightSvg } from "./images/ArrowRightSvg";
 
-const TitleText = styled.span.attrs({
+const FunkyTitleText = styled.span.attrs({
   className: `
-    mx-4
+    mx-6
 
     font-semibold
+    font-misto
     text-transparent
+    to-gray-50
     bg-clip-text
     bg-gradient-to-r
     from-gray-500
-    to-gray-50
 
     text-9xl
     uppercase
@@ -21,9 +22,9 @@ const TitleText = styled.span.attrs({
 })``;
 
 const Title = ({ text, n }: { text: string; n: number }) => (
-  <div className="py-2 animate-marquee whitespace-nowrap">
+  <div className="py-4 animate-marquee whitespace-nowrap">
     {times(n ?? 5).map(() => (
-      <TitleText>{text}</TitleText>
+      <FunkyTitleText>{text}</FunkyTitleText>
     ))}
   </div>
 );

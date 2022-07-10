@@ -1,8 +1,8 @@
+import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
-
-import "./App.css";
+import { LandingPage } from "./components/LandingPage";
 
 export const App = () => {
   return (
@@ -10,7 +10,7 @@ export const App = () => {
       <Header />
       <main>
         <Routes>
-          <Route path="/" element={<div />} />
+          <Route path="/" element={<LandingPage />} />
           {/* <Route path="/create" element={<CreatePosition />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/profile" element={<ProfilePage />} />

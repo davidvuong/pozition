@@ -24,13 +24,14 @@ const HeaderLink = styled(Link).attrs({
 export const Header = () => {
   return (
     <header className="w-full">
-      <div className="flex flex-row justify-between h-20 bg-gradient-to-r from-gray-900 to-gray-700">
+      <div className="flex flex-row justify-between h-20 bg-gradient-to-r from-zinc-900 to-zinc-800">
         <div className="flex">
-          <div className="pt-5 pl-8 pr-8">
+          <div className="pt-5 pl-8 pr-12">
             <Link to="/">
               <PozitionHorizontalLogo />
             </Link>
           </div>
+          <HeaderLink to="/">Home</HeaderLink>
           <HeaderLink to="/new">Pozition</HeaderLink>
           <HeaderLink to="/marketplace">Marketplace</HeaderLink>
         </div>

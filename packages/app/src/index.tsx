@@ -2,7 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  getDefaultWallets,
+  RainbowKitProvider,
+  darkTheme,
+} from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
@@ -10,7 +14,7 @@ import { App } from "./App";
 import "./index.css";
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.optimism],
+  [chain.optimismKovan, chain.optimism],
   [alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }), publicProvider()]
 );
 
@@ -27,11 +31,10 @@ const wagmiClient = createClient({
 
 ReactDOM.render(
   <WagmiConfig client={wagmiClient}>
-    <RainbowKitProvider chains={chains}>
+    <RainbowKitProvider chains={chains} theme={darkTheme()}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-      ,
     </RainbowKitProvider>
   </WagmiConfig>,
   document.getElementById("root")

@@ -34,10 +34,8 @@ export const Header = () => {
           <HeaderLink to="/new">Pozition</HeaderLink>
           <HeaderLink to="/marketplace">Marketplace</HeaderLink>
         </div>
-        <div>
-          <div className="pt-5 pr-8">
-            <ConnectButton />
-          </div>
+        <div className="pt-5 pr-8">
+          <ConnectButton />
         </div>
       </div>
     </header>

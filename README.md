@@ -1,5 +1,7 @@
 # pozition
 
+![Pozition Logo](./assets//funky-logo.png)
+
 **Welcome to Pozition (Position but with a 'z')!**
 
 The idea and project was developed during [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd). The original code can be found [here](https://github.com/fritzschoff/notSynthetix). This project is an extension of the idea with the intent to build a production-ready dApp. **THIS IS CURRENTLY WORK IN PROGRESS (WIP).**

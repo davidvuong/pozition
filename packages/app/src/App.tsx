@@ -6,7 +6,7 @@ import "./App.css";
 
 export const App = () => {
   return (
-    <div className="bg-red-100">
+    <>
       <Header />
       <main>
         <Routes>
@@ -18,6 +18,6 @@ export const App = () => {
         </Routes>
       </main>
       <Footer />
-    </div>
+    </>
   );
 };

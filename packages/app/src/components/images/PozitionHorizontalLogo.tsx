@@ -1,7 +1,16 @@
-import React from 'react';
+import React from "react";
 
-export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg width="193" height="32" viewBox="0 0 193 32" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+export const PozitionHorizontalLogo = (
+  props: React.SVGProps<SVGSVGElement>
+) => (
+  <svg
+    width="193"
+    height="32"
+    viewBox="0 0 193 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
     <path
       d="M0 31.4921H1.02638V21.5365H16.08C18.9881 21.5365 21.4514 19.6741 21.4514 16.9651V15.4074C21.4514 10.9376 21.383 7.78836 12.2824 7.78836H0V31.4921Z"
       fill="#D7D7D7"
@@ -18,7 +27,10 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
       d="M80.8169 2.74286C80.8169 4.2328 79.5852 5.45185 78.0799 5.45185C76.5745 5.45185 75.3428 4.2328 75.3428 2.74286C75.3428 1.21905 76.5745 0 78.0799 0C79.5852 0 80.8169 1.21905 80.8169 2.74286ZM78.5588 7.78836V31.4921H77.5667V7.78836H78.5588Z"
       fill="#D7D7D7"
     />
-    <path d="M93.5836 31.4921V13.7143H105.045V7.78836H81.1644V13.7143H92.5914V31.4921H93.5836Z" fill="#D7D7D7" />
+    <path
+      d="M93.5836 31.4921V13.7143H105.045V7.78836H81.1644V13.7143H92.5914V31.4921H93.5836Z"
+      fill="#D7D7D7"
+    />
     <path
       d="M110.853 2.74286C110.853 4.2328 109.622 5.45185 108.116 5.45185C106.611 5.45185 105.379 4.2328 105.379 2.74286C105.379 1.21905 106.611 0 108.116 0C109.622 0 110.853 1.21905 110.853 2.74286ZM108.595 7.78836V31.4921H107.603V7.78836H108.595Z"
       fill="#D7D7D7"

@@ -7,21 +7,25 @@ export const PrimaryButton = styled.button.attrs({
     px-6
     py-2
     text-base
-    text-zinc-800
+    text-gray-200
     font-bold
     rounded-md
     shadow-sm
     tracking-wide
 
     bg-gradient-to-r
-    from-zinc-100
-    to-zinc-400
+    from-gray-700
+    to-red-700
 
-    hover:from-zinc-400
-    hover:to-zinc-700
-    hover:text-zinc-50
+    shadow
+    shadow-lg
+    shadow-gray-100/10
+
+    hover:from-red-700
+    hover:to-gray-700
+    hover:text-gray-50
 
     focus:outline-none
-    focus:ring-zinc-500
+    focus:ring-gray-500
   `,
 })``;

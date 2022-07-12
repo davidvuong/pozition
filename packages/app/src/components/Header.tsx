@@ -24,7 +24,7 @@ const HeaderLink = styled(Link).attrs({
 export const Header = () => {
   return (
     <header className="w-full">
-      <div className="flex flex-row justify-between h-20 bg-gradient-to-r from-zinc-900 to-zinc-800">
+      <div className="flex flex-row justify-between h-20 bg-gradient-to-r from-gray-900 to-gray-800">
         <div className="flex">
           <div className="pt-5 pl-8 pr-12">
             <Link to="/">
@@ -34,6 +34,8 @@ export const Header = () => {
           <HeaderLink to="/">Home</HeaderLink>
           <HeaderLink to="/new">Pozition</HeaderLink>
           <HeaderLink to="/marketplace">Marketplace</HeaderLink>
+          <HeaderLink to="/about">About</HeaderLink>
+          <HeaderLink to="/about">GitHub</HeaderLink>
         </div>
         <div className="pt-5 pr-8">
           <ConnectButton />

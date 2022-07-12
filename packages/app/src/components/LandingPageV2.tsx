@@ -2,6 +2,7 @@ import { PrimaryButton } from "../components/Button";
 import HeroLandscape from "../images/hero-landscape.png";
 import { AnimatedPozitionSection } from "./AnimatedPozitionSection";
 import { BetterWayToTradeBanner } from "./BetterWayToTradeBanner";
+import { SampleMarketsBanner } from "./SampleMarketsBanner";
 import { ArrowRightSvg } from "./images/ArrowRightSvg";
 
 export const LandingPageV2 = () => {
@@ -52,6 +53,7 @@ export const LandingPageV2 = () => {
           />
         </div>
       </section>
+      <SampleMarketsBanner />
       <BetterWayToTradeBanner />
       <AnimatedPozitionSection />
     </div>

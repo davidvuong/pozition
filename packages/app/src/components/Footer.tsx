@@ -1,16 +1,8 @@
 import { DiscordSvg } from "./images/DiscordSvg";
 import { GitHubSvg } from "./images/GitHugSvg";
-import { TextureCrossSvg } from "./images/TextureCrossSvg";
 import { TwitterSvg } from "./images/TwitterSvg";
 
 export const Footer = () => {
-  // <footer className="h-32 bg-gradient-to-b from-gray-900 to-gray-800 overflow-y-hidden">
-  //   <p className="text-stone-300 pt-16 text-center">
-  //     Copyright © Pozition - {new Date().getFullYear()}
-  //   </p>
-  //   <TextureCrossSvg height="32" width="512" className="ml-8 opacity-80" />
-  // </footer>
-
   const navigation = [
     {
       name: "Discord",
@@ -45,8 +37,9 @@ export const Footer = () => {
           ))}
         </div>
         <div className="mt-8 md:mt-0 md:order-1">
-          <p className="text-center text-base text-gray-400 font-misto">
-            Copyright © Pozition - {new Date().getFullYear()}
+          <p className="text-center text-xs uppercase text-gray-400">
+            © {new Date().getFullYear()}{" "}
+            <span className="font-misto">Pozition</span>, ALL RIGHTS RESERVED.
           </p>
         </div>
       </div>

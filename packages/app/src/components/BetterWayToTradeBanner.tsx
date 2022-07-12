@@ -21,8 +21,8 @@ export const BetterWayToTradeBanner = () => {
           <div className="absolute inset-0 h-1/2 bg-black bg-graph-paper" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-              <dl className="rounded-lg bg-gray-200 shadow-lg sm:grid sm:grid-cols-3">
-                <div className="flex flex-col border-b border-gray-200 p-6 text-center sm:border-0 sm:border-r">
+              <dl className="rounded-lg bg-gray-100 shadow-lg sm:grid sm:grid-cols-3">
+                <div className="flex flex-col border-b border-gray-100 p-6 text-center sm:border-0 sm:border-r">
                   <dt className="order-2 mt-2 uppercase leading-6 font-semibold text-gray-500">
                     Powered by Synthetix
                   </dt>
@@ -30,7 +30,7 @@ export const BetterWayToTradeBanner = () => {
                     100%
                   </dd>
                 </div>
-                <div className="flex flex-col border-t border-b border-gray-200 p-6 text-center sm:border-0 sm:border-l sm:border-r">
+                <div className="flex flex-col border-t border-b border-gray-100 p-6 text-center sm:border-0 sm:border-l sm:border-r">
                   <dt className="order-2 mt-2 uppercase leading-6 font-semibold text-gray-500">
                     Uptime
                   </dt>
@@ -38,7 +38,7 @@ export const BetterWayToTradeBanner = () => {
                     24/7
                   </dd>
                 </div>
-                <div className="flex flex-col border-t border-gray-200 p-6 text-center sm:border-0 sm:border-l">
+                <div className="flex flex-col border-t border-gray-100 p-6 text-center sm:border-0 sm:border-l">
                   <dt className="order-2 mt-2 uppercase leading-6 font-semibold text-gray-500">
                     RUGS
                   </dt>

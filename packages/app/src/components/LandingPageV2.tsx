@@ -49,6 +49,7 @@ export const LandingPageV2 = () => {
         <div className="relative w-full h-64 bg-red sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-2/5 lg:h-full">
           <img
             className="absolute inset-0 w-full h-full object-cover"
+            draggable="false"
             src={HeroLandscape}
           />
         </div>

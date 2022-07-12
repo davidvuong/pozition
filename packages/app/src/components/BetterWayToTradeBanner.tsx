@@ -26,7 +26,7 @@ export const BetterWayToTradeBanner = () => {
                   <dt className="order-2 mt-2 uppercase leading-6 font-semibold text-gray-500">
                     Powered by Synthetix
                   </dt>
-                  <dd className="order-1 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-800 to-gray-700">
+                  <dd className="order-1 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-gray-700">
                     100%
                   </dd>
                 </div>
@@ -34,7 +34,7 @@ export const BetterWayToTradeBanner = () => {
                   <dt className="order-2 mt-2 uppercase leading-6 font-semibold text-gray-500">
                     Uptime
                   </dt>
-                  <dd className="order-1 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-800 to-gray-700">
+                  <dd className="order-1 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r via-red-800 from-gray-700 to-gray-700">
                     24/7
                   </dd>
                 </div>
@@ -42,7 +42,7 @@ export const BetterWayToTradeBanner = () => {
                   <dt className="order-2 mt-2 uppercase leading-6 font-semibold text-gray-500">
                     RUGS
                   </dt>
-                  <dd className="order-1 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-800 to-gray-700">
+                  <dd className="order-1 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r to-red-500 from-gray-700">
                     ZERO
                   </dd>
                 </div>

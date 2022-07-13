@@ -1,5 +1,9 @@
 # pozition
 
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![solidity - v0.6.12](https://img.shields.io/badge/solidity-v0.8.0-2ea44f?logo=solidity)](https://docs.soliditylang.org/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/35c89772-0682-4288-b5a1-28fd85ce1c38/deploy-status)](https://app.netlify.com/sites/pozition-app/deploys)
+
 ![Pozition Logo](./assets//funky-logo.png)
 
 **Welcome to Pozition (Position but with a 'z')!**

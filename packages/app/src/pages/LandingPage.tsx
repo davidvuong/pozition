@@ -21,6 +21,35 @@ const FunkyTitleText = styled.span.attrs({
   `,
 })``;
 
+const PageTitle = styled.h1.attrs({
+  className: `
+    text-4xl
+    text-gray-900
+    tracking-tight
+    font-extrabold
+
+    sm:text-5xl
+    md:text-6xl
+    lg:text-5xl
+    xl:text-6xl
+  `,
+})``;
+
+const PageSubtitle = styled.p.attrs({
+  className: `
+    mt-3
+    max-w-md
+    mx-auto
+    text-gray-200
+    text-base
+    font-semmibold
+    uppercase
+
+    md:mt-5
+    md:max-w-3xl">
+  `,
+})``;
+
 interface AnimatedTitleProps {
   children?: React.ReactNode;
   n?: number;
@@ -43,7 +72,7 @@ export const LandingPage = () => {
       <section className="relative bg-black">
         <div className="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
           <div className="px-4 lg:w-3/5 sm:px-8 xl:pr-16">
-            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+            <PageTitle>
               <span
                 className="
                   text-transparent
@@ -59,15 +88,15 @@ export const LandingPage = () => {
               <span className="block text-gray-500 font-misto xl:inline">
                 pozitions.
               </span>
-            </h1>
-            <p className="mt-3 max-w-md mx-auto text-gray-200 md:mt-5 md:max-w-3xl uppercase font-semibold text-base">
+            </PageTitle>
+            <PageSubtitle>
               Be <span className="text-gray-400">free</span> from{" "}
               <span className="text-red-500 line-through">restrictions.</span>{" "}
               Trade your <span className="text-gray-400"> Synthetix</span> perps{" "}
               <span className="font-misto">pozitions</span> like you would any
               other ERC721 NFT. Do it now.{" "}
               <span className="text-gray-400">Launch it.</span>
-            </p>
+            </PageSubtitle>
             <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
               <div className="rounded-md">
                 <PrimaryButton>

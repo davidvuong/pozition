@@ -2,8 +2,9 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
-import { NewPozitionPage } from "./components/NewPozitionPage";
-import { LandingPage } from "./components/LandingPage";
+import { CreatePozitionPage } from "./pages/CreatePozitionPage";
+import { LandingPage } from "./pages/LandingPage";
+import { GalleryPage } from "./pages/GalleryPage";
 
 export const App = () => {
   return (
@@ -12,10 +13,8 @@ export const App = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/new" element={<NewPozitionPage />} />
-          {/* <Route path="/gallery" element={<Gallery />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/pozition/:id" element={<Pozition />} /> */}
+          <Route path="/new" element={<CreatePozitionPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
         </Routes>
       </main>
       <Footer />

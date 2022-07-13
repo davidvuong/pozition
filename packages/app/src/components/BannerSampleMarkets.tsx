@@ -74,7 +74,7 @@ const Market = (props: MarketProps) => (
   </div>
 );
 
-export const SampleMarketsBanner = () => {
+export const BannerSampleMarkets = () => {
   return (
     <section className="bg-black flex py-16 md:py-24 justify-items-center justify-center space-x-8 animate-marquee whitespace-nowrap">
       {markets.concat(markets).map((market, i) => (

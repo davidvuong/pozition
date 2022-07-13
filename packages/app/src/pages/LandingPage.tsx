@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { times } from "lodash";
-import { PrimaryButton } from "./Button";
+import { PrimaryButton } from "../components/Button";
 import HeroLandscape from "../images/hero-landscape.png";
-import { BetterWayToTradeBanner } from "./BetterWayToTradeBanner";
-import { SampleMarketsBanner } from "./SampleMarketsBanner";
-import { ArrowRightSvg } from "./images/ArrowRightSvg";
+import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
+import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
+import { ArrowRightSvg } from "../components/images/ArrowRightSvg";
 
 const FunkyTitleText = styled.span.attrs({
   className: `
@@ -86,8 +86,8 @@ export const LandingPage = () => {
           />
         </div>
       </section>
-      <SampleMarketsBanner />
-      <BetterWayToTradeBanner />
+      <BannerSampleMarkets />
+      <BannerBetterWayToTrade />
     </div>
   );
 };

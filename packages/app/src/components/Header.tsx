@@ -44,7 +44,7 @@ export const Header = () => (
         <div className="hidden lg:flex space-x-10">
           <HeaderLink to="/">Home</HeaderLink>
           <HeaderLink to="/new">Pozition</HeaderLink>
-          <HeaderLink to="/marketplace">Gallery</HeaderLink>
+          <HeaderLink to="/gallery">Gallery</HeaderLink>
         </div>
         <div className="hidden justify-end lg:flex lg:flex-1 lg:w-0">
           <ConnectButton label="Connect" />
@@ -80,7 +80,7 @@ export const Header = () => (
           <div className="flex flex-col py-6 px-5 space-y-6">
             <HeaderLink to="/">Home</HeaderLink>
             <HeaderLink to="/new">Pozition</HeaderLink>
-            <HeaderLink to="/marketplace">Gallery</HeaderLink>
+            <HeaderLink to="/gallery">Gallery</HeaderLink>
             <ConnectButton label="Connect Wallet" />
           </div>
         </div>

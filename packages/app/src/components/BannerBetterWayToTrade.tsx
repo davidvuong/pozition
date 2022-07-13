@@ -1,6 +1,6 @@
 import "../css/backgrounds.css";
 
-export const BetterWayToTradeBanner = () => {
+export const BannerBetterWayToTrade = () => {
   return (
     <div className="bg-black bg-graph-paper py-16 sm:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -46,7 +46,7 @@ const PageSubtitle = styled.p.attrs({
     uppercase
 
     md:mt-5
-    md:max-w-3xl">
+    md:max-w-3xl
   `,
 })``;
 

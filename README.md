@@ -8,32 +8,28 @@
 
 **Welcome to Pozition (Position but with a 'z')!**
 
-The idea and project was developed during [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd). The original code can be found [here](https://github.com/fritzschoff/notSynthetix). This project is an extension of the idea with the intent to build a production-ready dApp. **THIS IS CURRENTLY WORK IN PROGRESS (WIP).**
+Pozition was originally developed and dubbed during an [ETH NY](https://ethglobal.com/showcase/pozitions-c53qd) hackathon. This repository is a continuation of that project with the intent to build a fully production ready app used by real users. Note that :warn: **THIS PROJECT IS STILL WORK IN PROGRESS!**.
 
-Pozition aims to provide a mechanism to allow future positions on Synthetix to be transferrable. As of current, positions are tracked and managed directly by Synthetix. If you wanted to move a position from one wallet to another, you first have to close the position, withdraw your margin, and transfer sUSD to another wallet. This is quite tedious and may incur tax obligations/losses.
+[Pozition](https://pozition.finance) aims to provide a mechanism to allow future positions on Synthetix to be transferrable. As of current, positions are tracked and managed directly by Synthetix. If you wanted to move a position from one wallet to another, you first have to close the position, withdraw your margin, and transfer sUSD to another wallet. This is quite tedious and may incur tax obligations/losses.
 
-Using `pozition`, a 1/1 NFT is minted on every position, effectively giving the user a receipt to represent their position for each market they're participating in. This allows users to move positions freely without the hassle of closing a position and moving margin.
+Using `pozition`, a 1/1 NFT is minted on every position, effectively giving the user a receipt to represent their position for each market they're participating in. The NFT is transferred to the user that opened the position and managed via the Pozition webapp. Doing this allows users to move positions freely without the hassle of closing a position and moving margin.
 
 Interestingly, allowing users to trade positions in a decentralised manner opens the space to further derivatives. I'll leave that thought to the inclined reader.
+
+**Website:** https://pozition.finance
 
 ## Development
 
 ```bash
 # Clone the project for development.
 git clone git@github.com:davidvuong/pozition.git
-```
 
-```bash
 # Install all dependencies (note we are using yarn v2).
 yarn
-```
 
-```bash
 # Compile the SC package for development (typechain etc.)
 yarn workspace @pozition/core compile
-```
 
-```bash
 # Start the React app and integrate with a pre-existing SC on testnet.
 yarn workspace @pozition/app start
 
@@ -44,11 +40,10 @@ open localhost:3000
 Further work...
 
 ```bash
-# Start a local node
+# Start a local node if necessary.
 yarn hardhat node
-```
 
-```bash
+# Deploy smart contracts to Kovan testnet or Optimism mainnet.
 yarn workspace @pozition/core deploy:kovan
 yarn workspace @pozition/core deploy:mainnet
 ```
@@ -62,20 +57,7 @@ yarn workspace @pozition/core test
 yarn workspace @pozition/core test:coverage
 ```
 
-## Manual Interaction
-
-```bash
-# Drops you into a node repl with `ethers` available
-#
-# @see: https://docs.ethers.io/v5/
-npx hardhat run --network optimism-kovan scripts/deploy.ts
-```
-
-```ts
-const Factory = await ethers.getContractFactory("PozitionManager");
-const Contract = await Factory.attach("0x...");
-const tx = await Contract.deposit(1, { gasLimit: 5_000_0000 });
-```
+### Obtaining sUSD
 
 Before you can do that, head over to [Paradigm](https://faucet.paradigm.xyz/) to drip ETH and DAI to your wallet. After, navigate to [Synthetix>Loans](https://staking.synthetix.io/) to borrow sUSD against your ETH. Now you have sUSD to experiment with.
 
@@ -97,11 +79,11 @@ npx hardhat verify --network optimism-kovan DEPLOYED_CONTRACT_ADDRESS <construct
 
 _This project uses Optimism so API keys must be created in https://optimistic.etherscan.io/_
 
-## Architecture
+## Design
 
 Below is a high level overview of Pozition v1:
 
-![Architecture Overview](assets/diagrams/architecture_overview_v1.jpg)
+![Design Overview](assets/diagrams/architecture_overview_v1.jpg)
 
 The primary deviation is the user interaction with Synthetix futures markets. Rather than directly invoking methods like `modifyPosition`, giving position ownerships to the user `msg.sender`, Pozition mints and manages interactions via NFTs.
 
@@ -121,31 +103,6 @@ You may notice that this also includes a RESTful API to communicate with IPFS, i
 
 Pozition v2 is much simpler:
 
-![Architecture Overview](assets/diagrams/architecture_overview_v2.jpg)
+![Design Overview (v2)](assets/diagrams/architecture_overview_v2.jpg)
 
 Steps are largely the same. However, `Manager` and `Factory` has been merged and the need for a HTTP RESTful API and IPFS is no longer necessary.
-
----
-
-_Below is autogenerated documentation from hardhat - keeping the below around for now._
-
-# Advanced Sample Hardhat Project
-
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
-
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-REPORT_GAS=true npx hardhat test
-TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-```
-
-# Performance Optimizations
-
-For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).

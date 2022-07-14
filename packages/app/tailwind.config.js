@@ -8,7 +8,19 @@ module.exports = {
         misto: ["Misto"],
       },
       colors: {
-        black: "#0a0a0a",
+        // @see: https://www.tailwindshades.com/
+        black: {
+          50: "#A8A8A8",
+          100: "#9E9E9E",
+          200: "#898989",
+          300: "#757575",
+          400: "#606060",
+          500: "#4C4C4C",
+          600: "#303030",
+          700: "#141414",
+          800: "#0a0a0a",
+          900: "#000000",
+        },
       },
       animation: {
         marquee: "marquee 25s linear infinite",

@@ -8,7 +8,7 @@ import { GalleryPage } from "./pages/GalleryPage";
 
 export const App = () => {
   return (
-    <div className="flex flex-col h-screen bg-black">
+    <div className="flex flex-col h-screen bg-black-800">
       <Header />
       <main className="flex-grow">
         <Routes>

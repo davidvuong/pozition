@@ -2,7 +2,7 @@ import "../css/backgrounds.css";
 
 export const BannerBetterWayToTrade = () => {
   return (
-    <div className="bg-black bg-graph-paper py-16 sm:py-32">
+    <div className="bg-black-800 bg-graph-paper py-16 sm:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl uppercase font-extrabold text-gray-300 sm:text-4xl">
@@ -16,9 +16,9 @@ export const BannerBetterWayToTrade = () => {
           </p>
         </div>
       </div>
-      <div className="relative mt-16 pb-12 bg-black sm:pb-16 bg-graph-paper">
+      <div className="relative mt-16 pb-12 bg-black-800 sm:pb-16 bg-graph-paper">
         <div className="relative">
-          <div className="absolute inset-0 h-1/2 bg-black bg-graph-paper" />
+          <div className="absolute inset-0 h-1/2 bg-black-800 bg-graph-paper" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <dl className="rounded-lg shadow-lg sm:grid sm:grid-cols-3">

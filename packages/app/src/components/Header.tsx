@@ -17,17 +17,17 @@ const HeaderLink = styled(Link).attrs({
 })``;
 
 export const Header = () => (
-  <Popover className="relative bg-black shadow">
+  <Popover className="relative bg-black-800 shadow">
     <div className="mx-auto px-4 sm:px-6">
       <div className="flex justify-between items-center py-6 md:space-x-10">
         <div className="flex justify-start lg:w-0 lg:flex-1">
-          <a href="#">
+          <a href="/">
             <span className="sr-only">Pozition</span>
             <PozitionHorizontalLogo />
           </a>
         </div>
         <div className="-mr-2 -my-2 lg:hidden">
-          <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+          <Popover.Button className="bg-gray-900 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100">
             <span className="sr-only">Open menu</span>
             <MenuSvg className="h-6 w-6" aria-hidden="true" />
           </Popover.Button>
@@ -56,12 +56,12 @@ export const Header = () => (
         focus
         className="absolute top-0 inset-x-0 z-10 p-2 transition transform origin-top-right md:hidden"
       >
-        <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50">
+        <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-gray-900 divide-y-2 divide-gray-200">
           <div className="pt-5 pb-6 px-5">
             <div className="flex items-center justify-between">
               <PozitionHorizontalLogo />
               <div className="-mr-2">
-                <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+                <Popover.Button className="bg-gray-900 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100">
                   <span className="sr-only">Close menu</span>
                   <MenuSvg className="h-6 w-6" aria-hidden="true" />
                 </Popover.Button>

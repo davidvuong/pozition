@@ -11,17 +11,8 @@ const HeaderLink = styled(Link).attrs({
     uppercase
 
     font-semibold
-    text-transparent
-    bg-clip-text
-    bg-gradient-to-r
-    from-gray-900
-    to-gray-700
-
-    hover:text-gray-500
-
-    md:from-gray-400
-    md:to-gray-100
-    md:hover:text-gray-100
+    text-gray-300
+    hover:text-gray-200
   `,
 })``;
 

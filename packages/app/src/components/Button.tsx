@@ -15,15 +15,11 @@ export const PrimaryButton = styled.button.attrs({
 
     bg-gradient-to-r
     from-gray-700
-    to-red-700
+    to-red-800
 
-    shadow
-    shadow-lg
-    shadow-gray-100/10
-
-    hover:from-red-700
-    hover:to-gray-700
-    hover:text-gray-50
+    hover:shadow
+    hover:shadow-lg
+    hover:shadow-red-700/30
 
     focus:outline-none
     focus:ring-gray-500

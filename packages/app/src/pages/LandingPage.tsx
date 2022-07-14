@@ -5,6 +5,23 @@ import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
 import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
 import { ArrowRightSvg } from "../components/images/ArrowRightSvg";
 
+const PagePreTitle = styled.h4.attrs({
+  className: `
+    font-semibold
+    uppercase
+    tracking-tight
+
+    text-center
+    text-transparent
+    bg-clip-text
+    bg-gradient-to-r
+    from-gray-500
+    to-red-800
+
+    lg:text-left
+  `,
+})``;
+
 const PageTitle = styled.h1.attrs({
   className: `
     text-4xl
@@ -47,8 +64,9 @@ export const LandingPage = () => {
       <section className="py-16 relative bg-black">
         <div className="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
           <div className="px-4 lg:w-3/5 sm:px-8 xl:pr-16">
+            <PagePreTitle>1 Pozition = 1 NFT</PagePreTitle>
             <PageTitle>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-100 uppercase xl:inline">
+              <span className="text-transparent font-extrabold bg-clip-text bg-gradient-to-r from-gray-400 to-gray-100 uppercase xl:inline">
                 Add transferability to your
               </span>{" "}
               <span className="block text-gray-400 font-misto xl:inline">
@@ -58,9 +76,8 @@ export const LandingPage = () => {
             <PageSubtitle>
               Be <Emph>free</Emph> from{" "}
               <span className="text-red-500 line-through">restrictions.</span>{" "}
-              Trade your <Emph> Synthetix</Emph> perps{" "}
-              <span className="font-misto">pozitions</span> like you would any
-              other ERC721 NFT. <Emph>Launch it.</Emph>
+              Trade your <Emph> Synthetix</Emph> futures like you would any
+              other ERC721 NFT.
             </PageSubtitle>
             <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
               <div className="rounded-md">

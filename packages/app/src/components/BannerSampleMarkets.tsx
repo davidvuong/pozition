@@ -53,7 +53,7 @@ interface MarketProps {
 }
 
 const Market = (props: MarketProps) => (
-  <div className="py-20 px-20 bg-graph-paper flex space-x-8 rounded-2xl border-4 border-gray-300/90">
+  <div className="py-16 px-20 bg-graph-paper flex space-x-8 rounded-2xl border-4 border-gray-300/90">
     <div className="flex flex-col space-y-2">
       <div className="flex flex-row space-x-2 mr-4">
         <img src={props.icon} width="32" height="32" draggable="false" />
@@ -76,7 +76,7 @@ const Market = (props: MarketProps) => (
 
 export const BannerSampleMarkets = () => {
   return (
-    <section className="bg-black flex py-16 md:py-24 justify-items-center justify-center space-x-8 animate-marquee whitespace-nowrap">
+    <section className="bg-black flex py-16 md:py-28 justify-items-center justify-center space-x-8 animate-marquee whitespace-nowrap">
       {markets.concat(markets).map((market, i) => (
         <Market {...market} key={i} />
       ))}

@@ -3,11 +3,12 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Roboto", "sans-serif"],
+        misto: ["Misto"],
+      },
       colors: {
         black: "#0a0a0a",
-      },
-      fontFamily: {
-        misto: ["Misto"],
       },
       animation: {
         marquee: "marquee 25s linear infinite",

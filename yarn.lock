@@ -3163,6 +3163,7 @@ __metadata:
     react-hook-form: ^7.33.0
     react-router-dom: ^6.3.0
     react-scripts: 5.0.1
+    react-tradingview-components: ^2.0.1
     styled-components: ^5.3.5
     tailwindcss: ^3.1.5
     wagmi: ^0.5.9
@@ -20600,6 +20601,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7ee8ef3aab74c7ae1d70ff34a27643d11ba1a8d62d072c767827d9ff9a520905223e567002e0bf6c772929d8ea1c781a3ba0cc4a563e92b1e3dc2eaa817ecbe8
+  languageName: node
+  linkType: hard
+
+"react-tradingview-components@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "react-tradingview-components@npm:2.0.1"
+  peerDependencies:
+    react: ^16.0.0
+  checksum: 1c947fe22f980685fbe7324f593f3f620610ad1fb8abb90b21f5acb2dbb2bc016916a7676b90248d2afa7ca2188ca18a3ca1315e9f6f6f2f61c747e96cb1661a
   languageName: node
   linkType: hard
 

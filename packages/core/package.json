@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "hardhat test",
-    "test:coverage": "hardhat coverage",
+    "clean": "hardhat clean",
+    "test": "TS_NODE_TRANSPILE_ONLY=1 hardhat test",
+    "test:coverage": "TS_NODE_TRANSPILE_ONLY=1 hardhat coverage",
     "deploy:kovan": "hardhat run --network optimistic-kovan scripts/deploy.ts",
     "deploy:mainnet": "hardhat run --network optimistic-mainnet scripts/deploy.ts"
   },

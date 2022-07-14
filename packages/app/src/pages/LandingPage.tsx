@@ -24,11 +24,14 @@ const PagePreTitle = styled.h4.attrs({
 
 const PageTitle = styled.h1.attrs({
   className: `
+    hidden
+
     text-4xl
     text-gray-900
     tracking-tight
     font-extrabold
 
+    sm:block
     sm:text-5xl
     md:text-6xl
     lg:text-5xl

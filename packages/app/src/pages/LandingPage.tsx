@@ -5,6 +5,7 @@ import HeroLandscape from "../images/hero-landscape.png";
 import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
 import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
 import { ArrowRightSvg } from "../components/images/ArrowRightSvg";
+import { useNavigate } from "react-router-dom";
 
 const FunkyTitleText = styled.span.attrs({
   className: `
@@ -64,6 +65,7 @@ const AnimatedTitle = (props: AnimatedTitleProps) => (
 );
 
 export const LandingPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="relative">
       {/* <div className="animate-marquee whitespace-nowrap">
@@ -99,7 +101,7 @@ export const LandingPage = () => {
             </PageSubtitle>
             <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
               <div className="rounded-md">
-                <PrimaryButton>
+                <PrimaryButton onClick={() => navigate("/new")}>
                   <span className="uppercase">launch app &nbsp;</span>
                   <ArrowRightSvg />
                 </PrimaryButton>

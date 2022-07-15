@@ -3,6 +3,7 @@ import { PrimaryButton } from "../components/Button";
 import HeroLandscape from "../images/hero-landscape.png";
 import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
 import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
+import { BannerSamplePozitions } from "../components/BannerSamplePozitions";
 import { ArrowRightSvg } from "../components/images/ArrowRightSvg";
 
 const PagePreTitle = styled.h4.attrs({
@@ -64,7 +65,7 @@ const Emph = styled.span.attrs({
 export const LandingPage = () => {
   return (
     <div className="relative">
-      <section className="py-16 relative bg-black">
+      <section className="py-16 relative bg-black-800">
         <div className="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
           <div className="px-4 lg:w-3/5 sm:px-8 xl:pr-16">
             <PagePreTitle>1 Pozition = 1 NFT</PagePreTitle>
@@ -79,8 +80,7 @@ export const LandingPage = () => {
             <PageSubtitle>
               Be <Emph>free</Emph> from{" "}
               <span className="text-red-500 line-through">restrictions.</span>{" "}
-              Trade your <Emph> Synthetix</Emph> futures like you would any
-              other ERC721 NFT.
+              Trade <Emph>Synthetix</Emph> futures like you would any ERC721.
             </PageSubtitle>
             <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
               <div className="rounded-md">
@@ -100,8 +100,11 @@ export const LandingPage = () => {
           />
         </div>
       </section>
+
       <BannerSampleMarkets />
       <BannerBetterWayToTrade />
+
+      {/* <BannerSamplePozitions /> */}
     </div>
   );
 };

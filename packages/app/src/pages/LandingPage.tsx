@@ -3,8 +3,8 @@ import { PrimaryButton } from "../components/Button";
 import HeroLandscape from "../images/hero-landscape.png";
 import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
 import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
-import { ArrowRightSvg } from "../components/images/ArrowRightSvg";
 import { useNavigate } from "react-router-dom";
+import { ArrowRightIcon } from "@heroicons/react/solid";
 
 const PagePreTitle = styled.h4.attrs({
   className: `
@@ -87,7 +87,7 @@ export const LandingPage = () => {
               <div className="rounded-md">
                 <PrimaryButton onClick={() => navigate("/new")}>
                   <span className="uppercase">launch app &nbsp;</span>
-                  <ArrowRightSvg />
+                  <ArrowRightIcon className="h-5 w-5" />
                 </PrimaryButton>
               </div>
             </div>

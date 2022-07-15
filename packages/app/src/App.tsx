@@ -1,4 +1,6 @@
 import "./App.css";
+import "./css/backgrounds.css";
+
 import { Route, Routes } from "react-router-dom";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -8,7 +10,7 @@ import { GalleryPage } from "./pages/GalleryPage";
 
 export const App = () => {
   return (
-    <div className="flex flex-col h-screen bg-black">
+    <div className="flex flex-col h-screen bg-black-800">
       <Header />
       <main className="flex-grow">
         <Routes>

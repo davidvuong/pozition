@@ -3147,6 +3147,7 @@ __metadata:
     "@graphprotocol/graph-ts": 0.27.0
     "@headlessui/react": latest
     "@rainbow-me/rainbowkit": ^0.4.2
+    "@tailwindcss/forms": ^0.5.2
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -3163,6 +3164,7 @@ __metadata:
     react-hook-form: ^7.33.0
     react-router-dom: ^6.3.0
     react-scripts: 5.0.1
+    react-tradingview-components: ^2.0.1
     styled-components: ^5.3.5
     tailwindcss: ^3.1.5
     wagmi: ^0.5.9
@@ -3629,6 +3631,17 @@ __metadata:
   dependencies:
     defer-to-connect: ^1.0.1
   checksum: 4d9158061c5f397c57b4988cde33a163244e4f02df16364f103971957a32886beb104d6180902cbe8b38cb940e234d9f98a4e486200deca621923f62f50a06fe
+  languageName: node
+  linkType: hard
+
+"@tailwindcss/forms@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@tailwindcss/forms@npm:0.5.2"
+  dependencies:
+    mini-svg-data-uri: ^1.2.3
+  peerDependencies:
+    tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1"
+  checksum: 3c4df23491d14b37d8cef88d0f3df80f92b684b801d59c23d600773a4ccac11353a555ca36bea68ae4a82134f9c030d1353c05890a5f0085c1c40c649f806640
   languageName: node
   linkType: hard
 
@@ -17065,6 +17078,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mini-svg-data-uri@npm:^1.2.3":
+  version: 1.4.4
+  resolution: "mini-svg-data-uri@npm:1.4.4"
+  bin:
+    mini-svg-data-uri: cli.js
+  checksum: 997f1fbd8d59a70f03761e18626d335197a3479cb9d1ff75678e4b64b864d32a0b8fc18115eabde035e5299b8b4a354a78e57dd6ac10f9d604162a6170898d09
+  languageName: node
+  linkType: hard
+
 "minimalistic-assert@npm:^1.0.0, minimalistic-assert@npm:^1.0.1":
   version: 1.0.1
   resolution: "minimalistic-assert@npm:1.0.1"
@@ -20600,6 +20622,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7ee8ef3aab74c7ae1d70ff34a27643d11ba1a8d62d072c767827d9ff9a520905223e567002e0bf6c772929d8ea1c781a3ba0cc4a563e92b1e3dc2eaa817ecbe8
+  languageName: node
+  linkType: hard
+
+"react-tradingview-components@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "react-tradingview-components@npm:2.0.1"
+  peerDependencies:
+    react: ^16.0.0
+  checksum: 1c947fe22f980685fbe7324f593f3f620610ad1fb8abb90b21f5acb2dbb2bc016916a7676b90248d2afa7ca2188ca18a3ca1315e9f6f6f2f61c747e96cb1661a
   languageName: node
   linkType: hard
 

@@ -1,47 +1,40 @@
-import btc from "../images/tokens/btc.webp";
-import link from "../images/tokens/link.webp";
-import eth from "../images/tokens/eth.webp";
-import matic from "../images/tokens/matic.webp";
-import uni from "../images/tokens/uni.webp";
-import avax from "../images/tokens/avax.webp";
-
 // TODO: Fetch real prices from Coingecko.
 const markets = [
   {
     ticker: "sBTC",
     name: "Bitcoin",
     price: "$29,498.94",
-    icon: btc,
+    icon: require("../images/tokens/btc.webp"),
   },
   {
     ticker: "sETH",
     name: "Ethereum",
     price: "$1051.11",
-    icon: eth,
+    icon: require("../images/tokens/eth.webp"),
   },
   {
     ticker: "sLINK",
     name: "Chainlink",
     price: "$6.62",
-    icon: link,
+    icon: require("../images/tokens/link.webp"),
   },
   {
     ticker: "AVAX",
     name: "Avalanche",
     price: "$17.78",
-    icon: avax,
+    icon: require("../images/tokens/avax.webp"),
   },
   {
     ticker: "MATIC",
     name: "Polygon",
     price: "$0.58",
-    icon: matic,
+    icon: require("../images/tokens/matic.webp"),
   },
   {
     ticker: "sUNI",
     name: "Uniswap",
     price: "$5.74",
-    icon: uni,
+    icon: require("../images/tokens/uni.webp"),
   },
 ];
 
@@ -53,7 +46,7 @@ interface MarketProps {
 }
 
 const Market = (props: MarketProps) => (
-  <div className="py-16 px-20 bg-graph-paper flex space-x-8 rounded-2xl border-4 border-gray-300/90">
+  <div className="py-14 px-20 bg-graph-paper hover:bg-black-700 flex space-x-8 rounded-2xl border-4 border-gray-300/90">
     <div className="flex flex-col space-y-2">
       <div className="flex flex-row space-x-2 mr-4">
         <img src={props.icon} width="32" height="32" draggable="false" />
@@ -75,14 +68,21 @@ const Market = (props: MarketProps) => (
 );
 
 export const BannerSampleMarkets = () => {
+  const duplicatesMarkets = markets.concat(markets);
   return (
-    <section className="bg-black flex py-16 md:py-24 justify-items-center justify-center space-x-8 animate-marquee whitespace-nowrap">
-      {markets.concat(markets).map((market, i) => (
-        <Market {...market} key={i} />
-      ))}
-      {markets.concat(markets).map((market, i) => (
-        <Market {...market} key={i} />
-      ))}
+    <section className="flex overflow-x-hidden whitespace-nowrap bg-black-800 py-16 md:py-24">
+      <div className="relative">
+        <div className="flex space-x-8 animate-marquee">
+          {duplicatesMarkets.map((market, i) => (
+            <Market {...market} key={i} />
+          ))}
+        </div>
+        <div className="flex space-x-8 absolute top-0 animate-marquee2">
+          {duplicatesMarkets.map((market, i) => (
+            <Market {...market} key={i} />
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

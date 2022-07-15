@@ -1,34 +1,39 @@
 import styled from "styled-components";
-import { times } from "lodash";
 import { PrimaryButton } from "../components/Button";
 import HeroLandscape from "../images/hero-landscape.png";
 import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
 import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
+import { BannerSamplePozitions } from "../components/BannerSamplePozitions";
 import { ArrowRightSvg } from "../components/images/ArrowRightSvg";
 import { useNavigate } from "react-router-dom";
 
-const FunkyTitleText = styled.span.attrs({
+const PagePreTitle = styled.h4.attrs({
   className: `
-    mx-2
     font-semibold
-    font-misto
-    text-transparent
-    text-2xl
     uppercase
-    to-gray-50
+    tracking-tight
+
+    text-center
+    text-transparent
     bg-clip-text
     bg-gradient-to-r
     from-gray-500
+    to-red-800
+
+    lg:text-left
   `,
 })``;
 
 const PageTitle = styled.h1.attrs({
   className: `
+    hidden
+
     text-4xl
     text-gray-900
     tracking-tight
     font-extrabold
 
+    sm:block
     sm:text-5xl
     md:text-6xl
     lg:text-5xl
@@ -51,53 +56,33 @@ const PageSubtitle = styled.p.attrs({
   `,
 })``;
 
-interface AnimatedTitleProps {
-  children?: React.ReactNode;
-  n?: number;
-}
-
-const AnimatedTitle = (props: AnimatedTitleProps) => (
-  <div className="animate-marquee whitespace-nowrap">
-    {times(props.n ?? 32).map((i) => (
-      <FunkyTitleText key={i}>{props.children}</FunkyTitleText>
-    ))}
-  </div>
-);
+const Emph = styled.span.attrs({
+  className: `
+    text-gray-400
+    font-bold
+  `,
+})``;
 
 export const LandingPage = () => {
   const navigate = useNavigate();
   return (
     <div className="relative">
-      {/* <div className="animate-marquee whitespace-nowrap">
-        <AnimatedTitle>transferrable. future. pozitions</AnimatedTitle>
-      </div> */}
-      <section className="relative bg-black">
+      <section className="py-16 relative bg-black-800">
         <div className="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
           <div className="px-4 lg:w-3/5 sm:px-8 xl:pr-16">
+            <PagePreTitle>1 Pozition = 1 NFT</PagePreTitle>
             <PageTitle>
-              <span
-                className="
-                  text-transparent
-                  bg-clip-text
-                  bg-gradient-to-r
-                  from-gray-400
-                  to-gray-100
-                  uppercase
-                  xl:inline"
-              >
+              <span className="text-transparent font-extrabold bg-clip-text bg-gradient-to-r from-gray-400 to-gray-100 uppercase xl:inline">
                 Add transferability to your
               </span>{" "}
-              <span className="block text-gray-500 font-misto xl:inline">
-                pozitions.
+              <span className="block text-gray-400 font-misto xl:inline">
+                Pozitions
               </span>
             </PageTitle>
             <PageSubtitle>
-              Be <span className="text-gray-400">free</span> from{" "}
+              Be <Emph>free</Emph> from{" "}
               <span className="text-red-500 line-through">restrictions.</span>{" "}
-              Trade your <span className="text-gray-400"> Synthetix</span> perps{" "}
-              <span className="font-misto">pozitions</span> like you would any
-              other ERC721 NFT. Do it now.{" "}
-              <span className="text-gray-400">Launch it.</span>
+              Trade <Emph>Synthetix</Emph> futures like you would any ERC721.
             </PageSubtitle>
             <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
               <div className="rounded-md">
@@ -117,8 +102,11 @@ export const LandingPage = () => {
           />
         </div>
       </section>
+
       <BannerSampleMarkets />
       <BannerBetterWayToTrade />
+
+      {/* <BannerSamplePozitions /> */}
     </div>
   );
 };

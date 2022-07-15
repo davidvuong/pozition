@@ -3,7 +3,6 @@ import { PrimaryButton } from "../components/Button";
 import HeroLandscape from "../images/hero-landscape.png";
 import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
 import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
-import { BannerSamplePozitions } from "../components/BannerSamplePozitions";
 import { ArrowRightSvg } from "../components/images/ArrowRightSvg";
 import { useNavigate } from "react-router-dom";
 
@@ -102,11 +101,8 @@ export const LandingPage = () => {
           />
         </div>
       </section>
-
       <BannerSampleMarkets />
       <BannerBetterWayToTrade />
-
-      {/* <BannerSamplePozitions /> */}
     </div>
   );
 };

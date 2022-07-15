@@ -23,7 +23,7 @@ const HeaderLink = styled(Link).attrs({
 })``;
 
 export const Header = () => (
-  <Popover className="relative bg-black-700 shadow">
+  <Popover className="relative bg-black-800 shadow">
     <div className="mx-auto px-4 sm:px-6">
       <div className="flex justify-between items-center py-6 md:space-x-10">
         <div className="flex justify-start lg:w-0 lg:flex-1">
@@ -38,7 +38,7 @@ export const Header = () => (
             <MenuSvg className="h-6 w-6" aria-hidden="true" />
           </Popover.Button>
         </div>
-        <div className="hidden lg:flex space-x-10">
+        <div className="hidden lg:flex space-x-10 bg-gray-800 py-2 px-4 rounded-2xl">
           <HeaderLink to="/">Home</HeaderLink>
           <HeaderLink to="/new">Pozition</HeaderLink>
           <HeaderLink to="/gallery">Gallery</HeaderLink>

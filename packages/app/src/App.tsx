@@ -15,7 +15,7 @@ export const App = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/new" element={<CreatePozitionPage />} />
+          <Route path="/pozition" element={<CreatePozitionPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
         </Routes>
       </main>

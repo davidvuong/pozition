@@ -85,7 +85,7 @@ export const LandingPage = () => {
             </PageSubtitle>
             <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
               <div className="rounded-md">
-                <PrimaryButton onClick={() => navigate("/new")}>
+                <PrimaryButton onClick={() => navigate("/pozition")}>
                   launch app &nbsp;
                   <ArrowRightIcon className="h-5 w-5" />
                 </PrimaryButton>

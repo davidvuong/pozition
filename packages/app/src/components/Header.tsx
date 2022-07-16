@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { Fragment } from "react";
 import styled from "styled-components";
-import { PozitionHorizontalLogo } from "./images/PozitionHorizontalLogo";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon } from "@heroicons/react/solid";
+import { PozitionHorizontalLogo } from "./images/PozitionHorizontalLogo";
+import { CustomConnectWallet } from "./CustomConnectWallet";
 
 const HeaderLink = styled(Link).attrs({
   className: `
@@ -44,7 +44,7 @@ export const Header = () => (
           <HeaderLink to="/gallery">Gallery</HeaderLink>
         </div>
         <div className="hidden justify-end lg:flex lg:flex-1 lg:w-0">
-          <ConnectButton label="Connect" />
+          <CustomConnectWallet />
         </div>
       </div>
     </div>
@@ -78,7 +78,7 @@ export const Header = () => (
             <HeaderLink to="/">Home</HeaderLink>
             <HeaderLink to="/new">Pozition</HeaderLink>
             <HeaderLink to="/gallery">Gallery</HeaderLink>
-            <ConnectButton label="Connect Wallet" />
+            <CustomConnectWallet />
           </div>
         </div>
       </Popover.Panel>

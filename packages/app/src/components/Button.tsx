@@ -8,18 +8,17 @@ export const PrimaryButton = styled.button.attrs({
     py-2
     text-base
     text-gray-200
-    font-bold
+    font-semibold
     rounded-md
     shadow-sm
-    tracking-wide
+
+    uppercase
 
     bg-gradient-to-r
-    from-gray-700
-    to-red-800
+    from-gray-800
+    to-red-900
 
-    hover:shadow
-    hover:shadow-lg
-    hover:shadow-red-700/30
+    hover:text-gray-100
 
     focus:outline-none
     focus:ring-gray-500

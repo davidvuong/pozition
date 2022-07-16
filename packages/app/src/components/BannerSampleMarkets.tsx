@@ -4,37 +4,37 @@ const markets = [
     ticker: "sBTC",
     name: "Bitcoin",
     price: "$29,498.94",
-    icon: require("../images/tokens/btc.webp"),
+    icon: "/tokens/btc.webp",
   },
   {
     ticker: "sETH",
     name: "Ethereum",
     price: "$1051.11",
-    icon: require("../images/tokens/eth.webp"),
+    icon: "/tokens/eth.webp",
   },
   {
     ticker: "sLINK",
     name: "Chainlink",
     price: "$6.62",
-    icon: require("../images/tokens/link.webp"),
+    icon: "/tokens/link.webp",
   },
   {
     ticker: "AVAX",
     name: "Avalanche",
     price: "$17.78",
-    icon: require("../images/tokens/avax.webp"),
+    icon: "/tokens/avax.webp",
   },
   {
     ticker: "MATIC",
     name: "Polygon",
     price: "$0.58",
-    icon: require("../images/tokens/matic.webp"),
+    icon: "/tokens/matic.webp",
   },
   {
     ticker: "sUNI",
     name: "Uniswap",
     price: "$5.74",
-    icon: require("../images/tokens/uni.webp"),
+    icon: "/tokens/uni.webp",
   },
 ];
 

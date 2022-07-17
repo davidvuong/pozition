@@ -48,11 +48,11 @@ const initialFormValues: CreatePozitionValues = {
 };
 
 export const CreatePozitionPage = () => {
-  const { chain } = useNetwork();
   const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
   const { data: sUSDBalance, isLoading: isLoadingSUSDBalance } = useBalance({
     addressOrName: address,
-    token: ADDRESSES[chain!.id].SUSD,
+    token: chain ? ADDRESSES[chain.id].SUSD : undefined,
   });
 
   const handleSubmit = (

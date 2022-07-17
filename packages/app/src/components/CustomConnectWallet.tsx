@@ -5,9 +5,9 @@ export const Button = styled.button.attrs({
   className: `
     inline-flex
     items-center
-    px-6
+    px-2
     py-2
-    text-base
+    text-sm
     text-gray-200
     font-semibold
     rounded-md
@@ -33,14 +33,10 @@ export const CustomConnectWallet = () => (
       mounted,
     }) => {
       return (
-        <div
-          {...(!mounted && {
-            "aria-hidden": true,
-          })}
-        >
+        <div {...(!mounted && { "aria-hidden": true })}>
           {(() => {
             if (!mounted || !account || !chain) {
-              return <Button onClick={openConnectModal}>Connect</Button>;
+              return <Button onClick={openConnectModal}>Connect wallet</Button>;
             }
             if (chain.unsupported) {
               return <Button onClick={openChainModal}>Wrong network</Button>;

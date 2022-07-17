@@ -68,7 +68,7 @@ export const Header = () => {
       >
         <Popover.Panel
           focus
-          className="absolute top-0 inset-x-0 z-10 p-2 transition transform origin-top-right md:hidden"
+          className="absolute top-0 inset-x-0 z-10 p-2 transition transform origin-top-right lg:hidden"
         >
           <div className="rounded-lg shadow-lg bg-black-700 divide-y-2 divide-gray-200">
             <div className="pt-5 pb-6 px-5">

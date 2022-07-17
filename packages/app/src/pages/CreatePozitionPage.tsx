@@ -1,22 +1,5 @@
-import { useState } from "react";
-import {
-  DEFAULT_MARKET,
-  Market,
-  MARKET_LABELS,
-  MARKET_TV_TRADING_PAIR,
-  MARKET_LOGO_PATH,
-} from "../constants/markets";
-import { Formik, Form, Field, FormikHelpers } from "formik";
-import * as TV from "react-tradingview-components";
-import { SelectMenu, SelectMenuItem } from "../components/SelectMenu";
-import { MarginInput } from "../components/MarginInput";
 import styled from "styled-components";
-import classNames from "classnames";
-import {
-  ChevronDownIcon,
-  SwitchHorizontalIcon,
-  TrendingUpIcon,
-} from "@heroicons/react/solid";
+import { SwitchHorizontalIcon, TrendingUpIcon } from "@heroicons/react/solid";
 
 export const OpenPositionButton = styled.button.attrs({
   className: `
@@ -45,33 +28,7 @@ export const OpenPositionButton = styled.button.attrs({
   `,
 })``;
 
-const TextInput = styled(Field).attrs({
-  className: `
-    outline-none
-    focus:border-transparent
-    border-2
-    border-gray-200
-    px-5
-    py-3
-    w-full
-    rounded-md
-    focus:ring-2
-    focus:ring-cyan-600
-  `,
-})``;
-
 export const CreatePozitionPage = () => {
-  const marketOptions = Object.values(Market).map((market) => ({
-    key: market,
-    label: MARKET_LABELS[market],
-    imageUrl: MARKET_LOGO_PATH[market],
-  }));
-
-  const [selectedMarket, setSelectedMarket] = useState<SelectMenuItem>(
-    marketOptions.find(({ key }) => key === DEFAULT_MARKET)!
-  );
-
-  const onSubmit = () => {};
   const initialFormValues = {};
 
   return (

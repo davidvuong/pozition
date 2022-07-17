@@ -31,20 +31,6 @@ export const MARKET_LABELS: Record<Market, string> = Object.values(
   return acc;
 }, {} as Record<Market, string>);
 
-// Eventually replace custom chart using CL Oracles. For now, good ol' Binance.
-export const MARKET_TV_TRADING_PAIR: Record<Market, string> = {
-  BTC: "BINANCE:BTCUSDT",
-  ETH: "BINANCE:ETHUSDT",
-  LINK: "BINANCE:LINKUSDT",
-  AAVE: "BINANCE:AAVEUSDT",
-  APE: "BINANCE:APEUSDT",
-  AVAX: "BINANCE:AVAXUSDT",
-  DYDX: "BINANCE:AVAXUSDT",
-  MATIC: "BINANCE:MATICUSDT",
-  SOL: "BINANCE:SOLUSDT",
-  UNI: "BINANCE:UNIUSDT",
-};
-
 export const MARKET_LOGO_PATH: Record<Market, string> = Object.values(
   Market
 ).reduce((acc, market) => {
@@ -53,3 +39,14 @@ export const MARKET_LOGO_PATH: Record<Market, string> = Object.values(
 }, {} as Record<Market, string>);
 
 export const DEFAULT_MARKET = Market.ETH;
+
+export const ADDRESSES: Record<number, Record<string, string>> = {
+  10: {
+    SUSD: "0x8c6f28f2F1A3C87F0f938b96d27520d9751ec8d9",
+  },
+
+  // Optimism Kovan
+  69: {
+    SUSD: "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
+  },
+};

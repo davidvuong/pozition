@@ -12,7 +12,7 @@ export const App = () => {
   return (
     <div className="flex flex-col h-screen bg-black-800">
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow bg-black-800">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/pozition" element={<CreatePozitionPage />} />

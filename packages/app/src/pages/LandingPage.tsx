@@ -1,10 +1,34 @@
 import styled from "styled-components";
-import { PrimaryButton } from "../components/Button";
 import HeroLandscape from "../images/hero-landscape.png";
 import { BannerBetterWayToTrade } from "../components/BannerBetterWayToTrade";
 import { BannerSampleMarkets } from "../components/BannerSampleMarkets";
 import { useNavigate } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/solid";
+
+export const LaunchButton = styled.button.attrs({
+  className: `
+    inline-flex
+    items-center
+    px-6
+    py-2
+    text-base
+    text-gray-200
+    font-semibold
+    rounded-md
+    shadow-sm
+
+    uppercase
+
+    bg-gradient-to-r
+    from-gray-800
+    to-red-900
+
+    hover:text-gray-100
+
+    focus:outline-none
+    focus:ring-gray-500
+  `,
+})``;
 
 const PagePreTitle = styled.h4.attrs({
   className: `
@@ -85,10 +109,10 @@ export const LandingPage = () => {
             </PageSubtitle>
             <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
               <div className="rounded-md">
-                <PrimaryButton onClick={() => navigate("/pozition")}>
+                <LaunchButton onClick={() => navigate("/pozition")}>
                   launch app &nbsp;
                   <ArrowRightIcon className="h-5 w-5" />
-                </PrimaryButton>
+                </LaunchButton>
               </div>
             </div>
           </div>

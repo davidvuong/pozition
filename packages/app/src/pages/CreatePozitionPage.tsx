@@ -19,7 +19,7 @@ export const OpenPositionButton = styled.button.attrs({
     mt-2
     px-6
     py-2
-    w-96
+    w-full
     text-center
     text-base
     text-gray-200
@@ -33,7 +33,7 @@ export const OpenPositionButton = styled.button.attrs({
     from-gray-800
     to-red-900
 
-    hover:text-gray-100
+    hover:text-gray-50
 
     focus:outline-none
     focus:ring-gray-500
@@ -78,16 +78,16 @@ export const CreatePozitionPage = () => {
               Margin
             </p>
             <div className="flex space-x-2 items-center">
-              <p>Balance: 1539.13</p>
-              <button className="font-semibold p-1 text-red-600 bg-gray-800 rounded-lg hover:text-red-500">
+              <p>Balance: 10,539.13</p>
+              <button className="font-semibold px-1 text-red-500 bg-gray-800 rounded-sm hover:text-red-400">
                 MAX
               </button>
             </div>
           </div>
           <div className="flex flex-grow items-center justify-between px-2">
-            <div className="flex items-center bg-gray-800 h-12 items-center space-x-2 px-4 rounded-3xl">
+            <div className="flex items-center bg-gray-900 hover:bg-gray-800 h-10 items-center space-x-1 px-2 rounded-lg">
               <img
-                className="h-8 w-8"
+                className="h-6 w-6"
                 src={process.env.PUBLIC_URL + "/tokens/susd.webp"}
               />
               <p className="font-semibold text-lg">sUSD</p>
@@ -108,35 +108,46 @@ export const CreatePozitionPage = () => {
           <p className="p-2 uppercase tracking-tight font-semibold">
             Market / Leverage
           </p>
-          <div className="flex items-center bg-gray-800 h-12 items-center space-x-2 px-4 rounded-3xl">
+          <div className="flex items-center bg-gray-800 hover:bg-gray-700 h-12 items-center space-x-2 px-4 rounded-lg">
             <img
-              className="h-8 w-8"
+              className="flex h-6 w-6"
               src={process.env.PUBLIC_URL + "/tokens/btc.webp"}
             />
-            <p className="font-semibold text-lg">sBTC / sUSD</p>
-            <ChevronDownIcon className="h-4 w-4" />
+            <p className="font-semibold text-lg">
+              sBTC <span className="font-bold text-xl text-gray-500">/</span>{" "}
+              sUSD
+            </p>
+            <ChevronDownIcon className="flex h-4 w-4 justify-right" />
           </div>
           <div className="flex space-x-2 justify-center items-center">
-            <button className="w-16 p-2 bg-gray-800 rounded-2xl font-semibold text-xl text-center">
-              1x
+            <button className="uppercase text-xl rounded-lg font-semibold text-green-800 border-1 bg-green-400 hover:bg-green-300 w-1/2 p-2">
+              Long
             </button>
-            <button className="w-16 p-2 bg-gray-800 rounded-2xl font-semibold text-xl text-center">
-              2x
-            </button>
-            <button className="w-16 p-2 bg-gray-800 rounded-2xl font-semibold text-xl text-center">
-              5x
-            </button>
-            <button className="w-16 p-2 bg-gray-800 rounded-2xl font-semibold text-xl text-center">
-              10x
+            <button className="uppercase text-xl rounded-lg font-semibold text-red-800 border-1 bg-red-400 hover:bg-red-300 w-1/2 p-2">
+              Short
             </button>
           </div>
-          <div className="px-2 text-right text-xs">
+          <div className="flex space-x-2 justify-center items-center">
+            <button className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center">
+              1<span className="text-gray-400">x</span>
+            </button>
+            <button className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center">
+              2<span className="text-gray-400">x</span>
+            </button>
+            <button className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center">
+              5<span className="text-gray-400">x</span>
+            </button>
+            <button className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center">
+              10<span className="text-gray-400">x</span>
+            </button>
+          </div>
+          <div className="text-right text-xs">
             <p>1 sBTC = ~21,791.51 sUSD (~$21,575.75) </p>
           </div>
         </div>
-      </div>
 
-      <OpenPositionButton>Open pozition</OpenPositionButton>
+        <OpenPositionButton>Open Pozition</OpenPositionButton>
+      </div>
     </section>
   );
 };

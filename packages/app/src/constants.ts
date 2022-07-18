@@ -1,3 +1,8 @@
+import { ContractInterface } from "ethers";
+import { chain } from "wagmi";
+import SynthUtilOptimismAbi from "./abis/SynthUtilOptimism.json";
+import SynthUtilOptimismKovanAbi from "./abis/SynthUtilOptimismKovan.json";
+
 export enum Market {
   ETH = "ETH",
   BTC = "BTC",
@@ -24,29 +29,33 @@ export const SUPPORTED_MARKET_CONTRACTS: Record<Market, string> = {
   UNI: "FuturesMarketUNI",
 };
 
-export const MARKET_LABELS: Record<Market, string> = Object.values(
-  Market
-).reduce((acc, market) => {
-  acc[market] = `s${market}/sUSD`;
-  return acc;
-}, {} as Record<Market, string>);
-
-export const MARKET_LOGO_PATH: Record<Market, string> = Object.values(
-  Market
-).reduce((acc, market) => {
-  acc[market] = `/tokens/${market.toLowerCase()}.webp`;
-  return acc;
-}, {} as Record<Market, string>);
-
 export const DEFAULT_MARKET = Market.ETH;
 
-export const ADDRESSES: Record<number, Record<string, string>> = {
+export const SUPPORTED_CHAINS = [chain.optimismKovan, chain.optimism];
+export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
+
+export const CHAIN_ADDRESSES: Record<number, Record<string, string>> = {
+  // Optimism Mainnet
   10: {
     SUSD: "0x8c6f28f2F1A3C87F0f938b96d27520d9751ec8d9",
+    SYNTH_UTIL: "0x87b1481c82913301Fc6c884Ac266a7c430F92cFA",
   },
 
   // Optimism Kovan
   69: {
     SUSD: "0xaA5068dC2B3AADE533d3e52C6eeaadC6a8154c57",
+    SYNTH_UTIL: "0x5DF689ea1FB350bcB177Ff5e66ED8Dfe28C6045D",
+  },
+};
+
+export const CHAIN_ABIS: Record<number, Record<string, ContractInterface>> = {
+  // Optimism Mainnet
+  10: {
+    SYNTH_UTIL_ABI: SynthUtilOptimismAbi,
+  },
+
+  // Optimism Kovan
+  69: {
+    SYNTH_UTIL_ABI: SynthUtilOptimismKovanAbi,
   },
 };

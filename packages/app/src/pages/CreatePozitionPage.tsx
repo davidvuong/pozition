@@ -1,10 +1,13 @@
 import styled from "styled-components";
 import classNames from "classnames";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { SwitchHorizontalIcon, TrendingUpIcon } from "@heroicons/react/solid";
-import { ADDRESSES, DEFAULT_MARKET, Market } from "../constants";
+import { DEFAULT_MARKET, SUPPORTED_CHAIN_IDS, Market } from "../constants";
 import { Formik, FormikHelpers, Form, Field } from "formik";
-import { useAccount, useBalance, useNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
+import { useSUSDBalance } from "../hooks/useSUSDBalance";
+import { useSynthetixContracts } from "../hooks/useSynthetixContracts";
+import { useEffect, useState } from "react";
 
 export const OpenPositionButton = styled.button.attrs({
   className: `
@@ -33,27 +36,62 @@ export const OpenPositionButton = styled.button.attrs({
   `,
 })``;
 
+enum PositionSide {
+  LONG = "LONG",
+  SHORT = "SHORT",
+}
+
 interface CreatePozitionValues {
   market: Market;
   margin: string;
-  side: string;
-  size: string;
+  side: PositionSide | undefined;
+  leverage: number;
 }
 
 const initialFormValues: CreatePozitionValues = {
   market: DEFAULT_MARKET,
   margin: "",
-  side: "",
-  size: "",
+  side: undefined,
+  leverage: 0,
 };
 
 export const CreatePozitionPage = () => {
-  const { address, isConnected } = useAccount();
+  const [synthRates, setSynthRates] = useState<Record<string, BigNumber>>({});
+
+  const { isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { data: sUSDBalance, isLoading: isLoadingSUSDBalance } = useBalance({
-    addressOrName: address,
-    token: chain ? ADDRESSES[chain.id].SUSD : undefined,
-  });
+  const { balance: sUSDBalance } = useSUSDBalance();
+  const { SynthUtil } = useSynthetixContracts();
+
+  useEffect(() => {
+    (async () => {
+      if (SynthUtil) {
+        const [tokens, rates] = await SynthUtil.synthsRates();
+        setSynthRates(
+          tokens.reduce(
+            (acc: Record<string, BigNumber>, token: string, idx: number) => {
+              acc[ethers.utils.parseBytes32String(token)] = rates[idx];
+              return acc;
+            },
+            {} as Record<string, BigNumber>
+          )
+        );
+      }
+    })();
+  }, []);
+
+  if (
+    !isConnected ||
+    !chain?.id ||
+    !SUPPORTED_CHAIN_IDS.includes(chain.id) ||
+    !SynthUtil
+  ) {
+    return (
+      <section className="flex flex-col items-center justify-center uppercase text-gray-200 w-full h-full">
+        <p>Connect your wallet / Wrong network</p>
+      </section>
+    );
+  }
 
   const handleSubmit = (
     values: CreatePozitionValues,
@@ -72,13 +110,41 @@ export const CreatePozitionPage = () => {
       >
         {({ values, isSubmitting, setFieldValue }) => {
           const isOpenPozitionDisabled =
-            isSubmitting || !isConnected || !values.margin || !values.size;
+            isSubmitting ||
+            !isConnected ||
+            !values.margin ||
+            !values.leverage ||
+            !values.side;
 
-          const handleMaxMargin = () =>
-            setFieldValue(
-              "margin",
-              sUSDBalance ? ethers.utils.formatEther(sUSDBalance.value) : ""
-            );
+          const marketRate =
+            synthRates[`s${values.market}`] ?? BigNumber.from(0);
+
+          const handleMaxMargin = () => {
+            const nextMargin = sUSDBalance
+              ? ethers.utils.formatEther(sUSDBalance.value)
+              : "";
+            setFieldValue("margin", nextMargin);
+            if (nextMargin) {
+              setFieldValue("leverage", parseFloat(nextMargin));
+            }
+          };
+
+          const handleUpdateLeverage = (leverage: number) =>
+            setFieldValue("leverage", parseFloat(values.margin) * leverage);
+
+          const handleUpdateSide = (side: PositionSide) =>
+            setFieldValue("side", side);
+
+          const humanifyBigNumber = (
+            value: BigNumber | undefined,
+            defaultValue = ""
+          ): string =>
+            value
+              ? (+ethers.utils.formatEther(value)).toFixed(2)
+              : defaultValue;
+
+          const calcSize = () =>
+            values.leverage / +ethers.utils.formatEther(marketRate);
 
           return (
             <Form
@@ -91,9 +157,12 @@ export const CreatePozitionPage = () => {
                 <div className="flex flex-row items-center space-x-1 font-semibold">
                   <img
                     className="flex h-4 w-4"
-                    src={process.env.PUBLIC_URL + "/tokens/eth.webp"}
+                    src={
+                      process.env.PUBLIC_URL +
+                      `/tokens/${values.market.toLowerCase()}.webp`
+                    }
                   />
-                  <p className="flex items-center">sETH</p>
+                  <p className="flex items-center">s{values.market}</p>
                   <span className="font-bold text-lg text-gray-500">
                     /
                   </span>{" "}
@@ -112,14 +181,7 @@ export const CreatePozitionPage = () => {
                     Margin
                   </p>
                   <div className="flex space-x-2 items-center">
-                    <p>
-                      Balance:{" "}
-                      {!sUSDBalance || isLoadingSUSDBalance
-                        ? "-"
-                        : (+ethers.utils.formatEther(
-                            sUSDBalance.value
-                          )).toFixed(2)}
-                    </p>
+                    <p>Balance: {humanifyBigNumber(sUSDBalance?.value, "-")}</p>
                     <button
                       type="button"
                       onClick={handleMaxMargin}
@@ -145,7 +207,10 @@ export const CreatePozitionPage = () => {
                 </div>
                 <div className="flex justify-between p-2 text-xs">
                   <p>sUSD Token (Optimism)</p>
-                  <p>1 sUSD ~$1.01</p>
+                  <p>
+                    1 sUSD ~$
+                    {humanifyBigNumber(synthRates["sUSD"], "1.00")}
+                  </p>
                 </div>
                 <TrendingUpIcon className="absolute h-6 w-6 -bottom-4 left-0 right-0 mx-auto bg-gray-800 p-1 rounded-full" />
               </div>
@@ -155,7 +220,7 @@ export const CreatePozitionPage = () => {
                   <p className="p-2 uppercase tracking-tight font-semibold">
                     Leverage
                   </p>
-                  <p>Size: 6.41238102</p>
+                  <p>Size: {calcSize().toFixed(4)}</p>
                 </div>
 
                 <div className="flex flex-grow items-center justify-between px-2 bg-gray-800 rounded-lg">
@@ -169,51 +234,47 @@ export const CreatePozitionPage = () => {
                   <Field
                     className="bg-gray-800 outline-none font-semibold text-2xl text-right p-2 w-48 h-14"
                     placeholder="1x"
-                    name="size"
+                    name="leverage"
                   />
                 </div>
                 <div className="flex space-x-2 justify-center items-center">
-                  <button
-                    type="button"
-                    className="uppercase text-xl rounded-lg font-semibold text-lime-900 border-1 bg-lime-300 hover:bg-lime-300 w-1/2 p-2"
-                  >
-                    Long
-                  </button>
-                  <button
-                    type="button"
-                    className="uppercase text-xl rounded-lg font-semibold text-red-900 border-1 bg-red-300 hover:bg-red-300 w-1/2 p-2"
-                  >
-                    Short
-                  </button>
+                  {[PositionSide.LONG, PositionSide.SHORT].map((side, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => handleUpdateSide(side)}
+                      className={classNames(
+                        "uppercase text-xl rounded-lg font-semibold bg-gray-800 border-1 w-1/2 p-2",
+                        {
+                          "text-lime-900 bg-lime-400 hover:bg-lime-300":
+                            side === PositionSide.LONG &&
+                            values.side === PositionSide.LONG,
+                          "text-red-900 bg-red-400 hover:bg-red-300":
+                            side === PositionSide.SHORT &&
+                            values.side === PositionSide.SHORT,
+                        }
+                      )}
+                    >
+                      {side}
+                    </button>
+                  ))}
                 </div>
                 <div className="flex space-x-2 justify-center items-center">
-                  <button
-                    type="button"
-                    className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center"
-                  >
-                    1<span className="text-gray-400">x</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center"
-                  >
-                    2<span className="text-gray-400">x</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center"
-                  >
-                    5<span className="text-gray-400">x</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center"
-                  >
-                    10<span className="text-gray-400">x</span>
-                  </button>
+                  {[1, 2, 5, 10].map((leverage) => (
+                    <button
+                      key={leverage}
+                      type="button"
+                      className="w-20 p-2 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold text-xl text-center"
+                      onClick={() => handleUpdateLeverage(leverage)}
+                    >
+                      {leverage}
+                      <span className="text-gray-400">x</span>
+                    </button>
+                  ))}
                 </div>
                 <div className="text-right text-xs">
-                  <p>1 sETH = ~1256.12 sUSD (~$1268.68) </p>
+                  1 s{values.market} = ~{humanifyBigNumber(marketRate, "0")}{" "}
+                  sUSD
                 </div>
               </div>
 

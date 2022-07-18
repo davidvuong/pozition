@@ -78,7 +78,7 @@ export const CreatePozitionPage = () => {
         );
       }
     })();
-  }, []);
+  }, [chain]);
 
   if (
     !isConnected ||

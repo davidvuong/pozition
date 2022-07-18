@@ -47,6 +47,6 @@ export const ADDRESSES: Record<number, Record<string, string>> = {
 
   // Optimism Kovan
   69: {
-    SUSD: "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
+    SUSD: "0xaA5068dC2B3AADE533d3e52C6eeaadC6a8154c57",
   },
 };

@@ -119,6 +119,9 @@ export const CreatePozitionPage = () => {
           const marketRate =
             synthRates[`s${values.market}`] ?? BigNumber.from(0);
 
+          const positionSize =
+            values.leverage / +ethers.utils.formatEther(marketRate);
+
           const handleMaxMargin = () => {
             const nextMargin = sUSDBalance
               ? ethers.utils.formatEther(sUSDBalance.value)
@@ -142,9 +145,6 @@ export const CreatePozitionPage = () => {
             value
               ? (+ethers.utils.formatEther(value)).toFixed(2)
               : defaultValue;
-
-          const calcSize = () =>
-            values.leverage / +ethers.utils.formatEther(marketRate);
 
           return (
             <Form
@@ -220,7 +220,9 @@ export const CreatePozitionPage = () => {
                   <p className="p-2 uppercase tracking-tight font-semibold">
                     Leverage
                   </p>
-                  <p>Size: {calcSize().toFixed(4)}</p>
+                  <p>
+                    Size: {positionSize === 0 ? 0 : positionSize.toFixed(4)}
+                  </p>
                 </div>
 
                 <div className="flex flex-grow items-center justify-between px-2 bg-gray-800 rounded-lg">

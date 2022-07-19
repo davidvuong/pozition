@@ -1,6 +1,7 @@
 {
   "name": "@pozition/core",
   "version": "0.1.0",
+  "main": "index.ts",
   "scripts": {
     "compile": "hardhat compile",
     "clean": "hardhat clean",

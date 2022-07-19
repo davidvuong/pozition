@@ -3156,6 +3156,7 @@ __metadata:
     "@graphprotocol/graph-ts": 0.27.0
     "@headlessui/react": latest
     "@heroicons/react": ^1.0.6
+    "@pozition/core": "*"
     "@rainbow-me/rainbowkit": ^0.4.2
     "@tailwindcss/forms": ^0.5.2
     "@testing-library/jest-dom": ^5.16.4
@@ -3183,7 +3184,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@pozition/core@workspace:packages/core":
+"@pozition/core@*, @pozition/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@pozition/core@workspace:packages/core"
   dependencies:

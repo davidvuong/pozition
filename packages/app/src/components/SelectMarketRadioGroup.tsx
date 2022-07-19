@@ -23,20 +23,22 @@ export const SelectMarketRadioGroup = ({
     onSwitch();
   };
 
-  const markets = Object.values(Market).map((market) => ({
-    label: `s${market} / sUSD`,
-    market,
-    description: `${MARKET_TO_NAME[market]} Futures Market`,
-    price: prettyFormatBigNumber(synthRates[`s${market}`], "0"),
-  }));
+  const markets = Object.values(Market)
+    .map((market) => ({
+      label: `s${market} / sUSD`,
+      market,
+      description: `${MARKET_TO_NAME[market]} Futures Market`,
+      rawPrice: synthRates[`s${market}`],
+      price: prettyFormatBigNumber(synthRates[`s${market}`], "0"),
+    }))
+    .filter(({ rawPrice }) => rawPrice); // Hide any markets with a 0 rate (unsupported on network).
 
   return (
-    <div className="flex flex-col space-y-4 my-auto w-96 max-w-xl rounded-3xl text-gray-300 bg-gray-900 p-4">
+    <div className="flex flex-col space-y-4 my-auto rounded-3xl text-gray-300 bg-gray-900 p-4">
       <SelectedMarketHeader market={selected} onSwitch={onSwitch} />
-
       <RadioGroup value={selected} onChange={handleOnSelect}>
         <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           {markets.map(({ label, market, description, price }) => (
             <RadioGroup.Option
               key={market}
@@ -45,7 +47,7 @@ export const SelectMarketRadioGroup = ({
                 classNames(
                   checked ? "border-transparent" : "border-gray-500",
                   active ? "border-gray-200 ring-2 ring-gray-200" : "",
-                  "relative block bg-gray-700 border rounded-lg shadow-sm px-6 py-4 cursor-pointer sm:flex sm:justify-between focus:outline-none"
+                  "relative block bg-gray-700 w-96 border rounded-lg shadow-sm px-6 py-4 cursor-pointer sm:flex sm:justify-between focus:outline-none"
                 )
               }
             >

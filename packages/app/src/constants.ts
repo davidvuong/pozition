@@ -29,6 +29,19 @@ export const SUPPORTED_MARKET_CONTRACTS: Record<Market, string> = {
   UNI: "FuturesMarketUNI",
 };
 
+export const MARKET_TO_NAME: Record<Market, string> = {
+  BTC: "Bitcoin",
+  ETH: "Ethereum",
+  LINK: "Chainlink",
+  AAVE: "Aave",
+  APE: "ApeCoin",
+  AVAX: "Avalanche",
+  DYDX: "dYdX",
+  MATIC: "Polygon",
+  SOL: "Solana",
+  UNI: "Uniswap",
+};
+
 export const DEFAULT_MARKET = Market.ETH;
 
 export const SUPPORTED_CHAINS = [chain.optimismKovan, chain.optimism];

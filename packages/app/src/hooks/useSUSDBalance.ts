@@ -62,6 +62,7 @@ export const useSUSDBalance = () => {
       CHAIN_ADDRESSES[chain!.id].POZITION_MANAGER,
       amount
     );
+    setIsApproved(true);
   };
 
   if (!chain || !isConnected || !SUPPORTED_CHAIN_IDS.includes(chain.id)) {

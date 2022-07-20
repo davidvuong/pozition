@@ -68,9 +68,9 @@ export const NewPozitionForm = ({
 
   const initialFormValues: CreatePozitionValues = {
     market,
-    margin: "0",
+    margin: "",
     side: PositionSide.UNKNOWN,
-    totalLeveragedAmount: "0",
+    totalLeveragedAmount: "",
   };
 
   const calcPositionSize = (
@@ -232,7 +232,7 @@ export const NewPozitionForm = ({
                 <Field
                   className="bg-black-800 outline-none font-semibold text-2xl text-right p-2 w-48 h-14"
                   name="margin"
-                  as="input"
+                  placeholder="100"
                 />
               </div>
               <div className="flex justify-between p-2 text-xs">

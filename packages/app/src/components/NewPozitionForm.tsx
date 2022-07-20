@@ -1,8 +1,7 @@
-import React from "react";
 import styled from "styled-components";
 import classNames from "classnames";
 import Big from "big.js";
-import { BigNumber, FixedNumber, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { TrendingUpIcon } from "@heroicons/react/solid";
 import { Market, MARKET_TO_CONTRACTS } from "../constants";
 import { Formik, FormikHelpers, Form, Field } from "formik";

@@ -1,28 +1,20 @@
-import { ethers } from "ethers";
-import { useAccount, useNetwork, useProvider } from "wagmi";
-import { CHAIN_ADDRESSES, CHAIN_ABIS, SUPPORTED_CHAIN_IDS } from "../constants";
+import { useContract, useNetwork, useProvider, useSigner } from "wagmi";
+import { CHAIN_ADDRESSES, CHAIN_ABIS, getDefaultChainId } from "../constants";
 
 export const useSynthetixContracts = () => {
-  const { isConnected } = useAccount();
   const { chain } = useNetwork();
   const provider = useProvider();
+  const { data: signer } = useSigner();
+  const chainId = getDefaultChainId(chain);
 
-  const SYNTH_UTIL = chain ? CHAIN_ADDRESSES[chain.id]?.SYNTH_UTIL : undefined;
-  const SYNTH_UTIL_ABI = chain
-    ? CHAIN_ABIS[chain.id]?.SYNTH_UTIL_ABI
-    : undefined;
+  const SYNTH_UTIL = CHAIN_ADDRESSES[chainId].SYNTH_UTIL;
+  const SYNTH_UTIL_ABI = CHAIN_ABIS[chainId].SYNTH_UTIL_ABI;
 
-  if (
-    !chain ||
-    !isConnected ||
-    !SUPPORTED_CHAIN_IDS.includes(chain.id) ||
-    !SYNTH_UTIL ||
-    !SYNTH_UTIL_ABI
-  ) {
-    return { SynthUtil: undefined };
-  }
+  const SynthUtil = useContract({
+    addressOrName: SYNTH_UTIL,
+    contractInterface: SYNTH_UTIL_ABI,
+    signerOrProvider: signer ?? provider,
+  });
 
-  return {
-    SynthUtil: new ethers.Contract(SYNTH_UTIL, SYNTH_UTIL_ABI, provider),
-  };
+  return { SynthUtil };
 };

@@ -8,23 +8,23 @@ import {
   useSigner,
   useProvider,
 } from "wagmi";
-import { CHAIN_ABIS, CHAIN_ADDRESSES, SUPPORTED_CHAIN_IDS } from "../constants";
+import {
+  CHAIN_ABIS,
+  CHAIN_ADDRESSES,
+  getDefaultChainId,
+  SUPPORTED_CHAIN_IDS,
+} from "../constants";
 
 export const useSUSDBalance = () => {
   const [isApproved, setIsApproved] = useState(false);
-
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const provider = useProvider();
   const { data: signer } = useSigner();
+  const chainId = getDefaultChainId(chain);
 
-  // Adding a default chain when not connected. Good idea? If so, expand to rest of components.
-  const sUSD = chain
-    ? CHAIN_ADDRESSES[chain.id]?.SUSD
-    : CHAIN_ADDRESSES[69].SUSD;
-  const sUSDAbi = chain
-    ? CHAIN_ABIS[chain.id]?.SUSD_ABI
-    : CHAIN_ABIS[69].SUSD_ABI;
+  const sUSD = CHAIN_ADDRESSES[chainId].SUSD;
+  const sUSDAbi = CHAIN_ABIS[chainId].SUSD_ABI;
 
   const { data: balance, isLoading: isLoadingSUSDBalance } = useBalance({
     addressOrName: address,
@@ -34,6 +34,10 @@ export const useSUSDBalance = () => {
   const sUSDContract = useContract({
     addressOrName: sUSD,
     contractInterface: sUSDAbi,
+    // FIXME: Upon initial load `signer` isn't available and useContract wants a signer
+    //
+    // This throws an error in the console. However, once `signer` is loaded then we're good. Problem
+    // is if we conditionally load this contract, React throws a fit due to inconsistent hooks.
     signerOrProvider: signer ?? provider,
   });
 

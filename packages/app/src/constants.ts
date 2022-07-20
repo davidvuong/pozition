@@ -1,5 +1,5 @@
 import { ContractInterface } from "ethers";
-import { chain } from "wagmi";
+import { Chain, chain } from "wagmi";
 import SynthUtilOptimismAbi from "./abis/SynthUtilOptimism.json";
 import SynthUtilOptimismKovanAbi from "./abis/SynthUtilOptimismKovan.json";
 import ProxyERC20SUSDOptimismAbi from "./abis/ProxyERC20SUSDOptimism.json";
@@ -49,6 +49,8 @@ export const DEFAULT_MARKET = Market.ETH;
 export const SUPPORTED_CHAINS = [chain.optimismKovan, chain.optimism];
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map(({ id }) => id);
 
+export const DEFAULT_CHAIN = 69;
+
 export const CHAIN_ADDRESSES: Record<number, Record<string, string>> = {
   // Optimism Mainnet
   10: {
@@ -79,4 +81,11 @@ export const CHAIN_ABIS: Record<number, Record<string, ContractInterface>> = {
     SYNTH_UTIL_ABI: SynthUtilOptimismKovanAbi,
     SUSD_ABI: ProxyERC20SUSDOptimismKovanAbi,
   },
+};
+
+export const getDefaultChainId = (chain?: Chain): number => {
+  if (!chain) {
+    return DEFAULT_CHAIN;
+  }
+  return SUPPORTED_CHAIN_IDS[chain.id] ?? DEFAULT_CHAIN;
 };

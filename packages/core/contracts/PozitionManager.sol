@@ -65,7 +65,7 @@ contract PozitionManager is ReentrancyGuard {
         address owner,
         IFuturesMarket market,
         uint256 margin,
-        uint256 size,
+        int256 size,
         Pozition position
     );
 
@@ -96,7 +96,7 @@ contract PozitionManager is ReentrancyGuard {
     event PositionOpen(
         address trader,
         uint256 margin,
-        uint256 size,
+        int256 size,
         IFuturesMarket market,
         Pozition position
     );
@@ -131,7 +131,7 @@ contract PozitionManager is ReentrancyGuard {
         address _trader,
         IFuturesMarket _market,
         uint256 _margin,
-        uint256 _size
+        int256 _size
     ) internal returns (Pozition position) {
         position = Pozition(implementation.clone());
         position.initialize(_market, _margin, _size);
@@ -190,18 +190,21 @@ contract PozitionManager is ReentrancyGuard {
      */
     function openPosition(
         uint256 _margin,
-        uint256 _size,
+        int256 _size,
         bytes32 _market
     ) public returns (Pozition position) {
         // Is this necessary? Should be double up on `require` or can I rely on `withdraw`?
         require(_margin > 0, "Margin must be non-zero.");
         require(depositsByWalletAddress[msg.sender] >= _margin, "Not enough margin.");
-        require(_size > 0, "Size must be non-zero.");
 
         IFuturesMarket market = IFuturesMarket(addressResolver.getAddress(_market));
+
+        // A non FuturesMarket contract but a registered contract on Synthetix can be called.
+        //
+        // TODO: What is an efficient way to check that only FuturesMarket contracts are specified?
         require(address(market) != address(0), "Market not supported.");
 
-        position = Pozition(clone(msg.sender, market, _size, _margin));
+        position = Pozition(clone(msg.sender, market, _margin, _size));
 
         withdraw(_margin, address(position));
 
@@ -229,7 +232,7 @@ contract PozitionManager is ReentrancyGuard {
      */
     function depositMarginAndOpenPosition(
         uint256 _margin,
-        uint256 _size,
+        int256 _size,
         bytes32 _market
     ) external returns (Pozition position) {
         deposit(_margin);

@@ -34,7 +34,7 @@ contract Pozition is Initializable, ERC721 {
     /**
      * @dev The size used when this position opened.
      */
-    uint256 public size;
+    int256 public size;
 
     /// Constructor ///
 
@@ -68,7 +68,7 @@ contract Pozition is Initializable, ERC721 {
     function initialize(
         IFuturesMarket _market,
         uint256 _margin,
-        uint256 _size
+        int256 _size
     ) public initializer {
         market = _market;
         margin = _margin;
@@ -76,11 +76,7 @@ contract Pozition is Initializable, ERC721 {
     }
 
     function openAndTransfer(address _trader) public {
-        /// We're `int` casting here because contracts in Synthetix Futures account for negatives rather than splitting
-        /// the operation into 2 functions (positive is deposit, negative is withdraw).
-        ///
-        /// This is also true for `depositMargin`.
-        market.modifyPosition(int256(size));
+        market.modifyPosition(size);
         _mint(_trader, 1);
     }
 
@@ -94,6 +90,8 @@ contract Pozition is Initializable, ERC721 {
     }
 
     function depositMargin(uint256 _amount) public {
+        /// We're `int` casting here because contracts in Synthetix Futures account for negatives rather than splitting
+        /// the operation into 2 functions (positive is deposit, negative is withdraw).
         market.transferMargin(int256(_amount));
     }
 }

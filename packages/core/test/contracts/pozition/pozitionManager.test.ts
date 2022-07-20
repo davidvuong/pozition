@@ -195,17 +195,6 @@ describe('PozitionManager', () => {
       await expect(pozitionManager.openPosition(marginAmount, positionSize, marketsBytes32)).to.be.reverted;
     });
 
-    it('should error when the size is negative', async () => {
-      const marginAmount = genMarginAmount();
-      const positionSize = BigNumber.from(-1);
-      const market = genMarket();
-      const marketsBytes32 = ethers.utils.formatBytes32String(market);
-
-      await approveAndDeposit(marginAmount);
-
-      await expect(pozitionManager.openPosition(marginAmount, positionSize, marketsBytes32)).to.be.reverted;
-    });
-
     it('should error when the specified market is not available', async () => {
       const marginAmount = genMarginAmount();
       const positionSize = genNumberBetween(1, 10);

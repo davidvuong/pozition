@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 import { useSUSDBalance } from "../hooks/useSUSDBalance";
 import { SelectedMarketHeader } from "./SelectedMarketHeader";
 import { prettyFormatBigNumber } from "../utils";
+import { usePozitionContracts } from "../hooks/usePozitionContracts";
 
 export const OpenPositionButton = styled.button.attrs({
   className: `
@@ -61,7 +62,8 @@ export const NewPozitionForm = ({
   onSwitch,
 }: NewPozitionFormProps) => {
   const { isConnected } = useAccount();
-  const { balance: sUSDBalance } = useSUSDBalance();
+  const { balance: sUSDBalance, approve, isApproved } = useSUSDBalance();
+  const { PozitionManagerContract } = usePozitionContracts();
 
   const initialFormValues: CreatePozitionValues = {
     market,
@@ -70,11 +72,15 @@ export const NewPozitionForm = ({
     leverage: 0,
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: CreatePozitionValues,
     actions: FormikHelpers<CreatePozitionValues>
   ) => {
-    console.log(values);
+    if (!isApproved) {
+      await approve();
+    } else {
+      console.log(values);
+    }
   };
 
   return (
@@ -85,12 +91,31 @@ export const NewPozitionForm = ({
       onSubmit={handleSubmit}
     >
       {({ values, isSubmitting, setFieldValue }) => {
-        const isOpenPozitionDisabled =
-          isSubmitting ||
-          !isConnected ||
-          !values.margin ||
-          !values.leverage ||
-          !values.side;
+        const isSubmitButtonDisabled = () => {
+          if (!isApproved) {
+            return false;
+          }
+          return (
+            isSubmitting ||
+            !isConnected ||
+            !values.margin ||
+            !values.leverage ||
+            !values.side
+          );
+        };
+
+        const getSubmitButtonLabel = () => {
+          if (!isConnected) {
+            return "Connect Wallet";
+          }
+          if (!isApproved) {
+            return "Approve sUSD";
+          }
+          if (isSubmitting) {
+            return "Submitting transaction...";
+          }
+          return "Open Pozition";
+        };
 
         const marketRate = synthRates[`s${values.market}`] ?? BigNumber.from(0);
 
@@ -227,12 +252,11 @@ export const NewPozitionForm = ({
               </div>
             </div>
 
-            <OpenPositionButton disabled={isOpenPozitionDisabled} type="submit">
-              {!isConnected
-                ? "Connect Wallet"
-                : isSubmitting
-                ? "Processing..."
-                : "Open Pozition"}
+            <OpenPositionButton
+              disabled={isSubmitButtonDisabled()}
+              type="submit"
+            >
+              {getSubmitButtonLabel()}
             </OpenPositionButton>
           </Form>
         );

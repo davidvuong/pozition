@@ -5,7 +5,6 @@ import { useSynthetixContracts } from "../hooks/useSynthetixContracts";
 import { useEffect, useState } from "react";
 import { NewPozitionForm } from "../components/NewPozitionForm";
 import { SelectMarketRadioGroup } from "../components/SelectMarketRadioGroup";
-import { usePozitionContracts } from "../hooks/usePozitionContracts";
 
 export const CreatePozitionPage = () => {
   const [synthRates, setSynthRates] = useState<Record<string, BigNumber>>({});
@@ -14,7 +13,6 @@ export const CreatePozitionPage = () => {
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
   const { SynthUtil } = useSynthetixContracts();
-  const { PozitionManager } = usePozitionContracts();
 
   useEffect(() => {
     (async () => {

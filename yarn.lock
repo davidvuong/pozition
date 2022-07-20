@@ -3162,12 +3162,14 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
+    "@types/big.js": ^6.1.5
     "@types/jest": ^27.5.2
     "@types/react": ^18.0.15
     "@types/react-dom": ^18.0.6
     "@types/styled-components": ^5.1.25
     autoprefixer: ^10.4.7
     axios: ^0.21.4
+    big.js: ^6.2.1
     classnames: ^2.3.1
     ethers: ^5.6.9
     formik: ^2.2.9
@@ -3888,6 +3890,13 @@ __metadata:
   dependencies:
     "@babel/types": ^7.3.0
   checksum: 8992d8c1eaaf1c793e9184b930767883446939d2744c40ea4e9591086e79b631189dc519931ed8864f1e016742a189703c217db59b800aca84870b865009d8b4
+  languageName: node
+  linkType: hard
+
+"@types/big.js@npm:^6.1.5":
+  version: 6.1.5
+  resolution: "@types/big.js@npm:6.1.5"
+  checksum: 5eb1472c1fb05fef37971aed449aa8dbe485fde1ca1c316911ae8cbd437ecd1f3a56964fc7d439bdcbe8e2585ec3febabc205d291177d5a0119bafaf872604b8
   languageName: node
   linkType: hard
 
@@ -7089,6 +7098,13 @@ __metadata:
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
   checksum: b89b6e8419b097a8fb4ed2399a1931a68c612bce3cfd5ca8c214b2d017531191070f990598de2fc6f3f993d91c0f08aa82697717f6b3b8732c9731866d233c9e
+  languageName: node
+  linkType: hard
+
+"big.js@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "big.js@npm:6.2.1"
+  checksum: 0b234a2fd56c52bed2798ed2020bcab6fef5e9523b99a05406ad071d1aed6ee97ada9fb8de9576092da74c68825c276e19015743b8d1baea269b60a5c666b0cd
   languageName: node
   linkType: hard
 

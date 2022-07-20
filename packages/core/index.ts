@@ -1,3 +1,4 @@
+// export { PozitionManager, Pozition } from './typechain';
 import PozitionArtifact from './artifacts/contracts/Pozition.sol/Pozition.json';
 import PozitionManagerArtifact from './artifacts/contracts/PozitionManager.sol/PozitionManager.json';
 

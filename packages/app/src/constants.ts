@@ -18,7 +18,7 @@ export enum Market {
   UNI = "UNI",
 }
 
-export const SUPPORTED_MARKET_CONTRACTS: Record<Market, string> = {
+export const MARKET_TO_CONTRACTS: Record<Market, string> = {
   BTC: "FuturesMarketBTC",
   ETH: "FuturesMarketETH",
   LINK: "FuturesMarketLINK",
@@ -62,8 +62,8 @@ export const CHAIN_ADDRESSES: Record<number, Record<string, string>> = {
   69: {
     SUSD: "0xaA5068dC2B3AADE533d3e52C6eeaadC6a8154c57",
     SYNTH_UTIL: "0x5DF689ea1FB350bcB177Ff5e66ED8Dfe28C6045D",
-    POZITION_MANAGER: "0x9Fcf15336AdB176001cAd7caa464B917dFB45506",
-    POZITON: "0xC3843FEa6352e4d6c481846414578B14836c6a26",
+    POZITION_MANAGER: "0x2F12bA8aB1701705D4b32A40DeC5DAA356647643",
+    POZITON: "0x7eC6461E0623cE8C7081FC82228036d32D37b4a5",
   },
 };
 

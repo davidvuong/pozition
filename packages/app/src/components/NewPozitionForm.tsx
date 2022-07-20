@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import classNames from "classnames";
-import { BigNumber, ethers } from "ethers";
+import Big from "big.js";
+import { BigNumber, FixedNumber, ethers } from "ethers";
 import { TrendingUpIcon } from "@heroicons/react/solid";
-import { Market } from "../constants";
+import { Market, MARKET_TO_CONTRACTS } from "../constants";
 import { Formik, FormikHelpers, Form, Field } from "formik";
 import { useAccount } from "wagmi";
 import { useSUSDBalance } from "../hooks/useSUSDBalance";
@@ -41,13 +42,14 @@ export const OpenPositionButton = styled.button.attrs({
 enum PositionSide {
   LONG = "LONG",
   SHORT = "SHORT",
+  UNKNOWN = "UNKNOWN",
 }
 
 interface CreatePozitionValues {
   market: Market;
-  margin: string;
+  margin: string | undefined;
   side: PositionSide | undefined;
-  leverage: number;
+  totalLeveragedAmount: string | undefined;
 }
 
 export interface NewPozitionFormProps {
@@ -67,9 +69,30 @@ export const NewPozitionForm = ({
 
   const initialFormValues: CreatePozitionValues = {
     market,
-    margin: "",
-    side: undefined,
-    leverage: 0,
+    margin: "0",
+    side: PositionSide.UNKNOWN,
+    totalLeveragedAmount: "0",
+  };
+
+  const calcPositionSize = (
+    totalLeveragedAmount: string | undefined,
+    rate: BigNumber
+  ): BigNumber => {
+    if (
+      !totalLeveragedAmount ||
+      totalLeveragedAmount === "0" ||
+      !rate ||
+      rate.eq(0)
+    ) {
+      return BigNumber.from(0);
+    }
+
+    return BigNumber.from(
+      new Big(totalLeveragedAmount)
+        .div(ethers.utils.formatEther(rate))
+        .mul(new Big(10).pow(18))
+        .toFixed(0)
+    );
   };
 
   const handleSubmit = async (
@@ -79,7 +102,35 @@ export const NewPozitionForm = ({
     if (!isApproved) {
       await approve();
     } else {
-      console.log(values);
+      try {
+        actions.setSubmitting(true);
+
+        const marketRate = synthRates[`s${values.market}`] ?? BigNumber.from(0);
+        if (marketRate.eq(0)) {
+          throw new Error(`No market rate for market '${values.market}'`);
+        }
+
+        if (!values.margin || !values.totalLeveragedAmount) {
+          return;
+        }
+
+        // Convert the strings to Big.js so we can operate on them.
+        const size = calcPositionSize(values.totalLeveragedAmount, marketRate);
+        const margin = BigNumber.from(
+          new Big(values.margin).mul(new Big(10).pow(18)).toFixed(0)
+        );
+        const market = ethers.utils.formatBytes32String(
+          MARKET_TO_CONTRACTS[values.market]
+        );
+
+        await PozitionManagerContract.depositMarginAndOpenPosition(
+          margin,
+          values.side === PositionSide.SHORT ? size.mul(-1) : size,
+          market
+        );
+      } finally {
+        actions.setSubmitting(false);
+      }
     }
   };
 
@@ -99,7 +150,7 @@ export const NewPozitionForm = ({
             isSubmitting ||
             !isConnected ||
             !values.margin ||
-            !values.leverage ||
+            !values.totalLeveragedAmount ||
             !values.side
           );
         };
@@ -118,22 +169,28 @@ export const NewPozitionForm = ({
         };
 
         const marketRate = synthRates[`s${values.market}`] ?? BigNumber.from(0);
-
-        const positionSize =
-          values.leverage / +ethers.utils.formatEther(marketRate);
+        const positionSize = calcPositionSize(
+          values.totalLeveragedAmount,
+          marketRate
+        );
 
         const handleMaxMargin = () => {
           const nextMargin = sUSDBalance
             ? ethers.utils.formatEther(sUSDBalance.value)
             : "";
+
           setFieldValue("margin", nextMargin);
-          if (nextMargin) {
-            setFieldValue("leverage", parseFloat(nextMargin));
-          }
+          setFieldValue("totalLeveragedAmount", nextMargin);
         };
 
-        const handleUpdateLeverage = (leverage: number) =>
-          setFieldValue("leverage", parseFloat(values.margin) * leverage);
+        const handleUpdateLeverage = (leverage: number) => {
+          setFieldValue(
+            "totalLeveragedAmount",
+            ethers.FixedNumber.from(values.margin)
+              .mulUnsafe(ethers.FixedNumber.from(leverage))
+              .toString()
+          );
+        };
 
         const handleUpdateSide = (side: PositionSide) =>
           setFieldValue("side", side);
@@ -175,8 +232,8 @@ export const NewPozitionForm = ({
                 </div>
                 <Field
                   className="bg-black-800 outline-none font-semibold text-2xl text-right p-2 w-48 h-14"
-                  placeholder="100"
                   name="margin"
+                  as="input"
                 />
               </div>
               <div className="flex justify-between p-2 text-xs">
@@ -194,7 +251,7 @@ export const NewPozitionForm = ({
                 <p className="p-2 uppercase tracking-tight font-semibold">
                   Leverage
                 </p>
-                <p>Size: {positionSize === 0 ? 0 : positionSize.toFixed(4)}</p>
+                <p>Size: {prettyFormatBigNumber(positionSize, "0")}</p>
               </div>
 
               <div className="flex flex-grow items-center justify-between px-2 bg-gray-800 rounded-lg">
@@ -208,7 +265,7 @@ export const NewPozitionForm = ({
                 <Field
                   className="bg-gray-800 outline-none font-semibold text-2xl text-right p-2 w-48 h-14"
                   placeholder="1x"
-                  name="leverage"
+                  name="totalLeveragedAmount"
                 />
               </div>
               <div className="flex space-x-2 justify-center items-center">

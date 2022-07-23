@@ -1,11 +1,12 @@
+import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
-import { DEFAULT_MARKET, SUPPORTED_CHAIN_IDS, Market } from "../constants";
 import { useAccount, useNetwork } from "wagmi";
+import { DEFAULT_MARKET, SUPPORTED_CHAIN_IDS, Market } from "../constants";
 import { useSynthetixContracts } from "../hooks/useSynthetixContracts";
 import { useEffect, useState } from "react";
 import { NewPozitionForm } from "../components/NewPozitionForm";
 import { SelectMarketRadioGroup } from "../components/SelectMarketRadioGroup";
-import styled from "styled-components";
+import { PageHeaderTitle } from "../components/PageHeaderTitle";
 
 const Section = styled.section.attrs({
   className: `
@@ -13,8 +14,8 @@ const Section = styled.section.attrs({
     flex-col
     items-center
     justify-center
+    space-y-4
     w-full
-    h-full
   `,
 })``;
 
@@ -82,6 +83,7 @@ export const CreatePozitionPage = () => {
   }
   return (
     <Section>
+      <PageHeaderTitle>Create New Pozition</PageHeaderTitle>
       <NewPozitionForm
         market={selectedMarket}
         synthRates={synthRates}

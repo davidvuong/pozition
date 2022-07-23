@@ -68,13 +68,13 @@ To try out Etherscan verification, you first need to deploy a contract to an Eth
 In this project, copy the `.env.example` file to a file named `.env`, and then edit it to fill in the details. Enter your Etherscan API key, your Optimism Kovan node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid `.env` file in place, first deploy your contract:
 
 ```bash
-hardhat run --network optimism-kovan scripts/deploy.ts
+yarn workspace @pozition/core deploy:kovan
 ```
 
 Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
 
 ```bash
-npx hardhat verify --network optimism-kovan DEPLOYED_CONTRACT_ADDRESS <constructor arg 1> <constructor arg 2...>
+npx hardhat verify --network optimistic-kovan DEPLOYED_CONTRACT_ADDRESS <constructor arg 1> <constructor arg 2...>
 ```
 
 _This project uses Optimism so API keys must be created in https://optimistic.etherscan.io/_

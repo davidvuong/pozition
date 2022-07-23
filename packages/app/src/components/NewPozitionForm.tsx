@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 import { useSUSDBalance } from "../hooks/useSUSDBalance";
 import { SelectedMarketHeader } from "./SelectedMarketHeader";
 import { prettyFormatBigNumber } from "../utils";
+import { PositionSide } from "../typed";
 import { usePozitionContracts } from "../hooks/usePozitionContracts";
 
 export const OpenPositionButton = styled.button.attrs({
@@ -37,12 +38,6 @@ export const OpenPositionButton = styled.button.attrs({
     focus:ring-gray-500
   `,
 })``;
-
-enum PositionSide {
-  LONG = "LONG",
-  SHORT = "SHORT",
-  UNKNOWN = "UNKNOWN",
-}
 
 interface CreatePozitionValues {
   market: Market;

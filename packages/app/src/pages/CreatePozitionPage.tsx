@@ -5,6 +5,27 @@ import { useSynthetixContracts } from "../hooks/useSynthetixContracts";
 import { useEffect, useState } from "react";
 import { NewPozitionForm } from "../components/NewPozitionForm";
 import { SelectMarketRadioGroup } from "../components/SelectMarketRadioGroup";
+import styled from "styled-components";
+
+const Section = styled.section.attrs({
+  className: `
+    flex
+    flex-col
+    items-center
+    justify-center
+    w-full
+    h-full
+  `,
+})``;
+
+const BlanketErrorMessage = styled.p.attrs({
+  className: `
+    text-gray-200
+    uppercase
+    p-2
+    rounded-2xl
+  `,
+})``;
 
 export const CreatePozitionPage = () => {
   const [synthRates, setSynthRates] = useState<Record<string, BigNumber>>({});
@@ -31,38 +52,41 @@ export const CreatePozitionPage = () => {
     })();
   }, [chain]);
 
-  if (
-    !isConnected ||
-    !chain?.id ||
-    !SUPPORTED_CHAIN_IDS.includes(chain.id) ||
-    !SynthUtil
-  ) {
-    return (
-      <section className="flex flex-col items-center justify-center uppercase text-gray-200 w-full h-full">
-        <p>Connect your wallet / Wrong network</p>
-      </section>
-    );
-  }
-
   const handleOnSwitch = () => setIsSelectingMarket(!isSelectingMarket);
 
-  return (
-    // TODO: Consider refactor market selection/form input to use NewPozitionContext.
-    <section className="flex flex-col my-14 w-full items-center font-light text-sm">
-      {!isSelectingMarket ? (
-        <NewPozitionForm
-          market={selectedMarket}
-          synthRates={synthRates}
-          onSwitch={handleOnSwitch}
-        />
-      ) : (
+  if (!isConnected || !chain?.id || !SynthUtil) {
+    return (
+      <Section>
+        <BlanketErrorMessage>Please connect wallet</BlanketErrorMessage>
+      </Section>
+    );
+  }
+  if (!SUPPORTED_CHAIN_IDS.includes(chain.id)) {
+    return (
+      <Section>
+        <BlanketErrorMessage>Oops! Unsupported Network</BlanketErrorMessage>
+      </Section>
+    );
+  }
+  if (isSelectingMarket) {
+    return (
+      <Section>
         <SelectMarketRadioGroup
           selected={selectedMarket}
           synthRates={synthRates}
           onSelect={setSelectedMarket}
           onSwitch={handleOnSwitch}
         />
-      )}
-    </section>
+      </Section>
+    );
+  }
+  return (
+    <Section>
+      <NewPozitionForm
+        market={selectedMarket}
+        synthRates={synthRates}
+        onSwitch={handleOnSwitch}
+      />
+    </Section>
   );
 };

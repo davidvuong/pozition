@@ -34,7 +34,7 @@ export const SelectMarketRadioGroup = ({
     .filter(({ rawPrice }) => rawPrice); // Hide any markets with a 0 rate (unsupported on network).
 
   return (
-    <div className="flex flex-col space-y-4 my-auto rounded-3xl text-gray-300 bg-gray-900 p-4">
+    <div className="flex flex-col space-y-4 my-auto rounded-3xl font-light text-sm text-gray-300 bg-gray-900 p-4">
       <SelectedMarketHeader market={selected} onSwitch={onSwitch} />
       <RadioGroup value={selected} onChange={handleOnSelect}>
         <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>

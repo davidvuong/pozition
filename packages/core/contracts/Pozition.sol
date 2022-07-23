@@ -40,6 +40,14 @@ contract Pozition is Initializable, ERC721 {
 
     constructor() ERC721("Pozition", "POZ") {}
 
+    function name() public view virtual override returns (string memory) {
+        return "Pozition";
+    }
+
+    function symbol() public view virtual override returns (string memory) {
+        return "POZ";
+    }
+
     /**
      * @dev Returns the total number of tokens in existence.
      */
@@ -55,6 +63,19 @@ contract Pozition is Initializable, ERC721 {
     function isOpen() public view returns (bool) {
         (, , , , int128 _size) = market.positions(address(this));
         return _size != 0;
+    }
+
+    function pozitionMetadata()
+        external
+        view
+        returns (
+            bool,
+            uint256,
+            int256,
+            IFuturesMarket
+        )
+    {
+        return (isOpen(), margin, size, market);
     }
 
     /// Mutative Functions ///

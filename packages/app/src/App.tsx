@@ -6,7 +6,7 @@ import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { CreatePozitionPage } from "./pages/CreatePozitionPage";
 import { LandingPage } from "./pages/LandingPage";
-import { GalleryPage } from "./pages/GalleryPage";
+import { HodlPage } from "./pages/HodlPage";
 
 export const App = () => {
   return (
@@ -16,7 +16,7 @@ export const App = () => {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/pozition" element={<CreatePozitionPage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/hodl" element={<HodlPage />} />
         </Routes>
       </main>
       <Footer />

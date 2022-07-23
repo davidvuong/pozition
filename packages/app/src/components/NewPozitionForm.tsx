@@ -183,6 +183,9 @@ export const NewPozitionForm = ({
         };
 
         const handleUpdateLeverage = (leverage: number) => {
+          if (!values.margin) {
+            return;
+          }
           setFieldValue(
             "totalLeveragedAmount",
             ethers.FixedNumber.from(values.margin)
@@ -197,7 +200,7 @@ export const NewPozitionForm = ({
         return (
           <Form
             className={classNames(
-              "flex flex-col space-y-2 my-auto w-96 max-w-xl rounded-3xl text-gray-300 bg-gray-900 p-4",
+              "flex flex-col space-y-2 my-auto w-96 max-w-xl rounded-3xl font-light text-sm text-gray-300 bg-gray-900 p-4",
               { "opacity-50": isSubmitting }
             )}
           >

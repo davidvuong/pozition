@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 /// 3rd Party Imports ///
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 /// Local Imports ///
@@ -22,6 +23,11 @@ contract Pozition is Initializable, ERC721 {
     /// State Variables ///
 
     /**
+     * @dev The one and only ever tokenId for Pozition.
+     */
+    uint256 private _tokenId;
+
+    /**
      * @dev The futures market we're operating in e.g. sBTC/sUSD.
      */
     IFuturesMarket public market;
@@ -35,6 +41,11 @@ contract Pozition is Initializable, ERC721 {
      * @dev The size used when this position opened.
      */
     int256 public size;
+
+    /**
+     * @dev Address of the ERC20 margin token.
+     */
+    IERC20 public marginToken;
 
     /// Constructor ///
 
@@ -89,25 +100,30 @@ contract Pozition is Initializable, ERC721 {
     function initialize(
         IFuturesMarket _market,
         uint256 _margin,
-        int256 _size
+        int256 _size,
+        IERC20 _marginToken
     ) public initializer {
         market = _market;
         margin = _margin;
         size = _size;
+        marginToken = _marginToken;
+
+        _tokenId = _tokenId;
     }
 
     function openAndTransfer(address _trader) public {
         market.modifyPosition(size);
-        _mint(_trader, 1);
+        _mint(_trader, _tokenId);
     }
 
     function closeAndBurn() public {
         market.closePosition();
+
+        /// Withdraws all margin in `market` to this NFT and then transfer to owner.
         market.withdrawAllMargin();
+        marginToken.transfer(ownerOf(_tokenId), marginToken.balanceOf(address(this)));
 
-        // TODO: Send this margin back to the Manager, ensuring this is owned by the user, not the NFT.
-
-        _burn(1);
+        _burn(_tokenId);
     }
 
     function depositMargin(uint256 _amount) public {

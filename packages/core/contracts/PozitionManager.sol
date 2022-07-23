@@ -134,7 +134,7 @@ contract PozitionManager is ReentrancyGuard {
         int256 _size
     ) internal returns (Pozition position) {
         position = Pozition(implementation.clone());
-        position.initialize(_market, _margin, _size);
+        position.initialize(_market, _margin, _size, marginToken);
 
         allMintedPositions[_trader].push(position);
 

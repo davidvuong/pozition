@@ -4,6 +4,8 @@ import SynthUtilOptimismAbi from "./abis/SynthUtilOptimism.json";
 import SynthUtilOptimismKovanAbi from "./abis/SynthUtilOptimismKovan.json";
 import ProxyERC20SUSDOptimismAbi from "./abis/ProxyERC20SUSDOptimism.json";
 import ProxyERC20SUSDOptimismKovanAbi from "./abis/ProxyERC20SUSDOptimismKovan.json";
+import FuturesMarketOptimismKovanAbi from "./abis/FuturesMarketOptimismKovan.json";
+import FuturesMarketOptimismAbi from "./abis/FuturesMarketOptimism.json";
 
 export enum Market {
   ETH = "ETH",
@@ -64,8 +66,8 @@ export const CHAIN_ADDRESSES: Record<number, Record<string, string>> = {
   69: {
     SUSD: "0xaA5068dC2B3AADE533d3e52C6eeaadC6a8154c57",
     SYNTH_UTIL: "0x5DF689ea1FB350bcB177Ff5e66ED8Dfe28C6045D",
-    POZITION_MANAGER: "0x2F12bA8aB1701705D4b32A40DeC5DAA356647643",
-    POZITON: "0x7eC6461E0623cE8C7081FC82228036d32D37b4a5",
+    POZITION_MANAGER: "0x4cFE4f2EcD2506720a14a7e4BDC267179EBc85F3",
+    POZITON: "0x5207085afB2FFeEaD66B6E07109056EE0b433872",
   },
 };
 
@@ -74,12 +76,14 @@ export const CHAIN_ABIS: Record<number, Record<string, ContractInterface>> = {
   10: {
     SYNTH_UTIL_ABI: SynthUtilOptimismAbi,
     SUSD_ABI: ProxyERC20SUSDOptimismAbi,
+    FUTURES_MARKET_ABI: FuturesMarketOptimismAbi,
   },
 
   // Optimism Kovan
   69: {
     SYNTH_UTIL_ABI: SynthUtilOptimismKovanAbi,
     SUSD_ABI: ProxyERC20SUSDOptimismKovanAbi,
+    FUTURES_MARKET_ABI: FuturesMarketOptimismKovanAbi,
   },
 };
 

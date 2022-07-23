@@ -24,6 +24,12 @@ export const Header = () => {
   const classNameFn = (props: { isActive: boolean }) =>
     classNames(HEADER_LINK_CLASSES, { "text-gray-200": props.isActive });
 
+  const navItems = [
+    { label: "Home", to: "/" },
+    { label: Math.random() >= 0.5 ? "Pozition" : "Ponzition", to: "/pozition" },
+    { label: "Hodl", to: "/hodl" },
+  ];
+
   return (
     <Popover className="relative bg-black-800 shadow">
       <div className="mx-auto px-4 sm:px-6">
@@ -41,15 +47,11 @@ export const Header = () => {
             </Popover.Button>
           </div>
           <div className="hidden lg:flex space-x-10 bg-gray-800 py-2 px-4 rounded-2xl">
-            <NavLink className={classNameFn} to="/">
-              Home
-            </NavLink>
-            <NavLink className={classNameFn} to="/pozition">
-              Pozition
-            </NavLink>
-            <NavLink className={classNameFn} to="/gallery">
-              Gallery
-            </NavLink>
+            {navItems.map(({ label, to }) => (
+              <NavLink key={label} className={classNameFn} to={to}>
+                {label}
+              </NavLink>
+            ))}
           </div>
           <div className="hidden justify-end lg:flex lg:flex-1 lg:w-0">
             <CustomConnectWallet />
@@ -83,15 +85,11 @@ export const Header = () => {
               </div>
             </div>
             <div className="flex flex-col py-6 px-5 space-y-6">
-              <NavLink className={classNameFn} to="/">
-                Home
-              </NavLink>
-              <NavLink className={classNameFn} to="/pozition">
-                Pozition
-              </NavLink>
-              <NavLink className={classNameFn} to="/gallery">
-                Gallery
-              </NavLink>
+              {navItems.map(({ label, to }) => (
+                <NavLink key={label} className={classNameFn} to={to}>
+                  {label}
+                </NavLink>
+              ))}
               <CustomConnectWallet />
             </div>
           </div>

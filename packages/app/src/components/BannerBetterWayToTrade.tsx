@@ -59,7 +59,7 @@ export const BannerBetterWayToTrade = () => {
           <PageSubtitle>
             Multi-positions across multi-wallets is just{" "}
             <span className="text-red-500">bad experience</span>. Focus on the
-            money. Use <span className="font-misto">pozition</span>.
+            money. Use <span className="font-misto">ponzition</span>.
           </PageSubtitle>
         </div>
       </div>

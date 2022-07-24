@@ -14,10 +14,10 @@ export const UnsafeAlert = () => {
           <h3 className="uppercase font-medium text-lg text-yellow-800">
             Proceed with caution
           </h3>
-          <div className="mt-2 font-base text-yellow-700">
+          <div className="mt-2 font-base text-sm text-yellow-700">
             <p>
-              Pozition.finance is an experimental project. We will not liable
-              for any loss of funds. Review{" "}
+              Pozition.finance is an experimental project. We are not liable for
+              any loss of funds. We recommend reviewing the{" "}
               <a
                 className="underline"
                 href="https://github.com/davidvuong/pozition"

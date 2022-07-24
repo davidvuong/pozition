@@ -31,7 +31,7 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
   };
 
   return (
-    <li className="flex items-center justify-between w-full h-32 px-4 hover:bg-black-800">
+    <li className="flex items-center justify-between w-full h-28 px-4 hover:bg-black-800">
       <div className="flex space-x-4">
         <a
           href={etherscanUri + `address/${pozition.contract.address}`}
@@ -43,7 +43,7 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
               `/pozitions/${pozition.side.toLowerCase()}.png`
             }
             alt={`Pozition Side: ${pozition.side}`}
-            className="flex h24 w-24 rounded-full hover:cursor-pointer"
+            className="flex h-20 w-20 rounded-full hover:cursor-pointer"
             draggable={false}
           />
         </a>
@@ -59,7 +59,7 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
               }
               draggable={false}
             />
-            <h1 className="flex items-center text-3xl text-gray-200 font-light">
+            <h1 className="flex items-center text-2xl text-gray-200 font-light">
               <span>{pozition.marketKey} / sUSD</span>
               <span
                 className={classNames(
@@ -74,21 +74,24 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
               </span>
             </h1>
           </div>
-          <p className="text-gray-200 font-light">
-            Est. PRICE ~$
+          <p className="text-gray-200 text-sm font-light">
+            <span className="font-semibold text-xs mr-2">
+              [{pozition.side}]
+            </span>
+            EST. PRICE ~$
             {prettyFormatBigNumber(synths[pozition.marketKey], "0")} USD{" "}
             <span className="text-xs">&#9679;</span>{" "}
-            <span className="font-semibold">{pozition.side}</span>
           </p>
         </div>
       </div>
       <div className="flex justify-center items-center h-32">
         <div className="flex flex-col justify-center px-2 h-28 w-48 border-r border-gray-800">
-          <p className="flex uppercase text-gray-200 text-lg font-light">
+          <p className="flex uppercase text-gray-200 text-base font-light">
             Size / Margin
           </p>
           <p className="flex text-gray-200">
-            ~{prettyFormatBigNumber(pozition.originalSize.abs())} / $
+            ~{prettyFormatBigNumber(pozition.originalSize.abs())}{" "}
+            <span className="font-light mx-1">/</span> $
             {prettyFormatBigNumber(pozition.originalMargin, "0", 2)} sUSD{" "}
           </p>
         </div>

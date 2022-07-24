@@ -114,13 +114,14 @@ export const MyPozitionsTable = () => {
 
   return (
     <div className="flex flex-col space-y-2 shadow overflow-hidden rounded-lg max-w-7xl w-full mb-12">
-      <button
-        type="button"
-        className="flex w-full justify-end"
-        onClick={() => handleRefresh()}
-      >
-        <RefreshIcon className="h-6 w-6 text-gray-200 hover:text-gray-400" />
-      </button>
+      <div className="flex flex-row justify-end items-center space-x-2 w-full">
+        <span className="text-gray-200 text-sm font-light">
+          # Ponzitions: {pozitions.length}
+        </span>
+        <button type="button" onClick={() => handleRefresh()}>
+          <RefreshIcon className="h-6 w-6 text-gray-200 hover:text-gray-400" />
+        </button>
+      </div>
       <ul
         role="list"
         className={classNames("divide-y divide-gray-800 bg-black-700", {

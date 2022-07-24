@@ -1,23 +1,20 @@
 import classNames from "classnames";
-import { BigNumber } from "ethers";
 import { useContext, useState } from "react";
 import { useNetwork } from "wagmi";
 import { CHAIN_ETHERSCAN_URIS, getDefaultChainId } from "../constants";
+import { SynthMarketContext } from "../context/SynthMarket";
 import { TransactionNotificationContext } from "../context/TransactionNotification";
 import { prettyFormatBigNumber } from "../utils";
 import type { PozitionMetadata } from "./MyPozitionsTable";
 
 export interface MyPozitionsTableRowProps {
-  synthRates: Record<string, BigNumber>;
   pozition: PozitionMetadata;
 }
 
-export const MyPozitionsTableRow = ({
-  synthRates,
-  pozition,
-}: MyPozitionsTableRowProps) => {
+export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
   const { showNotification } = useContext(TransactionNotificationContext);
   const [isClosing, setIsClosing] = useState(false);
+  const { synths } = useContext(SynthMarketContext);
   const { chain } = useNetwork();
   const chainId = getDefaultChainId(chain);
   const etherscanUri = CHAIN_ETHERSCAN_URIS[chainId];
@@ -78,10 +75,8 @@ export const MyPozitionsTableRow = ({
           </div>
           <p className="text-gray-200 font-light">
             Est. PRICE ~$
-            {prettyFormatBigNumber(
-              synthRates[pozition.marketKey],
-              "0"
-            )} USD <span className="text-xs">&#9679;</span>{" "}
+            {prettyFormatBigNumber(synths[pozition.marketKey], "0")} USD{" "}
+            <span className="text-xs">&#9679;</span>{" "}
             <span className="font-semibold">{pozition.side}</span>
           </p>
         </div>

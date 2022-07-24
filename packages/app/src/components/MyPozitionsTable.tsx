@@ -1,11 +1,11 @@
 import { RefreshIcon } from "@heroicons/react/solid";
 import classNames from "classnames";
 import { BigNumber, Contract, ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAccount, useNetwork, useSigner } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
+import { SynthMarketContext } from "../context/SynthMarket";
 import { usePozitionContracts } from "../hooks/usePozitionContracts";
-import { useSynthetixContracts } from "../hooks/useSynthetixContracts";
 import { PositionSide } from "../typed";
 import { MyPozitionsTableRow } from "./MyPozitionsTableRow";
 
@@ -23,12 +23,8 @@ export interface PozitionMetadata {
 
 export const MyPozitionsTable = () => {
   const navigate = useNavigate();
-
-  // TODO: Move this into a context provider and share data across components.
-  const [synthRates, setSynthRates] = useState<Record<string, BigNumber>>({});
   const { address } = useAccount();
-  const { chain } = useNetwork();
-  const { SynthUtil } = useSynthetixContracts();
+  const { refreshSynths } = useContext(SynthMarketContext);
 
   // TODO: Use the Pozition type generated from typechain here please!
   const [isLoadingPozitions, setIsLoadingPozitions] = useState(true);
@@ -37,22 +33,6 @@ export const MyPozitionsTable = () => {
     onError: (err) => console.error("Error", err),
   });
   const { PozitionManagerContract, PozitionAbi } = usePozitionContracts();
-
-  const fetchSynthRates = async () => {
-    if (!SynthUtil) {
-      return;
-    }
-    const [tokens, rates] = await SynthUtil.synthsRates();
-    setSynthRates(
-      tokens.reduce(
-        (acc: Record<string, BigNumber>, token: string, idx: number) => {
-          acc[ethers.utils.parseBytes32String(token)] = rates[idx];
-          return acc;
-        },
-        {} as Record<string, BigNumber>
-      )
-    );
-  };
 
   const fetchPozitions = async () => {
     if (!address || !signer) {
@@ -99,17 +79,13 @@ export const MyPozitionsTable = () => {
   };
 
   useEffect(() => {
-    fetchSynthRates();
-  }, [chain]);
-
-  useEffect(() => {
     fetchPozitions();
     setIsLoadingPozitions(true);
   }, [address, signer]);
 
   const handleRefresh = async () => {
     fetchPozitions();
-    fetchSynthRates();
+    refreshSynths();
   };
 
   const handleOpenNewPozition = () => navigate("/pozition");
@@ -155,7 +131,6 @@ export const MyPozitionsTable = () => {
           <MyPozitionsTableRow
             key={pozition.contract.address}
             pozition={pozition}
-            synthRates={synthRates}
           />
         ))}
       </ul>

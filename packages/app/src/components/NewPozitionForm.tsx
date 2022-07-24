@@ -14,6 +14,7 @@ import { prettyFormatBigNumber } from "../utils";
 import { PositionSide } from "../typed";
 import { usePozitionContracts } from "../hooks/usePozitionContracts";
 import { TransactionNotificationContext } from "../context/TransactionNotification";
+import { SynthMarketContext } from "../context/SynthMarket";
 
 export const OpenPositionButton = styled.button.attrs({
   className: `
@@ -59,18 +60,14 @@ interface CreatePozitionValues {
 }
 
 export interface NewPozitionFormProps {
-  synthRates: Record<string, BigNumber>;
   market: Market;
   onSwitch: () => void;
 }
 
-export const NewPozitionForm = ({
-  synthRates,
-  market,
-  onSwitch,
-}: NewPozitionFormProps) => {
+export const NewPozitionForm = ({ market, onSwitch }: NewPozitionFormProps) => {
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
+  const { synths } = useContext(SynthMarketContext);
   const { balance: sUSDBalance, approve, isApproved } = useSUSDBalance();
   const { PozitionManagerContract } = usePozitionContracts();
   const { showNotification } = useContext(TransactionNotificationContext);
@@ -113,7 +110,7 @@ export const NewPozitionForm = ({
       try {
         actions.setSubmitting(true);
 
-        const marketRate = synthRates[`s${values.market}`] ?? BigNumber.from(0);
+        const marketRate = synths[`s${values.market}`] ?? BigNumber.from(0);
         if (marketRate.eq(0)) {
           throw new Error(`No market rate for market '${values.market}'`);
         }
@@ -181,7 +178,7 @@ export const NewPozitionForm = ({
           return "Open Pozition";
         };
 
-        const marketRate = synthRates[`s${values.market}`] ?? BigNumber.from(0);
+        const marketRate = synths[`s${values.market}`] ?? BigNumber.from(0);
         const positionSize = calcPositionSize(
           values.totalLeveragedAmount,
           marketRate

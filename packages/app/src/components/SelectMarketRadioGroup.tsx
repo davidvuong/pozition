@@ -1,23 +1,24 @@
 import { RadioGroup } from "@headlessui/react";
 import classNames from "classnames";
-import { BigNumber } from "ethers";
+import { useContext } from "react";
 import { Market, MARKET_TO_NAME } from "../constants";
+import { SynthMarketContext } from "../context/SynthMarket";
 import { prettyFormatBigNumber } from "../utils";
 import { SelectedMarketHeader } from "./SelectedMarketHeader";
 
 export interface SelectMarketRadioGroupProps {
   selected: Market;
-  synthRates: Record<string, BigNumber>;
   onSelect: (market: Market) => void;
   onSwitch: () => void;
 }
 
 export const SelectMarketRadioGroup = ({
   selected,
-  synthRates,
   onSelect,
   onSwitch,
 }: SelectMarketRadioGroupProps) => {
+  const { synths } = useContext(SynthMarketContext);
+
   const handleOnSelect = (market: Market) => {
     onSelect(market);
     onSwitch();
@@ -28,8 +29,8 @@ export const SelectMarketRadioGroup = ({
       label: `s${market} / sUSD`,
       market,
       description: `${MARKET_TO_NAME[market]} Futures Market`,
-      rawPrice: synthRates[`s${market}`],
-      price: prettyFormatBigNumber(synthRates[`s${market}`], "0"),
+      rawPrice: synths[`s${market}`],
+      price: prettyFormatBigNumber(synths[`s${market}`], "0"),
     }))
     .filter(({ rawPrice }) => rawPrice); // Hide any markets with a 0 rate (unsupported on network).
 

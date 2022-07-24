@@ -47,7 +47,7 @@ export const SelectMarketRadioGroup = ({
                 classNames(
                   checked ? "border-transparent" : "border-gray-500",
                   active ? "border-gray-200 ring-2 ring-gray-200" : "",
-                  "relative block bg-gray-700 w-96 border rounded-lg shadow-sm px-6 py-4 cursor-pointer sm:flex sm:justify-between focus:outline-none"
+                  "relative block bg-gray-700 w-80 border rounded-lg shadow-sm px-6 py-4 cursor-pointer sm:w-96 sm:flex sm:justify-between focus:outline-none"
                 )
               }
             >

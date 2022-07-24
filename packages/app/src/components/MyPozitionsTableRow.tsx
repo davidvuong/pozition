@@ -79,8 +79,7 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
               [{pozition.side}]
             </span>
             EST. PRICE ~$
-            {prettyFormatBigNumber(synths[pozition.marketKey], "0")} USD{" "}
-            <span className="text-xs">&#9679;</span>{" "}
+            {prettyFormatBigNumber(synths[pozition.marketKey], "0")} USD
           </p>
         </div>
       </div>

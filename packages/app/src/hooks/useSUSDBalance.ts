@@ -51,6 +51,7 @@ export const useSUSDBalance = () => {
     if (!isConnected) {
       return false;
     }
+
     const allowance: ethers.BigNumber = await sUSDContract.allowance(
       address,
       CHAIN_ADDRESSES[chain!.id].POZITION_MANAGER
@@ -75,6 +76,7 @@ export const useSUSDBalance = () => {
       isLoadingSUSDBalance: false,
       hasAllownace,
       approve,
+      isApproved,
     };
   }
   return {

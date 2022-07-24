@@ -150,15 +150,17 @@ export const NewPozitionForm = ({
         };
 
         const getSubmitButtonLabel = () => {
+          if (isSubmitting) {
+            return "Submitting transaction...";
+          }
+
           if (!isConnected) {
             return "Connect Wallet";
           }
           if (!isApproved) {
             return "Approve sUSD";
           }
-          if (isSubmitting) {
-            return "Submitting transaction...";
-          }
+
           return "Open Pozition";
         };
 

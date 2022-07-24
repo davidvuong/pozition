@@ -35,7 +35,7 @@ contract Pozition is Initializable, ERC721 {
     /**
      * @dev The original amount of margin used for this position when opened.
      */
-    uint256 public orignialMargin;
+    uint256 public originalMargin;
 
     /**
      * @dev The original size used when this position opened.
@@ -119,7 +119,7 @@ contract Pozition is Initializable, ERC721 {
         // display, this view returns everything in one go.
         return (
             isOpen(),
-            orignialMargin,
+            originalMargin,
             originalSize,
             pnl,
             market.marketKey(),
@@ -138,12 +138,12 @@ contract Pozition is Initializable, ERC721 {
      */
     function initialize(
         IFuturesMarket _market,
-        uint256 _orignialMargin,
+        uint256 _originalMargin,
         int256 _originalSize,
         IERC20 _marginToken
     ) public initializer {
         market = _market;
-        orignialMargin = _orignialMargin;
+        originalMargin = _originalMargin;
         originalSize = _originalSize;
         marginToken = _marginToken;
     }

@@ -32,17 +32,26 @@ export const OpenPositionButton = styled.button.attrs({
     via-red-900
     to-gray-800
 
+    disabled:opacity-50
+
     hover:text-gray-50
+    disabled:hover:text-gray-200
 
     focus:outline-none
     focus:ring-gray-500
   `,
 })``;
 
+enum ExtendedPositionSide {
+  UNKNOWN = "UNKNOWN",
+}
+
+type FormPositionSide = PositionSide | ExtendedPositionSide | undefined;
+
 interface CreatePozitionValues {
   market: Market;
   margin: string | undefined;
-  side: PositionSide | undefined;
+  side: FormPositionSide;
   totalLeveragedAmount: string | undefined;
 }
 
@@ -64,7 +73,7 @@ export const NewPozitionForm = ({
   const initialFormValues: CreatePozitionValues = {
     market,
     margin: "",
-    side: PositionSide.UNKNOWN,
+    side: ExtendedPositionSide.UNKNOWN,
     totalLeveragedAmount: "",
   };
 
@@ -191,7 +200,7 @@ export const NewPozitionForm = ({
           );
         };
 
-        const handleUpdateSide = (side: PositionSide) =>
+        const handleUpdateSide = (side: FormPositionSide) =>
           setFieldValue("side", side);
 
         return (
@@ -250,7 +259,7 @@ export const NewPozitionForm = ({
                 <p className="p-2 uppercase tracking-tight font-semibold">
                   Leverage
                 </p>
-                <p>Size: {prettyFormatBigNumber(positionSize, "0")}</p>
+                <p>Size: {prettyFormatBigNumber(positionSize, "0", 6)}</p>
               </div>
 
               <div className="flex flex-grow items-center justify-between px-2 bg-gray-800 rounded-lg">

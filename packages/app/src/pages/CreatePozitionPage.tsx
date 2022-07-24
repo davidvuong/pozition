@@ -81,6 +81,7 @@ export const CreatePozitionPage = () => {
   if (isSelectingMarket) {
     return (
       <Section>
+        <PageHeaderTitle>Create New Pozition</PageHeaderTitle>
         <SelectMarketRadioGroup
           selected={selectedMarket}
           synthRates={synthRates}

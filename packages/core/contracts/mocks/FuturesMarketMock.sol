@@ -8,6 +8,8 @@ import "../interfaces/IFuturesMarket.sol";
 contract FuturesMarketMock is IFuturesMarket {
     using Counters for Counters.Counter;
 
+    bytes32 public marketKey = "sFAKE";
+
     bool public isNextCallReverted;
 
     Counters.Counter private positionCounter;
@@ -84,5 +86,19 @@ contract FuturesMarketMock is IFuturesMarket {
             position = positions[msg.sender];
         }
         require(position.size > 0, "Error: Negative size");
+    }
+
+    function remainingMargin(address account)
+        external
+        view
+        returns (uint marginRemaining, bool invalid)
+    {
+        return (uint(margins[account].amount), false);
+    }
+
+    function profitLoss(
+        address /* account */
+    ) external pure returns (int pnl, bool invalid) {
+        return (0, false);
     }
 }

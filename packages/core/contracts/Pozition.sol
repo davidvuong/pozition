@@ -33,14 +33,14 @@ contract Pozition is Initializable, ERC721 {
     IFuturesMarket public market;
 
     /**
-     * @dev The initial amount of margin used for this position when opened.
+     * @dev The original amount of margin used for this position when opened.
      */
-    uint256 public margin;
+    uint256 public orignialMargin;
 
     /**
-     * @dev The size used when this position opened.
+     * @dev The original size used when this position opened.
      */
-    int256 public size;
+    int256 public originalSize;
 
     /**
      * @dev Address of the ERC20 margin token.
@@ -49,14 +49,25 @@ contract Pozition is Initializable, ERC721 {
 
     /// Constructor ///
 
-    constructor() ERC721("Pozition", "POZ") {}
+    constructor() ERC721("Pozition", "PONZI") {}
 
+    /// View Functions ///
+
+    /**
+     * @dev Standard ERC721-metadata `name` function.
+     *
+     * We're explicitly overriding here because subsequent deploys via a minimal proxy clone doesn't
+     * invoke the constructor (only initialzier). Hence, neither `symbol` or `name` will have a value.
+     */
     function name() public view virtual override returns (string memory) {
         return "Pozition";
     }
 
+    /**
+     * @dev Standard ERC721-metadata `symbol` function.
+     */
     function symbol() public view virtual override returns (string memory) {
-        return "POZ";
+        return "PONZI"; // hue hue hue.
     }
 
     /**
@@ -66,10 +77,10 @@ contract Pozition is Initializable, ERC721 {
         return 1;
     }
 
-    /// View Functions ///
-
     /**
      * @dev Returns true if the position is still open and hence closeable. False otherwise.
+     *
+     * This seems like a common enough piece of information to want to wrap around for exposure.
      */
     function isOpen() public view returns (bool) {
         (, , , , int128 _size) = market.positions(address(this));
@@ -83,10 +94,38 @@ contract Pozition is Initializable, ERC721 {
             bool,
             uint256,
             int256,
+            int256,
+            bytes32,
+            uint256,
             IFuturesMarket
         )
     {
-        return (isOpen(), margin, size, market);
+        address me = address(this);
+
+        // TODO: Deal with 2nd `invalid` argument.
+        //
+        // Docs don't say anything but this comes from `assetPrice`. Haven't dug into what it means to have an invalid
+        // price.
+        //
+        // @see: https://github.com/Synthetixio/synthetix/blob/develop/contracts/MixinFuturesViews.sol#L81
+        (uint256 remainingMargin, ) = market.remainingMargin(me);
+
+        // TODO: This is also true for PnL.
+        (int256 pnl, ) = market.profitLoss(me);
+
+        // TODO: Kind of terrible that we return nameless data as an array. Perhaps a struct would be better here?
+        //
+        // Rather than the frontend making 7 API calls to fetch snippets of data in every pozition they want to
+        // display, this view returns everything in one go.
+        return (
+            isOpen(),
+            orignialMargin,
+            originalSize,
+            pnl,
+            market.marketKey(),
+            remainingMargin,
+            market
+        );
     }
 
     /// Mutative Functions ///
@@ -99,20 +138,24 @@ contract Pozition is Initializable, ERC721 {
      */
     function initialize(
         IFuturesMarket _market,
-        uint256 _margin,
-        int256 _size,
+        uint256 _orignialMargin,
+        int256 _originalSize,
         IERC20 _marginToken
     ) public initializer {
         market = _market;
-        margin = _margin;
-        size = _size;
+        orignialMargin = _orignialMargin;
+        originalSize = _originalSize;
         marginToken = _marginToken;
 
         _tokenId = _tokenId;
     }
 
     function openAndTransfer(address _trader) public {
-        market.modifyPosition(size);
+        // TODO: Do not allow this function to be called after it's already called.
+        //
+        // Should this just be part of the `initialize`? I think not because no margin
+        // had been transferred at that point.
+        market.modifyPosition(originalSize);
         _mint(_trader, _tokenId);
     }
 

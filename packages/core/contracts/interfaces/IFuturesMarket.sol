@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 
 interface IFuturesMarket {
+    function marketKey() external view returns (bytes32);
+
     function positions(address account)
         external
         view
@@ -14,6 +16,10 @@ interface IFuturesMarket {
         );
 
     function transferMargin(int marginDelta) external;
+
+    function remainingMargin(address account) external view returns (uint, bool);
+
+    function profitLoss(address account) external view returns (int, bool);
 
     function closePosition() external;
 

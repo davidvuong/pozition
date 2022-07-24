@@ -243,6 +243,9 @@ contract PozitionManager is ReentrancyGuard {
      * @dev Returns all previously minted NFT positions.
      */
     function mintedPositionsOf(address trader) public view returns (Pozition[] memory) {
+        // TODO: Fix this. This is not scalable. Need some kind of pagination.
+        //
+        // I wonder how efficient data structures are in Solidity? What if I want to sort or filter?
         return allMintedPositions[trader];
     }
 }

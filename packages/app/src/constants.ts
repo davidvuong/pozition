@@ -66,8 +66,8 @@ export const CHAIN_ADDRESSES: Record<number, Record<string, string>> = {
   69: {
     SUSD: "0xaA5068dC2B3AADE533d3e52C6eeaadC6a8154c57",
     SYNTH_UTIL: "0x5DF689ea1FB350bcB177Ff5e66ED8Dfe28C6045D",
-    POZITION_MANAGER: "0x4cFE4f2EcD2506720a14a7e4BDC267179EBc85F3",
-    POZITON: "0x5207085afB2FFeEaD66B6E07109056EE0b433872",
+    POZITION_MANAGER: "0x87e0a3D4098A9823A1e702a35A529ec43261EED6",
+    POZITON: "0x9e84e8f8EA231666Fe63deABC9bc33729f24869F",
   },
 };
 
@@ -87,9 +87,5 @@ export const CHAIN_ABIS: Record<number, Record<string, ContractInterface>> = {
   },
 };
 
-export const getDefaultChainId = (chain?: Chain): number => {
-  if (!chain) {
-    return DEFAULT_CHAIN;
-  }
-  return SUPPORTED_CHAIN_IDS[chain.id] ?? DEFAULT_CHAIN;
-};
+export const getDefaultChainId = (chain?: Chain): number =>
+  !chain ? DEFAULT_CHAIN : SUPPORTED_CHAIN_IDS[chain.id] ?? DEFAULT_CHAIN;

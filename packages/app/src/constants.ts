@@ -85,5 +85,10 @@ export const CHAIN_ABIS: Record<number, Record<string, ContractInterface>> = {
   },
 };
 
+export const CHAIN_ETHERSCAN_URIS: Record<number, string> = {
+  10: "https://optimistic.etherscan.io/",
+  69: "https://kovan-optimistic.etherscan.io/",
+};
+
 export const getDefaultChainId = (chain?: Chain): number =>
   !chain ? DEFAULT_CHAIN : SUPPORTED_CHAIN_IDS[chain.id] ?? DEFAULT_CHAIN;

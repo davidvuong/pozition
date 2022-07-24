@@ -5,13 +5,23 @@ import { PageHeaderTitle } from "../components/PageHeaderTitle";
 import { SUPPORTED_CHAIN_IDS } from "../constants";
 import { useSynthetixContracts } from "../hooks/useSynthetixContracts";
 
-const Section = styled.section.attrs({
+const SharedSectionClassNames = `
+  flex
+  flex-col
+  items-center
+  justify-center
+`;
+
+const BlanketErrorSection = styled.section.attrs({
   className: `
-    flex
-    flex-col
-    items-center
-    justify-center
+    ${SharedSectionClassNames}
+    w-full
+    h-full
   `,
+})``;
+
+const Section = styled.section.attrs({
+  className: SharedSectionClassNames,
 })``;
 
 const BlanketErrorMessage = styled.p.attrs({
@@ -31,16 +41,16 @@ export const HodlPage = () => {
   // TODO: Same set of checks are performed in CreatePozitionPage. Surely this can be refactored.
   if (!isConnected || !chain?.id || !SynthUtil) {
     return (
-      <Section>
+      <BlanketErrorSection>
         <BlanketErrorMessage>Please connect wallet</BlanketErrorMessage>
-      </Section>
+      </BlanketErrorSection>
     );
   }
   if (!SUPPORTED_CHAIN_IDS.includes(chain.id)) {
     return (
-      <Section>
+      <BlanketErrorSection>
         <BlanketErrorMessage>Oops! Unsupported Network</BlanketErrorMessage>
-      </Section>
+      </BlanketErrorSection>
     );
   }
 

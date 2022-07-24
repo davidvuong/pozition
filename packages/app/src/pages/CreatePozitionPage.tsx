@@ -8,15 +8,24 @@ import { NewPozitionForm } from "../components/NewPozitionForm";
 import { SelectMarketRadioGroup } from "../components/SelectMarketRadioGroup";
 import { PageHeaderTitle } from "../components/PageHeaderTitle";
 
-const Section = styled.section.attrs({
+const SharedSectionClassNames = `
+  flex
+  flex-col
+  items-center
+  justify-center
+  space-y-4
+  w-full
+`;
+
+const BlanketErrorSection = styled.section.attrs({
   className: `
-    flex
-    flex-col
-    items-center
-    justify-center
-    space-y-4
-    w-full
+    ${SharedSectionClassNames}
+    h-full
   `,
+})``;
+
+const Section = styled.section.attrs({
+  className: SharedSectionClassNames,
 })``;
 
 const BlanketErrorMessage = styled.p.attrs({
@@ -57,16 +66,16 @@ export const CreatePozitionPage = () => {
 
   if (!isConnected || !chain?.id || !SynthUtil) {
     return (
-      <Section>
+      <BlanketErrorSection>
         <BlanketErrorMessage>Please connect wallet</BlanketErrorMessage>
-      </Section>
+      </BlanketErrorSection>
     );
   }
   if (!SUPPORTED_CHAIN_IDS.includes(chain.id)) {
     return (
-      <Section>
+      <BlanketErrorSection>
         <BlanketErrorMessage>Oops! Unsupported Network</BlanketErrorMessage>
-      </Section>
+      </BlanketErrorSection>
     );
   }
   if (isSelectingMarket) {

@@ -29,6 +29,7 @@ export const useSUSDBalance = () => {
   const { data: balance, isLoading: isLoadingSUSDBalance } = useBalance({
     addressOrName: address,
     token: sUSD,
+    watch: true,
   });
 
   const sUSDContract = useContract({

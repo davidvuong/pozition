@@ -161,7 +161,8 @@ export const NewPozitionForm = ({
             !isConnected ||
             !values.margin ||
             !values.totalLeveragedAmount ||
-            !values.side
+            !values.side ||
+            new Big(values.margin).lt(50)
           );
         };
 
@@ -255,10 +256,7 @@ export const NewPozitionForm = ({
                 </div>
                 <div className="flex justify-between p-2 text-xs">
                   <p>sUSD Token {chain ? `(${chain.name})` : ""}</p>
-                  <p>
-                    1 sUSD ~$
-                    {prettyFormatBigNumber(synthRates["sUSD"], "1.00")}
-                  </p>
+                  <p>Min. $50 sUSD</p>
                 </div>
                 <TrendingUpIcon className="absolute h-6 w-6 -bottom-4 left-0 right-0 mx-auto bg-gray-800 p-1 rounded-full" />
               </div>

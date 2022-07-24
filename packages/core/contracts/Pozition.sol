@@ -25,7 +25,7 @@ contract Pozition is Initializable, ERC721 {
     /**
      * @dev The one and only ever tokenId for Pozition.
      */
-    uint256 private _tokenId;
+    uint256 private constant _tokenId = 1;
 
     /**
      * @dev The futures market we're operating in e.g. sBTC/sUSD.
@@ -146,8 +146,6 @@ contract Pozition is Initializable, ERC721 {
         orignialMargin = _orignialMargin;
         originalSize = _originalSize;
         marginToken = _marginToken;
-
-        _tokenId = _tokenId;
     }
 
     function openAndTransfer(address _trader) public {

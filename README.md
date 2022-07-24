@@ -74,7 +74,7 @@ yarn workspace @pozition/core deploy:kovan
 Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
 
 ```bash
-npx hardhat verify --network optimistic-kovan DEPLOYED_CONTRACT_ADDRESS <constructor arg 1> <constructor arg 2...>
+yarn workspace @pozition/core hardhat verify --network optimistic-kovan DEPLOYED_CONTRACT_ADDRESS <constructor arg 1> <constructor arg 2...>
 ```
 
 _This project uses Optimism so API keys must be created in https://optimistic.etherscan.io/_

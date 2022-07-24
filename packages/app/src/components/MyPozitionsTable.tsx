@@ -107,7 +107,7 @@ export const MyPozitionsTable = () => {
   const etherscanUri = CHAIN_ETHERSCAN_URIS[chainId];
 
   return (
-    <div className="shadow overflow-hidden rounded-lg max-w-7xl w-full">
+    <div className="shadow overflow-hidden rounded-lg max-w-7xl w-full mb-12">
       <ul role="list" className="divide-y divide-gray-800 bg-black-700">
         {pozitions.map((pozition) => (
           <li

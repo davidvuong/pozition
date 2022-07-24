@@ -11,6 +11,7 @@ import {
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { App } from "./App";
+import { TransactionNotificationContextProvider } from "./context/TransactionNotification";
 
 const { chains, provider } = configureChains(
   [chain.optimismKovan, chain.optimism],
@@ -33,9 +34,11 @@ const root = createRoot(container!);
 root.render(
   <WagmiConfig client={wagmiClient}>
     <RainbowKitProvider chains={chains} theme={darkTheme()}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <TransactionNotificationContextProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </TransactionNotificationContextProvider>
     </RainbowKitProvider>
   </WagmiConfig>
 );

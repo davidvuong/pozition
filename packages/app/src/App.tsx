@@ -7,6 +7,7 @@ import { Header } from "./components/Header";
 import { CreatePozitionPage } from "./pages/CreatePozitionPage";
 import { LandingPage } from "./pages/LandingPage";
 import { HodlPage } from "./pages/HodlPage";
+import { TransactionNotification } from "./components/TransactionNotification";
 
 export const App = () => {
   return (
@@ -19,6 +20,7 @@ export const App = () => {
           <Route path="/hodl" element={<HodlPage />} />
         </Routes>
       </main>
+      <TransactionNotification />
       <Footer />
     </div>
   );

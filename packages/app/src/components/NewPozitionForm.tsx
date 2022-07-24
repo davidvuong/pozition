@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import classNames from "classnames";
 import Big from "big.js";
+import { useContext } from "react";
 import { BigNumber, ethers } from "ethers";
 import { TrendingUpIcon } from "@heroicons/react/solid";
 import { Market, MARKET_TO_CONTRACTS } from "../constants";
@@ -12,6 +13,7 @@ import { UnsafeAlert } from "./UnsafeAlert";
 import { prettyFormatBigNumber } from "../utils";
 import { PositionSide } from "../typed";
 import { usePozitionContracts } from "../hooks/usePozitionContracts";
+import { TransactionNotificationContext } from "../context/TransactionNotification";
 
 export const OpenPositionButton = styled.button.attrs({
   className: `
@@ -71,6 +73,7 @@ export const NewPozitionForm = ({
   const { chain } = useNetwork();
   const { balance: sUSDBalance, approve, isApproved } = useSUSDBalance();
   const { PozitionManagerContract } = usePozitionContracts();
+  const { showNotification } = useContext(TransactionNotificationContext);
 
   const initialFormValues: CreatePozitionValues = {
     market,
@@ -128,11 +131,13 @@ export const NewPozitionForm = ({
           MARKET_TO_CONTRACTS[values.market]
         );
 
-        await PozitionManagerContract.depositMarginAndOpenPosition(
+        const res = await PozitionManagerContract.depositMarginAndOpenPosition(
           margin,
           values.side === PositionSide.SHORT ? size.mul(-1) : size,
           market
         );
+        showNotification(res.hash);
+        actions.resetForm();
       } finally {
         actions.setSubmitting(false);
       }

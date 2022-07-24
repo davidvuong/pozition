@@ -24,8 +24,9 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
       setIsClosing(true);
       const res = await pozition.contract.closeAndBurn();
       showNotification(res.hash);
-    } finally {
+    } catch (err) {
       setIsClosing(false);
+      throw err;
     }
   };
 

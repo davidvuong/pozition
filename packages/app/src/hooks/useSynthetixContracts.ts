@@ -1,6 +1,9 @@
 import { useContract, useNetwork, useProvider, useSigner } from "wagmi";
 import { CHAIN_ADDRESSES, CHAIN_ABIS, getDefaultChainId } from "../constants";
 
+// TODO: Store SyntUtil calls like SynthRates in context manager to be shared
+// TODO: Add mechansim to fetch rates in a setInterval
+
 export const useSynthetixContracts = () => {
   const { chain } = useNetwork();
   const provider = useProvider();

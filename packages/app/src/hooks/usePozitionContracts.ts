@@ -8,6 +8,9 @@ import {
 } from "wagmi";
 import { CHAIN_ADDRESSES, SUPPORTED_CHAIN_IDS } from "../constants";
 
+// TODO: Add context manager to deal with state from PozitionManager calls
+// TODO: Update ts-loader to use typechain generated type
+
 export const usePozitionContracts = () => {
   const { isConnected } = useAccount();
   const { data: signer } = useSigner();
@@ -18,20 +21,27 @@ export const usePozitionContracts = () => {
     ? CHAIN_ADDRESSES[chain.id]?.POZITION_MANAGER
     : undefined;
 
+  const PozitionManagerAbi = Artifacts.PozitionManager.abi;
+  const PozitionAbi = Artifacts.Pozition.abi;
+
   if (
     !chain ||
     !isConnected ||
     !SUPPORTED_CHAIN_IDS.includes(chain.id) ||
     !pozitionManagerAddress
   ) {
-    return { PozitionManagerContract: undefined };
+    return {
+      PozitionManagerContract: undefined,
+      PozitionManagerAbi,
+      PozitionAbi,
+    };
   }
 
   const PozitionManagerContract = useContract({
     addressOrName: pozitionManagerAddress,
-    contractInterface: Artifacts.PozitionManager.abi,
+    contractInterface: PozitionManagerAbi,
     signerOrProvider: signer ?? provider,
   });
 
-  return { PozitionManagerContract };
+  return { PozitionManagerContract, PozitionManagerAbi, PozitionAbi };
 };

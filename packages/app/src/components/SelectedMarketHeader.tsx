@@ -22,6 +22,7 @@ export const SelectedMarketHeader = ({
         <img
           className="h-6 w-6 rounded-full bg-gray-200"
           src={process.env.PUBLIC_URL + "/tokens/susd.webp"}
+          draggable={false}
         />
         <p>sUSD</p>
       </div>

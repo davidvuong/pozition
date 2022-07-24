@@ -27,7 +27,11 @@ export const TransactionNotificationContextProvider = memo(
         transactionHash,
       }));
       setTimeout(() => {
-        setState(() => iniitalNotificationValues);
+        setState((prevState) => ({
+          ...prevState,
+          show: false,
+          transactionHash: "",
+        }));
       }, 5000);
     };
 

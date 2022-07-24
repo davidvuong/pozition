@@ -101,7 +101,7 @@ export const MyPozitionsTableRow = ({
             Transfer
           </button>
           <button
-            className="uppercase text-sm text-gray-200 py-2 px-2 bg-gray-800 rounded-lg hover:bg-gray-600 disabled:opacity-50"
+            className="uppercase text-sm text-gray-200 py-2 px-2 bg-gray-800 rounded-lg hover:bg-gray-600 disabled:hover:bg-gray-800 disabled:opacity-50"
             disabled={!pozition.isOpen || isClosing}
             onClick={handleClosePozition}
           >

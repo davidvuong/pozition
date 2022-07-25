@@ -56,56 +56,6 @@ contract PozitionManager is ReentrancyGuard {
      */
     mapping(address => Pozition[]) private allMintedPositions;
 
-    /// Events ///
-
-    /**
-     * @dev Emitted when the NFT is 'cloned', effectively minted with the necessary attributes.
-     */
-    event Clone(
-        address owner,
-        IFuturesMarket market,
-        uint256 margin,
-        int256 size,
-        Pozition position
-    );
-
-    /**
-     * @dev Emitted when the implementation is updated by the owner.
-     *
-     * NOTE: Probably not needed right now but keeping this here.
-     */
-    event ImplementationChange(
-        address oldImplementation,
-        address newImplementation,
-        address updater
-    );
-
-    /**
-     * @dev Emitted with `amount` sUSD tokens are withdrawn from the margin vault by the `withdrawer`.
-     */
-    event WithdrawMargin(address withdrawer, address receiver, uint256 amount);
-
-    /**
-     * @dev Emitted with `amount` when `depositer` deposits sUSD.
-     */
-    event DepositMargin(address depositer, uint256 amount);
-
-    /**
-     * @dev Emitted when a position is successfully opened.
-     */
-    event PositionOpen(
-        address trader,
-        uint256 margin,
-        int256 size,
-        IFuturesMarket market,
-        Pozition position
-    );
-
-    /**
-     * @dev Emitted when a position is successfully opened.
-     */
-    event PositionClose(address trader, IFuturesMarket market, Pozition position);
-
     /// Constructor ///
 
     constructor(IAddressResolver _addressResolver, address _implementation) {
@@ -211,7 +161,7 @@ contract PozitionManager is ReentrancyGuard {
         position.depositMargin(_margin);
         position.openAndTransfer(msg.sender);
 
-        emit PositionOpen(msg.sender, _margin, _size, market, position);
+        emit OpenPosition(msg.sender, _margin, _size, market, position);
     }
 
     /**
@@ -224,8 +174,30 @@ contract PozitionManager is ReentrancyGuard {
         require(_position.isOpen(), "Position is not open.");
 
         _position.closeAndBurn();
-        emit PositionClose(msg.sender, _position.market(), _position);
+        emit ClosePosition(msg.sender, _position.market(), _position);
     }
+
+    /**
+     * @dev Invoked automatically by `Pozition.sol` when a transfer event occurs.
+     *
+     * A unidirectional Pozition transfer function. If the Pozition is already transferred then allMintedPositions
+     * is simply updated. However, if not, this will invoke `.transfer` on `_position` and update state after.
+     *
+     * NOTE: We allow closed pozitions to be transferrable.
+     *
+     * TODO: How to cleanly only allow this function to be callable by newly created minimal proxy contracts? Or
+     * perhaps better q, can we avoid using `allMintedPositions` to track pozitions altogether?
+     */
+    function transferPosition(Pozition _position, address _receiver) public {
+        require(address(_position) != address(0), "Position is addr(0).");
+
+        // `.transfer` call is invoked before this. Hence, we verify the _receiver is the ownerOf `_position`.
+        // require(_position.owner() == _receiver, "Receiver is not the owner.");
+
+        // The sender must the previous owner.
+    }
+
+    /// View Functions ///
 
     /**
      * @dev Utility method combining `deposit` and `openPosition`.
@@ -248,4 +220,29 @@ contract PozitionManager is ReentrancyGuard {
         // I wonder how efficient data structures are in Solidity? What if I want to sort or filter?
         return allMintedPositions[trader];
     }
+
+    /// Events ///
+
+    /**
+     * @dev Emitted when the NFT is 'cloned', effectively minted with the necessary attributes.
+     */
+    event Clone(
+        address owner,
+        IFuturesMarket market,
+        uint256 margin,
+        int256 size,
+        Pozition position
+    );
+
+    event WithdrawMargin(address withdrawer, address receiver, uint256 amount);
+    event DepositMargin(address depositer, uint256 amount);
+    event OpenPosition(
+        address trader,
+        uint256 margin,
+        int256 size,
+        IFuturesMarket market,
+        Pozition position
+    );
+    event ClosePosition(address trader, IFuturesMarket market, Pozition position);
+    event TransferPosition(address owner, address receiver, Pozition position);
 }

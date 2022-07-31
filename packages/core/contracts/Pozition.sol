@@ -190,10 +190,8 @@ contract Pozition is Initializable, ERC721 {
         marginToken.transfer(ownerOf(_tokenId), marginToken.balanceOf(address(this)));
     }
 
-    /** @dev Proxies into the operating market to Add more margin to an existing position. */
+    /** @dev Proxies into the operating market to add more margin. */
     function depositMargin(uint256 _amount) public onlyManager {
-        require(isOpen(), "Err: Position not open");
-
         /// We're `int` casting here because contracts in Synthetix Futures account for negatives rather than splitting
         /// the operation into 2 functions (positive is deposit, negative is withdraw).
         market.transferMargin(int256(_amount));

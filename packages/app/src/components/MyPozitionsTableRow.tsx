@@ -4,6 +4,7 @@ import { useNetwork } from "wagmi";
 import { CHAIN_ETHERSCAN_URIS, getDefaultChainId } from "../constants";
 import { SynthMarketContext } from "../context/SynthMarket";
 import { TransactionNotificationContext } from "../context/TransactionNotification";
+import { usePozitionContracts } from "../hooks/usePozitionContracts";
 import { prettyFormatBigNumber } from "../utils";
 import type { PozitionMetadata } from "./MyPozitionsTable";
 
@@ -16,13 +17,17 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
   const [isClosing, setIsClosing] = useState(false);
   const { synths } = useContext(SynthMarketContext);
   const { chain } = useNetwork();
+  const { PozitionManagerContract } = usePozitionContracts();
+
   const chainId = getDefaultChainId(chain);
   const etherscanUri = CHAIN_ETHERSCAN_URIS[chainId];
 
   const handleClosePozition = async () => {
     try {
       setIsClosing(true);
-      const res = await pozition.contract.closeAndBurn();
+      const res = await PozitionManagerContract.closePosition(
+        pozition.contract.address
+      );
       showNotification(res.hash);
     } catch (err) {
       setIsClosing(false);
@@ -89,7 +94,7 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
             Size / Margin
           </p>
           <p className="flex text-gray-200">
-            ~{prettyFormatBigNumber(pozition.originalSize.abs())}{" "}
+            {prettyFormatBigNumber(pozition.originalSize)}{" "}
             <span className="font-light mx-1">/</span> $
             {prettyFormatBigNumber(pozition.originalMargin, "0", 2)} sUSD{" "}
           </p>

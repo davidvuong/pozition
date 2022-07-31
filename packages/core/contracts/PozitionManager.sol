@@ -87,14 +87,29 @@ contract PozitionManager is ReentrancyGuard {
         emit Clone(_trader, _market, _margin, _size, position);
     }
 
+    /**
+     * @dev Internal function to remove an arbitrary position belonging to an `_owner` and shifting
+     * the array of minted positions to avoid.
+     *
+     * TODO: Consider replacing this with openzeppelin's `EnumerableSet`.
+     *
+     * https://docs.openzeppelin.com/contracts/4.x/api/utils#EnumerableSet
+     */
     function _findAndRemovePozition(address _owner, Pozition _position)
         internal
         returns (bool isRemoved)
     {
         Pozition[] storage positions = allMintedPositions[_owner];
 
-        // We can't shift `i + 1` because we'll hit index out of bounds on length == 1.
-        if (positions.length == 1 && positions[0] == _position) {
+        /// `_owner` has no positions to remove. This is an invalid transfer.
+        if (positions.length == 0) {
+            return false;
+        }
+
+        /// NOTE: Avoid shifting entirely if the last position is what we're removing.
+        ///
+        /// We can't shift `i + 1` because we'll hit index out of bounds if at end.
+        if (positions[positions.length - 1] == _position) {
             positions.pop();
             return true;
         }

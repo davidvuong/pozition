@@ -56,56 +56,6 @@ contract PozitionManager is ReentrancyGuard {
      */
     mapping(address => Pozition[]) private allMintedPositions;
 
-    /// Events ///
-
-    /**
-     * @dev Emitted when the NFT is 'cloned', effectively minted with the necessary attributes.
-     */
-    event Clone(
-        address owner,
-        IFuturesMarket market,
-        uint256 margin,
-        int256 size,
-        Pozition position
-    );
-
-    /**
-     * @dev Emitted when the implementation is updated by the owner.
-     *
-     * NOTE: Probably not needed right now but keeping this here.
-     */
-    event ImplementationChange(
-        address oldImplementation,
-        address newImplementation,
-        address updater
-    );
-
-    /**
-     * @dev Emitted with `amount` sUSD tokens are withdrawn from the margin vault by the `withdrawer`.
-     */
-    event WithdrawMargin(address withdrawer, address receiver, uint256 amount);
-
-    /**
-     * @dev Emitted with `amount` when `depositer` deposits sUSD.
-     */
-    event DepositMargin(address depositer, uint256 amount);
-
-    /**
-     * @dev Emitted when a position is successfully opened.
-     */
-    event PositionOpen(
-        address trader,
-        uint256 margin,
-        int256 size,
-        IFuturesMarket market,
-        Pozition position
-    );
-
-    /**
-     * @dev Emitted when a position is successfully opened.
-     */
-    event PositionClose(address trader, IFuturesMarket market, Pozition position);
-
     /// Constructor ///
 
     constructor(IAddressResolver _addressResolver, address _implementation) {
@@ -113,47 +63,84 @@ contract PozitionManager is ReentrancyGuard {
         implementation = _implementation;
 
         address sUSD = addressResolver.getAddress("ProxyERC20sUSD");
-        require(sUSD != address(0), "ProxyERC20sUSD not found.");
+        require(sUSD != address(0), "Err: ProxyERC20sUSD not found.");
         marginToken = IERC20(sUSD);
     }
 
-    /// Mutative Functions ///
+    /// Internal Functions ///
 
     /**
      * @dev Creates an exact copy of the `implementation` contract, following the minimal proxy pattern.
      *
      * IMPORTANT: `initialize` is not called here. It's expected the calling function will call `initialize` within
      * the same transaction as `clone`.
-     *
-     * TODO: How do I ensure that no one other than the manager can call this?
      */
-    function clone(
+    function _clone(
         address _trader,
         IFuturesMarket _market,
         uint256 _margin,
         int256 _size
     ) internal returns (Pozition position) {
         position = Pozition(implementation.clone());
-        position.initialize(_market, _margin, _size, marginToken);
-
-        allMintedPositions[_trader].push(position);
+        position.initialize(_market, _margin, _size, marginToken, this);
 
         emit Clone(_trader, _market, _margin, _size, position);
     }
 
     /**
+     * @dev Internal function to remove an arbitrary position belonging to an `_owner` and shifting
+     * the array of minted positions to avoid.
+     *
+     * TODO: Consider replacing this with openzeppelin's `EnumerableSet`.
+     *
+     * https://docs.openzeppelin.com/contracts/4.x/api/utils#EnumerableSet
+     */
+    function _findAndRemovePozition(address _owner, Pozition _position)
+        internal
+        returns (bool isRemoved)
+    {
+        Pozition[] storage positions = allMintedPositions[_owner];
+
+        /// `_owner` has no positions to remove. This is an invalid transfer.
+        if (positions.length == 0) {
+            return false;
+        }
+
+        /// NOTE: Avoid shifting entirely if the last position is what we're removing.
+        ///
+        /// We can't shift `i + 1` because we'll hit index out of bounds if at end.
+        if (positions[positions.length - 1] == _position) {
+            positions.pop();
+            return true;
+        }
+
+        isRemoved = false;
+        for (uint i = 0; i < positions.length; i++) {
+            if (positions[i] == _position || isRemoved) {
+                isRemoved = true;
+                positions[i] = positions[i + 1];
+            }
+        }
+        if (isRemoved) {
+            positions.pop();
+        }
+    }
+
+    /// Mutative Functions ///
+
+    /**
      * @dev Deposit sUSD into the manager to be used as margin when opening positions.
      */
     function deposit(uint256 _amount) public {
-        require(_amount > 0, "Deposit amount is too small.");
+        require(_amount > 0, "Err: Deposit amount too small.");
         require(
             marginToken.allowance(msg.sender, address(this)) >= _amount,
-            "Approve sUSD token first!"
+            "Err: sUSD not approved"
         );
 
         depositsByWalletAddress[msg.sender] += _amount;
         bool isSuccess = marginToken.transferFrom(msg.sender, address(this), _amount);
-        require(isSuccess, "Deposit failed. Bad transfer.");
+        require(isSuccess, "Err: Bad transfer, deposit failed.");
 
         emit DepositMargin(msg.sender, _amount);
     }
@@ -163,17 +150,17 @@ contract PozitionManager is ReentrancyGuard {
      * the address which will be receiving the sUSD upon a successful withdraw.
      */
     function withdraw(uint256 _amount, address _receiver) public nonReentrant {
-        require(_amount > 0, "Withdraw amount is too small.");
-        require(_receiver != address(0), "Receiver cannot be NULL.");
-        require(depositsByWalletAddress[msg.sender] > 0, "No margin to withdraw.");
+        require(_amount > 0, "Err: Withdraw amount too small.");
+        require(_receiver != address(0), "Err: Receiver is addr(0).");
+        require(depositsByWalletAddress[msg.sender] > 0, "Err: No margin.");
         require(
             depositsByWalletAddress[msg.sender] >= _amount,
-            "Withdrawing more than available."
+            "Err: Withdrawing more than available."
         );
 
         depositsByWalletAddress[msg.sender] -= _amount;
         bool isSuccess = marginToken.transfer(_receiver, _amount);
-        require(isSuccess, "Withdraw failed, bad transfer.");
+        require(isSuccess, "Err: Bad transfer, withdraw failed.");
 
         emit WithdrawMargin(msg.sender, _receiver, _amount);
     }
@@ -193,25 +180,24 @@ contract PozitionManager is ReentrancyGuard {
         int256 _size,
         bytes32 _market
     ) public returns (Pozition position) {
-        // Is this necessary? Should be double up on `require` or can I rely on `withdraw`?
-        require(_margin > 0, "Margin must be non-zero.");
-        require(depositsByWalletAddress[msg.sender] >= _margin, "Not enough margin.");
+        require(_margin > 0, "Err: Margin must be non-zero.");
+        require(depositsByWalletAddress[msg.sender] >= _margin, "Err: Not enough margin.");
 
         IFuturesMarket market = IFuturesMarket(addressResolver.getAddress(_market));
 
         // A non FuturesMarket contract but a registered contract on Synthetix can be called.
         //
         // TODO: What is an efficient way to check that only FuturesMarket contracts are specified?
-        require(address(market) != address(0), "Market not supported.");
+        require(address(market) != address(0), "Err: Unsupported market.");
 
-        position = Pozition(clone(msg.sender, market, _margin, _size));
+        position = Pozition(_clone(msg.sender, market, _margin, _size));
 
         withdraw(_margin, address(position));
 
         position.depositMargin(_margin);
-        position.openAndTransfer(msg.sender);
+        position.open(msg.sender);
 
-        emit PositionOpen(msg.sender, _margin, _size, market, position);
+        emit OpenPosition(msg.sender, _margin, _size, market, position);
     }
 
     /**
@@ -221,11 +207,49 @@ contract PozitionManager is ReentrancyGuard {
      * to be withdrawn or used in another position in the future but that is not currently implemented.
      */
     function closePosition(Pozition _position) external {
-        require(_position.isOpen(), "Position is not open.");
+        require(_position.isOpen(), "Err: Position not open.");
 
-        _position.closeAndBurn();
-        emit PositionClose(msg.sender, _position.market(), _position);
+        _position.close();
+        emit ClosePosition(msg.sender, _position.market(), _position);
     }
+
+    /**
+     * @dev Invoked automatically by `Pozition.sol` on ERC721._afterTokenTransfer.
+     *
+     * This function is invoked on all transfers, mints, and burns. Note that closing a Pozition does
+     * not automatically burn the Pozition NFT. As such, the NFT will still remain 'available'
+     * and transferrable until burnt.
+     */
+    function updateAllMintedPositions(
+        address _from,
+        address _to,
+        Pozition _position
+    ) public {
+        require(address(_position) != address(0), "Err: Position is addr(0).");
+        require(_from != _to, "Err: Same To/from address.");
+        require(_position.ownerOf(1) == _to, "Err: ownerOf must be _to");
+
+        if (_from == address(0)) {
+            allMintedPositions[_to].push(_position); // _mint
+        } else {
+            bool hasUpdatedMintedPositions = _findAndRemovePozition(_from, _position);
+            allMintedPositions[_to].push(_position);
+
+            if (!hasUpdatedMintedPositions) {
+                // NOTE: This could perhaps be too restrictive. If for whatever reason `allMintedPositions`
+                // encounters a bug which results in invalid mappings, we may want to refresh the mapping by
+                // calling this in the future.
+                revert("Err: _from not original owner");
+            }
+
+            // Only emit this event when operation is from _tansfer and not _burn.
+            if (_to != address(0)) {
+                emit TransferPosition(_from, _to, _position);
+            }
+        }
+    }
+
+    /// View Functions ///
 
     /**
      * @dev Utility method combining `deposit` and `openPosition`.
@@ -240,12 +264,37 @@ contract PozitionManager is ReentrancyGuard {
     }
 
     /**
-     * @dev Returns all previously minted NFT positions.
+     * @dev Returns all previously minted or received NFT positions.
      */
-    function mintedPositionsOf(address trader) public view returns (Pozition[] memory) {
+    function mintedPositionsOf(address _owner) public view returns (Pozition[] memory) {
         // TODO: Fix this. This is not scalable. Need some kind of pagination.
         //
         // I wonder how efficient data structures are in Solidity? What if I want to sort or filter?
-        return allMintedPositions[trader];
+        return allMintedPositions[_owner];
     }
+
+    /// Events ///
+
+    /**
+     * @dev Emitted when the NFT is 'cloned', effectively minted with the necessary attributes.
+     */
+    event Clone(
+        address owner,
+        IFuturesMarket market,
+        uint256 margin,
+        int256 size,
+        Pozition position
+    );
+
+    event WithdrawMargin(address from, address to, uint256 amount);
+    event DepositMargin(address depositer, uint256 amount);
+    event OpenPosition(
+        address trader,
+        uint256 margin,
+        int256 size,
+        IFuturesMarket market,
+        Pozition position
+    );
+    event ClosePosition(address trader, IFuturesMarket market, Pozition position);
+    event TransferPosition(address from, address to, Pozition position);
 }

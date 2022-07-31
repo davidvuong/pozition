@@ -4,25 +4,36 @@ import { useNetwork } from "wagmi";
 import { CHAIN_ETHERSCAN_URIS, getDefaultChainId } from "../constants";
 import { SynthMarketContext } from "../context/SynthMarket";
 import { TransactionNotificationContext } from "../context/TransactionNotification";
+import { usePozitionContracts } from "../hooks/usePozitionContracts";
 import { prettyFormatBigNumber } from "../utils";
 import type { PozitionMetadata } from "./MyPozitionsTable";
 
 export interface MyPozitionsTableRowProps {
   pozition: PozitionMetadata;
+  onTransfer: () => void;
+  isTransferring: boolean;
 }
 
-export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
+export const MyPozitionsTableRow = ({
+  pozition,
+  onTransfer,
+  isTransferring,
+}: MyPozitionsTableRowProps) => {
   const { showNotification } = useContext(TransactionNotificationContext);
   const [isClosing, setIsClosing] = useState(false);
   const { synths } = useContext(SynthMarketContext);
   const { chain } = useNetwork();
+  const { PozitionManagerContract } = usePozitionContracts();
+
   const chainId = getDefaultChainId(chain);
   const etherscanUri = CHAIN_ETHERSCAN_URIS[chainId];
 
   const handleClosePozition = async () => {
     try {
       setIsClosing(true);
-      const res = await pozition.contract.closeAndBurn();
+      const res = await PozitionManagerContract.closePosition(
+        pozition.contract.address
+      );
       showNotification(res.hash);
     } catch (err) {
       setIsClosing(false);
@@ -89,13 +100,17 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
             Size / Margin
           </p>
           <p className="flex text-gray-200">
-            ~{prettyFormatBigNumber(pozition.originalSize.abs())}{" "}
+            {prettyFormatBigNumber(pozition.originalSize)}{" "}
             <span className="font-light mx-1">/</span> $
             {prettyFormatBigNumber(pozition.originalMargin, "0", 2)} sUSD{" "}
           </p>
         </div>
         <div className="flex space-x-2 pl-4">
-          <button className="uppercase text-sm text-gray-200 py-2 px-2 bg-gray-800 hover:bg-gray-600 rounded-lg">
+          <button
+            className="uppercase text-sm text-gray-200 py-2 px-2 bg-gray-800 hover:bg-gray-600 rounded-lg"
+            onClick={onTransfer}
+            disabled={isTransferring}
+          >
             Transfer
           </button>
           <button

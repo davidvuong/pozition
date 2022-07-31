@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 /// Local Imports ///
 
+import "./PozitionManager.sol";
 import "./interfaces/IAddressResolver.sol";
 import "./interfaces/IFuturesMarket.sol";
 
@@ -47,9 +48,21 @@ contract Pozition is Initializable, ERC721 {
      */
     IERC20 public marginToken;
 
+    /**
+     * @dev Address of the PozitionManager that initialized this NFT.
+     */
+    PozitionManager public manager;
+
     /// Constructor ///
 
     constructor() ERC721("Pozition", "PONZI") {}
+
+    /// Modifiers ///
+
+    modifier onlyManager() {
+        require(msg.sender == address(manager), "Err: OnlyManager");
+        _;
+    }
 
     /// View Functions ///
 
@@ -128,6 +141,16 @@ contract Pozition is Initializable, ERC721 {
         );
     }
 
+    /// Internal Functions ///
+
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 /* tokenId */
+    ) internal override {
+        manager.updateAllMintedPositions(from, to, this);
+    }
+
     /// Mutative Functions ///
 
     /**
@@ -140,34 +163,35 @@ contract Pozition is Initializable, ERC721 {
         IFuturesMarket _market,
         uint256 _originalMargin,
         int256 _originalSize,
-        IERC20 _marginToken
+        IERC20 _marginToken,
+        PozitionManager _manager
     ) public initializer {
         market = _market;
         originalMargin = _originalMargin;
         originalSize = _originalSize;
         marginToken = _marginToken;
+        manager = _manager;
     }
 
-    function openAndTransfer(address _trader) public {
-        // TODO: Do not allow this function to be called after it's already called.
-        //
-        // Should this just be part of the `initialize`? I think not because no margin
-        // had been transferred at that point.
+    /** @dev Proxies into the operating market to open a new position. */
+    function open(address _trader) public onlyManager {
         market.modifyPosition(originalSize);
         _mint(_trader, _tokenId);
     }
 
-    function closeAndBurn() public {
+    /** @dev Proxies into the operating market to close an existing. */
+    function close() public onlyManager {
+        require(isOpen(), "Err: Position not open");
+
         market.closePosition();
 
         /// Withdraws all margin in `market` to this NFT and then transfer to owner.
         market.withdrawAllMargin();
         marginToken.transfer(ownerOf(_tokenId), marginToken.balanceOf(address(this)));
-
-        _burn(_tokenId);
     }
 
-    function depositMargin(uint256 _amount) public {
+    /** @dev Proxies into the operating market to add more margin. */
+    function depositMargin(uint256 _amount) public onlyManager {
         /// We're `int` casting here because contracts in Synthetix Futures account for negatives rather than splitting
         /// the operation into 2 functions (positive is deposit, negative is withdraw).
         market.transferMargin(int256(_amount));

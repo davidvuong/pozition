@@ -83,21 +83,26 @@ export const NewPozitionForm = ({ market, onSwitch }: NewPozitionFormProps) => {
     totalLeveragedAmount: string | undefined,
     rate: BigNumber
   ): BigNumber => {
-    if (
-      !totalLeveragedAmount ||
-      totalLeveragedAmount === "0" ||
-      !rate ||
-      rate.eq(0)
-    ) {
+    try {
+      if (
+        !totalLeveragedAmount ||
+        totalLeveragedAmount === "0" ||
+        !rate ||
+        rate.eq(0)
+      ) {
+        return BigNumber.from(0);
+      }
+
+      return BigNumber.from(
+        new Big(totalLeveragedAmount)
+          .div(ethers.utils.formatEther(rate))
+          .mul(new Big(10).pow(18))
+          .toFixed(0)
+      );
+    } catch (err) {
+      console.error("calcPositionSize error", err);
       return BigNumber.from(0);
     }
-
-    return BigNumber.from(
-      new Big(totalLeveragedAmount)
-        .div(ethers.utils.formatEther(rate))
-        .mul(new Big(10).pow(18))
-        .toFixed(0)
-    );
   };
 
   const handleSubmit = async (

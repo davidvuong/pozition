@@ -4,10 +4,13 @@ import { BigNumber, Contract, ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAccount, useSigner } from "wagmi";
+import { DEFAULT_TOKEN_ID } from "../constants";
 import { SynthMarketContext } from "../context/SynthMarket";
+import { TransactionNotificationContext } from "../context/TransactionNotification";
 import { usePozitionContracts } from "../hooks/usePozitionContracts";
 import { PositionSide } from "../typed";
 import { MyPozitionsTableRow } from "./MyPozitionsTableRow";
+import { TransferPozitionModal } from "./TransferPozitionModal";
 
 export interface PozitionMetadata {
   contract: Contract;
@@ -33,6 +36,14 @@ export const MyPozitionsTable = () => {
     onError: (err) => console.error("Error", err),
   });
   const { PozitionManagerContract, PozitionAbi } = usePozitionContracts();
+  const { showNotification } = useContext(TransactionNotificationContext);
+
+  // Transfer Modal 'Context'.
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [transferringPozition, setTransferringPozition] = useState<
+    PozitionMetadata | undefined
+  >();
+  const [isTransferring, setIsTransferring] = useState(false);
 
   const fetchPozitions = async () => {
     if (!address || !signer) {
@@ -83,6 +94,31 @@ export const MyPozitionsTable = () => {
     setIsLoadingPozitions(true);
   }, [address, signer]);
 
+  const handleOpenTransferModal = (pozition: PozitionMetadata) => {
+    setTransferringPozition(pozition);
+    setIsTransferModalOpen(true);
+  };
+  const handleCloseTransferModal = () => {
+    setTransferringPozition(undefined);
+    setIsTransferModalOpen(false);
+  };
+  const handleTransferPozition = async (to: string) => {
+    if (!transferringPozition) {
+      throw new Error("Unexpected error. Missing transferring pozition");
+    }
+
+    const contract = transferringPozition.contract;
+    try {
+      setIsTransferring(true);
+      console.log(address, to, DEFAULT_TOKEN_ID);
+      const res = await contract.transferFrom(address, to, DEFAULT_TOKEN_ID);
+      handleCloseTransferModal();
+      showNotification(res.hash);
+    } finally {
+      setIsTransferring(false);
+    }
+  };
+
   const handleRefresh = async () => {
     fetchPozitions();
     refreshSynths();
@@ -132,9 +168,17 @@ export const MyPozitionsTable = () => {
           <MyPozitionsTableRow
             key={pozition.contract.address}
             pozition={pozition}
+            onTransfer={() => handleOpenTransferModal(pozition)}
+            isTransferring={isTransferring}
           />
         ))}
       </ul>
+      <TransferPozitionModal
+        open={isTransferModalOpen}
+        isTransferring={isTransferring}
+        onTransfer={handleTransferPozition}
+        onClose={handleCloseTransferModal}
+      />
     </div>
   );
 };

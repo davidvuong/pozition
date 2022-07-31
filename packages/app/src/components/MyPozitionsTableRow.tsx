@@ -10,9 +10,15 @@ import type { PozitionMetadata } from "./MyPozitionsTable";
 
 export interface MyPozitionsTableRowProps {
   pozition: PozitionMetadata;
+  onTransfer: () => void;
+  isTransferring: boolean;
 }
 
-export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
+export const MyPozitionsTableRow = ({
+  pozition,
+  onTransfer,
+  isTransferring,
+}: MyPozitionsTableRowProps) => {
   const { showNotification } = useContext(TransactionNotificationContext);
   const [isClosing, setIsClosing] = useState(false);
   const { synths } = useContext(SynthMarketContext);
@@ -100,7 +106,11 @@ export const MyPozitionsTableRow = ({ pozition }: MyPozitionsTableRowProps) => {
           </p>
         </div>
         <div className="flex space-x-2 pl-4">
-          <button className="uppercase text-sm text-gray-200 py-2 px-2 bg-gray-800 hover:bg-gray-600 rounded-lg">
+          <button
+            className="uppercase text-sm text-gray-200 py-2 px-2 bg-gray-800 hover:bg-gray-600 rounded-lg"
+            onClick={onTransfer}
+            disabled={isTransferring}
+          >
             Transfer
           </button>
           <button

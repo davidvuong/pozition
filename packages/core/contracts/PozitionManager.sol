@@ -87,14 +87,20 @@ contract PozitionManager is ReentrancyGuard {
         emit Clone(_trader, _market, _margin, _size, position);
     }
 
-    function _findAndRemovePozition(address _trader, Pozition _position)
+    function _findAndRemovePozition(address _owner, Pozition _position)
         internal
         returns (bool isRemoved)
     {
-        Pozition[] storage positions = allMintedPositions[_trader];
+        Pozition[] storage positions = allMintedPositions[_owner];
+
+        // We can't shift `i + 1` because we'll hit index out of bounds on length == 1.
+        if (positions.length == 1 && positions[0] == _position) {
+            positions.pop();
+            return true;
+        }
 
         isRemoved = false;
-        for (uint i = 0; i < positions.length - 1; i++) {
+        for (uint i = 0; i < positions.length; i++) {
             if (positions[i] == _position || isRemoved) {
                 isRemoved = true;
                 positions[i] = positions[i + 1];
@@ -211,12 +217,14 @@ contract PozitionManager is ReentrancyGuard {
         if (_from == address(0)) {
             allMintedPositions[_to].push(_position); // _mint
         } else {
-            bool hasUpdatedMintedPositions = _findAndRemovePozition(_to, _position);
+            bool hasUpdatedMintedPositions = _findAndRemovePozition(_from, _position);
+            allMintedPositions[_to].push(_position);
+
             if (!hasUpdatedMintedPositions) {
                 // NOTE: This could perhaps be too restrictive. If for whatever reason `allMintedPositions`
                 // encounters a bug which results in invalid mappings, we may want to refresh the mapping by
                 // calling this in the future.
-                revert("Err: _to not original owner");
+                revert("Err: _from not original owner");
             }
 
             // Only emit this event when operation is from _tansfer and not _burn.
@@ -241,13 +249,13 @@ contract PozitionManager is ReentrancyGuard {
     }
 
     /**
-     * @dev Returns all previously minted NFT positions.
+     * @dev Returns all previously minted or received NFT positions.
      */
-    function mintedPositionsOf(address trader) public view returns (Pozition[] memory) {
+    function mintedPositionsOf(address _owner) public view returns (Pozition[] memory) {
         // TODO: Fix this. This is not scalable. Need some kind of pagination.
         //
         // I wonder how efficient data structures are in Solidity? What if I want to sort or filter?
-        return allMintedPositions[trader];
+        return allMintedPositions[_owner];
     }
 
     /// Events ///

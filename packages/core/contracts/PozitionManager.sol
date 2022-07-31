@@ -63,47 +63,63 @@ contract PozitionManager is ReentrancyGuard {
         implementation = _implementation;
 
         address sUSD = addressResolver.getAddress("ProxyERC20sUSD");
-        require(sUSD != address(0), "ProxyERC20sUSD not found.");
+        require(sUSD != address(0), "Err: ProxyERC20sUSD not found.");
         marginToken = IERC20(sUSD);
     }
 
-    /// Mutative Functions ///
+    /// Internal Functions ///
 
     /**
      * @dev Creates an exact copy of the `implementation` contract, following the minimal proxy pattern.
      *
      * IMPORTANT: `initialize` is not called here. It's expected the calling function will call `initialize` within
      * the same transaction as `clone`.
-     *
-     * TODO: How do I ensure that no one other than the manager can call this?
      */
-    function clone(
+    function _clone(
         address _trader,
         IFuturesMarket _market,
         uint256 _margin,
         int256 _size
     ) internal returns (Pozition position) {
         position = Pozition(implementation.clone());
-        position.initialize(_market, _margin, _size, marginToken);
-
-        allMintedPositions[_trader].push(position);
+        position.initialize(_market, _margin, _size, marginToken, this);
 
         emit Clone(_trader, _market, _margin, _size, position);
     }
+
+    function _findAndRemovePozition(address _trader, Pozition _position)
+        internal
+        returns (bool isRemoved)
+    {
+        Pozition[] storage positions = allMintedPositions[_trader];
+
+        isRemoved = false;
+        for (uint i = 0; i < positions.length - 1; i++) {
+            if (positions[i] == _position || isRemoved) {
+                isRemoved = true;
+                positions[i] = positions[i + 1];
+            }
+        }
+        if (isRemoved) {
+            positions.pop();
+        }
+    }
+
+    /// Mutative Functions ///
 
     /**
      * @dev Deposit sUSD into the manager to be used as margin when opening positions.
      */
     function deposit(uint256 _amount) public {
-        require(_amount > 0, "Deposit amount is too small.");
+        require(_amount > 0, "Err: Deposit amount too small.");
         require(
             marginToken.allowance(msg.sender, address(this)) >= _amount,
-            "Approve sUSD token first!"
+            "Err: sUSD not approved"
         );
 
         depositsByWalletAddress[msg.sender] += _amount;
         bool isSuccess = marginToken.transferFrom(msg.sender, address(this), _amount);
-        require(isSuccess, "Deposit failed. Bad transfer.");
+        require(isSuccess, "Err: Bad transfer, deposit failed.");
 
         emit DepositMargin(msg.sender, _amount);
     }
@@ -113,17 +129,17 @@ contract PozitionManager is ReentrancyGuard {
      * the address which will be receiving the sUSD upon a successful withdraw.
      */
     function withdraw(uint256 _amount, address _receiver) public nonReentrant {
-        require(_amount > 0, "Withdraw amount is too small.");
-        require(_receiver != address(0), "Receiver cannot be NULL.");
-        require(depositsByWalletAddress[msg.sender] > 0, "No margin to withdraw.");
+        require(_amount > 0, "Err: Withdraw amount too small.");
+        require(_receiver != address(0), "Err: Receiver is addr(0).");
+        require(depositsByWalletAddress[msg.sender] > 0, "Err: No margin.");
         require(
             depositsByWalletAddress[msg.sender] >= _amount,
-            "Withdrawing more than available."
+            "Err: Withdrawing more than available."
         );
 
         depositsByWalletAddress[msg.sender] -= _amount;
         bool isSuccess = marginToken.transfer(_receiver, _amount);
-        require(isSuccess, "Withdraw failed, bad transfer.");
+        require(isSuccess, "Err: Bad transfer, withdraw failed.");
 
         emit WithdrawMargin(msg.sender, _receiver, _amount);
     }
@@ -143,23 +159,22 @@ contract PozitionManager is ReentrancyGuard {
         int256 _size,
         bytes32 _market
     ) public returns (Pozition position) {
-        // Is this necessary? Should be double up on `require` or can I rely on `withdraw`?
-        require(_margin > 0, "Margin must be non-zero.");
-        require(depositsByWalletAddress[msg.sender] >= _margin, "Not enough margin.");
+        require(_margin > 0, "Err: Margin must be non-zero.");
+        require(depositsByWalletAddress[msg.sender] >= _margin, "Err: Not enough margin.");
 
         IFuturesMarket market = IFuturesMarket(addressResolver.getAddress(_market));
 
         // A non FuturesMarket contract but a registered contract on Synthetix can be called.
         //
         // TODO: What is an efficient way to check that only FuturesMarket contracts are specified?
-        require(address(market) != address(0), "Market not supported.");
+        require(address(market) != address(0), "Err: Unsupported market.");
 
-        position = Pozition(clone(msg.sender, market, _margin, _size));
+        position = Pozition(_clone(msg.sender, market, _margin, _size));
 
         withdraw(_margin, address(position));
 
         position.depositMargin(_margin);
-        position.openAndTransfer(msg.sender);
+        position.open(msg.sender);
 
         emit OpenPosition(msg.sender, _margin, _size, market, position);
     }
@@ -171,30 +186,44 @@ contract PozitionManager is ReentrancyGuard {
      * to be withdrawn or used in another position in the future but that is not currently implemented.
      */
     function closePosition(Pozition _position) external {
-        require(_position.isOpen(), "Position is not open.");
+        require(_position.isOpen(), "Err: Position not open.");
 
-        _position.closeAndBurn();
+        _position.close();
         emit ClosePosition(msg.sender, _position.market(), _position);
     }
 
     /**
-     * @dev Invoked automatically by `Pozition.sol` when a transfer event occurs.
+     * @dev Invoked automatically by `Pozition.sol` on ERC721._afterTokenTransfer.
      *
-     * A unidirectional Pozition transfer function. If the Pozition is already transferred then allMintedPositions
-     * is simply updated. However, if not, this will invoke `.transfer` on `_position` and update state after.
-     *
-     * NOTE: We allow closed pozitions to be transferrable.
-     *
-     * TODO: How to cleanly only allow this function to be callable by newly created minimal proxy contracts? Or
-     * perhaps better q, can we avoid using `allMintedPositions` to track pozitions altogether?
+     * This function is invoked on all transfers, mints, and burns. Note that closing a Pozition does
+     * not automatically burn the Pozition NFT. As such, the NFT will still remain 'available'
+     * and transferrable until burnt.
      */
-    function transferPosition(Pozition _position, address _receiver) public {
-        require(address(_position) != address(0), "Position is addr(0).");
+    function updateAllMintedPositions(
+        address _from,
+        address _to,
+        Pozition _position
+    ) public {
+        require(address(_position) != address(0), "Err: Position is addr(0).");
+        require(_from != _to, "Err: Same To/from address.");
+        require(_position.ownerOf(1) == _to, "Err: ownerOf must be _to");
 
-        // `.transfer` call is invoked before this. Hence, we verify the _receiver is the ownerOf `_position`.
-        // require(_position.owner() == _receiver, "Receiver is not the owner.");
+        if (_from == address(0)) {
+            allMintedPositions[_to].push(_position); // _mint
+        } else {
+            bool hasUpdatedMintedPositions = _findAndRemovePozition(_to, _position);
+            if (!hasUpdatedMintedPositions) {
+                // NOTE: This could perhaps be too restrictive. If for whatever reason `allMintedPositions`
+                // encounters a bug which results in invalid mappings, we may want to refresh the mapping by
+                // calling this in the future.
+                revert("Err: _to not original owner");
+            }
 
-        // The sender must the previous owner.
+            // Only emit this event when operation is from _tansfer and not _burn.
+            if (_to != address(0)) {
+                emit TransferPosition(_from, _to, _position);
+            }
+        }
     }
 
     /// View Functions ///
@@ -234,7 +263,7 @@ contract PozitionManager is ReentrancyGuard {
         Pozition position
     );
 
-    event WithdrawMargin(address withdrawer, address receiver, uint256 amount);
+    event WithdrawMargin(address from, address to, uint256 amount);
     event DepositMargin(address depositer, uint256 amount);
     event OpenPosition(
         address trader,
@@ -244,5 +273,5 @@ contract PozitionManager is ReentrancyGuard {
         Pozition position
     );
     event ClosePosition(address trader, IFuturesMarket market, Pozition position);
-    event TransferPosition(address owner, address receiver, Pozition position);
+    event TransferPosition(address from, address to, Pozition position);
 }

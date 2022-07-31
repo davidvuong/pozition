@@ -110,7 +110,6 @@ export const MyPozitionsTable = () => {
     const contract = transferringPozition.contract;
     try {
       setIsTransferring(true);
-      console.log(address, to, DEFAULT_TOKEN_ID);
       const res = await contract.transferFrom(address, to, DEFAULT_TOKEN_ID);
       handleCloseTransferModal();
       showNotification(res.hash);

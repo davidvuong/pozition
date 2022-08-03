@@ -12,6 +12,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./Pozition.sol";
 import "./interfaces/IFuturesMarket.sol";
 import "./interfaces/IAddressResolver.sol";
+import "./interfaces/IFuturesMarketManager.sol";
 
 /**
  * @dev Contract allows users to deposit sUSD and use it as margin for future positions via `Futures*`.
@@ -33,9 +34,14 @@ contract PozitionManager {
     /// Storage Variables ///
 
     /**
-     * @dev Synthetix's `AddressResolver` to grab Synths and Market contracts.
+     * @dev Synthetix's `AddressResolver` to grab sUSD.
      */
     IAddressResolver private addressResolver;
+
+    /**
+     * @dev Synthetix's `IFuturesMarketManager` to grab Futures Market contract addresses.
+     */
+    IFuturesMarketManager private futuresMarketManager;
 
     /**
      * @dev Track sUSD deposited by address.
@@ -59,8 +65,13 @@ contract PozitionManager {
 
     /// Constructor ///
 
-    constructor(IAddressResolver _addressResolver, address _implementation) {
+    constructor(
+        IAddressResolver _addressResolver,
+        IFuturesMarketManager _futuresMarketManager,
+        address _implementation
+    ) {
         addressResolver = _addressResolver;
+        futuresMarketManager = _futuresMarketManager;
         implementation = _implementation;
 
         address sUSD = addressResolver.requireAndGetAddress(
@@ -88,6 +99,15 @@ contract PozitionManager {
         position.initialize(_market, _margin, _size, marginToken, this);
 
         emit Clone(_trader, _market, _margin, _size, position);
+    }
+
+    function _verifyMarketValidity(bytes32 _market) internal view returns (address) {
+        bytes32[] memory keys = new bytes32[](1);
+        keys[0] = _market;
+
+        address[] memory markets = futuresMarketManager.marketsForKeys(keys);
+        require(markets[0] != address(0), "Err: Unsupported market not found.");
+        return markets[0];
     }
 
     /// Mutative Functions ///
@@ -147,13 +167,7 @@ contract PozitionManager {
         require(_margin > 0, "Err: Margin must be non-zero.");
         require(depositsByWalletAddress[msg.sender] >= _margin, "Err: Not enough margin.");
 
-        IFuturesMarket market = IFuturesMarket(addressResolver.getAddress(_market));
-
-        // A non FuturesMarket contract but a registered contract on Synthetix can be called.
-        //
-        // TODO: What is an efficient way to check that only FuturesMarket contracts are specified?
-        require(address(market) != address(0), "Err: Unsupported market.");
-
+        IFuturesMarket market = IFuturesMarket(_verifyMarketValidity(_market));
         position = Pozition(_clone(msg.sender, market, _margin, _size));
 
         withdraw(_margin, address(position));

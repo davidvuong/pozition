@@ -8,6 +8,7 @@
     "test": "TS_NODE_TRANSPILE_ONLY=1 hardhat test",
     "test:coverage": "TS_NODE_TRANSPILE_ONLY=1 hardhat coverage",
     "deploy:kovan": "hardhat run --network optimistic-kovan scripts/deploy.ts",
+    "deploy:goreli": "hardhat run --network optimistic-goreli scripts/deploy.ts",
     "deploy:mainnet": "hardhat run --network optimistic-mainnet scripts/deploy.ts",
     "postinstall": "yarn run compile"
   },

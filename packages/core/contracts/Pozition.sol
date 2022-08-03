@@ -100,45 +100,36 @@ contract Pozition is Initializable, ERC721 {
         return _size != 0;
     }
 
-    function pozitionMetadata()
-        external
-        view
-        returns (
-            bool,
-            uint256,
-            int256,
-            int256,
-            bytes32,
-            uint256,
-            IFuturesMarket
-        )
-    {
+    struct PozitionSummary {
+        bool isOpen;
+        uint256 originalMargin;
+        int256 originalSize;
+        int256 pnl;
+        bytes32 marketKey;
+        uint256 remainingMargin;
+        IFuturesMarket market;
+    }
+
+    /** @dev Provides a single entrypoint to fetch the overall summary of this Pozition. */
+    function summary() external view returns (PozitionSummary memory) {
         address me = address(this);
 
-        // TODO: Deal with 2nd `invalid` argument.
-        //
-        // Docs don't say anything but this comes from `assetPrice`. Haven't dug into what it means to have an invalid
-        // price.
-        //
-        // @see: https://github.com/Synthetixio/synthetix/blob/develop/contracts/MixinFuturesViews.sol#L81
-        (uint256 remainingMargin, ) = market.remainingMargin(me);
+        (uint256 remainingMargin, bool remainingMarginIsInvalid) = market.remainingMargin(me);
+        require(!remainingMarginIsInvalid, "Err: Remaining margin invalid price");
 
-        // TODO: This is also true for PnL.
-        (int256 pnl, ) = market.profitLoss(me);
+        (int256 pnl, bool pnlIsInvalid) = market.profitLoss(me);
+        require(!pnlIsInvalid, "Err: Remaining PNL invalid price");
 
-        // TODO: Kind of terrible that we return nameless data as an array. Perhaps a struct would be better here?
-        //
-        // Rather than the frontend making 7 API calls to fetch snippets of data in every pozition they want to
-        // display, this view returns everything in one go.
-        return (
-            isOpen(),
-            originalMargin,
-            originalSize,
-            pnl,
-            market.marketKey(),
-            remainingMargin,
-            market
-        );
+        return
+            PozitionSummary({
+                isOpen: isOpen(),
+                originalMargin: originalMargin,
+                originalSize: originalSize,
+                pnl: pnl,
+                marketKey: market.marketKey(),
+                remainingMargin: remainingMargin,
+                market: market
+            });
     }
 
     /// Internal Functions ///

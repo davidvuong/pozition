@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 /// 3rd Party Imports ///
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
@@ -27,7 +26,7 @@ import "./interfaces/IAddressResolver.sol";
  *
  * _See https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/proxy/Clones.sol_
  */
-contract PozitionManager is ReentrancyGuard {
+contract PozitionManager {
     using Clones for address;
     using EnumerableSet for EnumerableSet.AddressSet;
 
@@ -64,8 +63,10 @@ contract PozitionManager is ReentrancyGuard {
         addressResolver = _addressResolver;
         implementation = _implementation;
 
-        address sUSD = addressResolver.getAddress("ProxyERC20sUSD");
-        require(sUSD != address(0), "Err: ProxyERC20sUSD not found.");
+        address sUSD = addressResolver.requireAndGetAddress(
+            "ProxyERC20sUSD",
+            "Err: ProxyERC20sUSD not found."
+        );
         marginToken = IERC20(sUSD);
     }
 
@@ -112,7 +113,7 @@ contract PozitionManager is ReentrancyGuard {
      * @dev Withdraw previously deposited sUSD from the manager. A `_receiver` is specified to signal
      * the address which will be receiving the sUSD upon a successful withdraw.
      */
-    function withdraw(uint256 _amount, address _receiver) public nonReentrant {
+    function withdraw(uint256 _amount, address _receiver) public {
         require(_amount > 0, "Err: Withdraw amount too small.");
         require(_receiver != address(0), "Err: Receiver is addr(0).");
         require(depositsByWalletAddress[msg.sender] > 0, "Err: No margin.");

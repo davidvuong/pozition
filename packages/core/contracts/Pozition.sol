@@ -148,7 +148,7 @@ contract Pozition is Initializable, ERC721 {
         address to,
         uint256 /* tokenId */
     ) internal override {
-        manager.updateAllMintedPositions(from, to, this);
+        manager.updateAllMintedPositions(from, to, address(this));
     }
 
     /// Mutative Functions ///

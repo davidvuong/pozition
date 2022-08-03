@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 /// Project Imports ///
 
@@ -28,6 +29,7 @@ import "./interfaces/IAddressResolver.sol";
  */
 contract PozitionManager is ReentrancyGuard {
     using Clones for address;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     /// Storage Variables ///
 
@@ -54,7 +56,7 @@ contract PozitionManager is ReentrancyGuard {
     /**
      * @dev An array of all mintedPosition addresses.
      */
-    mapping(address => Pozition[]) private allMintedPositions;
+    mapping(address => EnumerableSet.AddressSet) private allMintedPositions;
 
     /// Constructor ///
 
@@ -85,45 +87,6 @@ contract PozitionManager is ReentrancyGuard {
         position.initialize(_market, _margin, _size, marginToken, this);
 
         emit Clone(_trader, _market, _margin, _size, position);
-    }
-
-    /**
-     * @dev Internal function to remove an arbitrary position belonging to an `_owner` and shifting
-     * the array of minted positions to avoid.
-     *
-     * TODO: Consider replacing this with openzeppelin's `EnumerableSet`.
-     *
-     * https://docs.openzeppelin.com/contracts/4.x/api/utils#EnumerableSet
-     */
-    function _findAndRemovePozition(address _owner, Pozition _position)
-        internal
-        returns (bool isRemoved)
-    {
-        Pozition[] storage positions = allMintedPositions[_owner];
-
-        /// `_owner` has no positions to remove. This is an invalid transfer.
-        if (positions.length == 0) {
-            return false;
-        }
-
-        /// NOTE: Avoid shifting entirely if the last position is what we're removing.
-        ///
-        /// We can't shift `i + 1` because we'll hit index out of bounds if at end.
-        if (positions[positions.length - 1] == _position) {
-            positions.pop();
-            return true;
-        }
-
-        isRemoved = false;
-        for (uint i = 0; i < positions.length; i++) {
-            if (positions[i] == _position || isRemoved) {
-                isRemoved = true;
-                positions[i] = positions[i + 1];
-            }
-        }
-        if (isRemoved) {
-            positions.pop();
-        }
     }
 
     /// Mutative Functions ///
@@ -208,6 +171,7 @@ contract PozitionManager is ReentrancyGuard {
      */
     function closePosition(Pozition _position) external {
         require(_position.isOpen(), "Err: Position not open.");
+        require(_position.ownerOf(1) == msg.sender, "Err: Not owner.");
 
         _position.close();
         emit ClosePosition(msg.sender, _position.market(), _position);
@@ -223,33 +187,31 @@ contract PozitionManager is ReentrancyGuard {
     function updateAllMintedPositions(
         address _from,
         address _to,
-        Pozition _position
+        address _position
     ) public {
-        require(address(_position) != address(0), "Err: Position is addr(0).");
+        require(_position != address(0), "Err: Position is addr(0).");
         require(_from != _to, "Err: Same To/from address.");
-        require(_position.ownerOf(1) == _to, "Err: ownerOf must be _to");
+        require(Pozition(_position).ownerOf(1) == _to, "Err: ownerOf must be _to");
 
         if (_from == address(0)) {
-            allMintedPositions[_to].push(_position); // _mint
+            allMintedPositions[_to].add(_position); // _mint
         } else {
-            bool hasUpdatedMintedPositions = _findAndRemovePozition(_from, _position);
-            allMintedPositions[_to].push(_position);
-
-            if (!hasUpdatedMintedPositions) {
+            if (!allMintedPositions[_from].contains(_position)) {
                 // NOTE: This could perhaps be too restrictive. If for whatever reason `allMintedPositions`
                 // encounters a bug which results in invalid mappings, we may want to refresh the mapping by
                 // calling this in the future.
                 revert("Err: _from not original owner");
             }
 
+            allMintedPositions[_from].remove(_position);
+            allMintedPositions[_to].add(_position);
+
             // Only emit this event when operation is from _tansfer and not _burn.
             if (_to != address(0)) {
-                emit TransferPosition(_from, _to, _position);
+                emit TransferPosition(_from, _to, Pozition(_position));
             }
         }
     }
-
-    /// View Functions ///
 
     /**
      * @dev Utility method combining `deposit` and `openPosition`.
@@ -263,14 +225,10 @@ contract PozitionManager is ReentrancyGuard {
         position = openPosition(_margin, _size, _market);
     }
 
-    /**
-     * @dev Returns all previously minted or received NFT positions.
-     */
-    function mintedPositionsOf(address _owner) public view returns (Pozition[] memory) {
-        // TODO: Fix this. This is not scalable. Need some kind of pagination.
-        //
-        // I wonder how efficient data structures are in Solidity? What if I want to sort or filter?
-        return allMintedPositions[_owner];
+    /// View Functions ///
+
+    function mintedPositionsOf(address _owner) public view returns (address[] memory) {
+        return allMintedPositions[_owner].values();
     }
 
     /// Events ///
